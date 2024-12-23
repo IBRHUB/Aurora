@@ -48,6 +48,9 @@ if %errorlevel% neq 0 echo Error downloading RestorePoint.ps1 >> "%logFile%"
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/SetConsoleOpacity.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading SetConsoleOpacity.ps1 >> "%logFile%"
 
+curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/NvidiaProfileInspector.cmd" >> "%logFile%" 2>&1
+if %errorlevel% neq 0 echo Error downloading SetConsoleOpacity.ps1 >> "%logFile%"
+
 :: Ensure the destination directory exists in the current script location
 if not exist "%currentDir%" mkdir "%currentDir%"
 
