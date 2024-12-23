@@ -16,7 +16,7 @@ function Debloat-TeamsOneDrive {
             New-Item -Path $DestinationBase -ItemType Directory -Force | Out-Null
         }
         catch {
-            Write-Error "Failed to create destination base folder $DestinationBase: $_"
+            Write-Error "Failed to create destination base folder ${DestinationBase}: $_"
             exit 1
         }
     }
@@ -34,7 +34,7 @@ function Debloat-TeamsOneDrive {
                     New-Item -Path $Destination -ItemType Directory -Force | Out-Null
                 }
                 catch {
-                    Write-Error "Failed to create destination subfolder $Destination: $_"
+                    Write-Error "Failed to create destination subfolder ${Destination}: $_"
                     exit 1
                 }
             }
@@ -42,10 +42,10 @@ function Debloat-TeamsOneDrive {
             # Copy the contents while preserving the folder structure
             try {
                 Copy-Item -Path "$Source\*" -Destination $Destination -Recurse -Force -ErrorAction Stop
-                Write-Output "Successfully copied contents of $folder."
+                Write-Output "Successfully copied contents of ${folder}."
             }
             catch {
-                Write-Error "Error occurred while copying contents of $folder: $_"
+                Write-Error "Error occurred while copying contents of ${folder}: $_"
                 exit 1
             }
         }
