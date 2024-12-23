@@ -31,7 +31,8 @@ if not exist "%targetDir%" mkdir "%targetDir%"
 :: Clear the log file
 > "%logFile%" echo Download Log - %date% %time%
 
-:: Download files with logging
+echo Download files for Aurora
+
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/LockConsoleSize.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading LockConsoleSize.ps1 >> "%logFile%"
 
@@ -353,39 +354,8 @@ if /I %input% EQU 2 goto :AMDTweakss
 
 :NVIDIATweaks
 
-:: NVIDIA Inspector Profile
-echo Applying NVIDIA Inspector Profile
-
-REM Download NVIDIA Profile Inspector
-curl -g -k -L -# -o "%temp%\nvidiaProfileInspector.zip" "https://github.com/Orbmu2k/nvidiaProfileInspector/releases/latest/download/nvidiaProfileInspector.zip"
-if errorlevel 1 (
-    echo Failed to download NVIDIA Profile Inspector.
-    pause
-    goto gputweaks
-)
-
-REM Extract the downloaded ZIP
-powershell -NoProfile Expand-Archive '%temp%\nvidiaProfileInspector.zip' -DestinationPath 'C:\NvidiaProfileInspector\' -Force
-if errorlevel 1 (
-    echo Failed to extract NVIDIA Profile Inspector.
-    pause
-    goto gputweaks
-)
-
-REM Download Aurora profiles
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/_Modules/ResizableBarOFF.nip"
-if errorlevel 1 (
-    echo Failed to download AuroraOFF.nip.
-    pause
-    goto gputweaks
-)
-
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/_Modules/ResizableBarON.nip"
-if errorlevel 1 (
-    echo Failed to download AuroraON.nip.
-    pause
-    goto gputweaks
-)
+mode con cols=85 lines=33
+start %~dp0\_Modules\NvidiaProfileInspector.cmd
 
 echo.
 echo.           [38;5;213m  Resizable Bar OFF (1) or Resizable Bar ON (2)?
@@ -402,7 +372,7 @@ start "" /wait "C:\NvidiaProfileInspector\nvidiaProfileInspector.exe" "C:\Nvidia
 if errorlevel 1 (
     echo Failed to apply AuroraOFF.nip.
     pause
-    goto gputweaks
+    goto relaunch
 )
 echo.
 echo [38;5;213mResizable BAR has been disabled successfully.%[0m
@@ -415,7 +385,7 @@ start "" /wait "C:\NvidiaProfileInspector\nvidiaProfileInspector.exe" "C:\Nvidia
 if errorlevel 1 (
     echo Failed to apply AuroraON.nip.
     pause
-    goto gputweaks
+    goto relaunch
 )
 echo.
 echo [38;5;213mResizable BAR has been enabled successfully.%[0m
@@ -600,3 +570,21 @@ goto :Main
 
 cls
 goto :Main
+
+
+
+:relaunch
+set /p userInput=Enter your choice: 
+
+if /i "%userInput%"=="restart" (
+    :: Relaunch the script from the :Main function
+    start "" "%~f0" Main
+    exit
+)
+
+if /i "%userInput%"=="exit" exit
+
+echo Invalid choice. Restarting the script...
+:: Relaunch the script from the :Main function
+start "" "%~f0" Main
+exit
