@@ -58,7 +58,7 @@ if %errorlevel% neq 0 echo Error moving files to current directory >> "%logFile%
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 mode con: cols=75 lines=28
-:: powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\RestorePoint.ps1"  
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\RestorePoint.ps1"  
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\LockConsoleSize.ps1" & powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\SetConsoleOpacity.ps1"
 cls
 
