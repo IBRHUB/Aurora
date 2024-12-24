@@ -22,8 +22,8 @@ fltmc > nul 2>&1 || (
 	exit /b
 )
 set logFile=%temp%\download_log.txt
-set targetDir=%temp%\_Modules
-set currentDir=%~dp0_Modules
+set targetDir=%temp%\AuroraModules
+set currentDir=%~dp0AuroraModules
 
 :: Ensure the target directory exists
 if not exist "%targetDir%" mkdir "%targetDir%"
@@ -33,22 +33,22 @@ if not exist "%targetDir%" mkdir "%targetDir%"
 
 echo Download files for Aurora
 
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/LockConsoleSize.ps1" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading LockConsoleSize.ps1 >> "%logFile%"
 
-curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/OneDrive.ps1" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading OneDrive.ps1 >> "%logFile%"
 
-curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/Power.ps1" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading Power.ps1 >> "%logFile%"
 
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/RestorePoint.ps1" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading RestorePoint.ps1 >> "%logFile%"
 
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/SetConsoleOpacity.ps1" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading SetConsoleOpacity.ps1 >> "%logFile%"
 
-curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/_Modules/NvidiaProfileInspector.cmd" >> "%logFile%" 2>&1
+curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" >> "%logFile%" 2>&1
 if %errorlevel% neq 0 echo Error downloading SetConsoleOpacity.ps1 >> "%logFile%"
 
 :: Ensure the destination directory exists in the current script location
@@ -62,8 +62,8 @@ if %errorlevel% neq 0 echo Error moving files to current directory >> "%logFile%
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 mode con: cols=75 lines=28
-powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\RestorePoint.ps1"  
-powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\LockConsoleSize.ps1" & powershell.exe -ExecutionPolicy Bypass -File "%~dp0\_Modules\SetConsoleOpacity.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"  
+powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\LockConsoleSize.ps1" & powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\SetConsoleOpacity.ps1"
 cls
 
 powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
@@ -129,7 +129,7 @@ Reg.exe Add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileS
 Reg.exe Add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d "0" /f > $null 2>&1
 Reg.exe Add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d "0" /f > $null 2>&1
 
-start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\_Modules\OneDrive.ps1"
+start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
 
 
 goto :SkipUpdates
@@ -358,7 +358,7 @@ if /I %input% EQU 2 goto :AMDTweakss
 :NVIDIATweaks
 
 mode con cols=85 lines=33
-start %~dp0\_Modules\NvidiaProfileInspector.cmd
+start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
 
 echo.
 echo.           [38;5;213m  Resizable Bar OFF (1) or Resizable Bar ON (2)?
@@ -545,7 +545,7 @@ goto :Main
 
 :Power-Plan
 
-start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\_Modules\Power.ps1" -Silent
+start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\Power.ps1" -Silent
 
 cls
 goto :Main

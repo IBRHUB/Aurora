@@ -18,14 +18,14 @@ if errorlevel 1 (
 )
 
 REM Download Aurora profiles
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/_Modules/ResizableBarOFF.nip"
+curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/ResizableBarOFF.nip"
 if errorlevel 1 (
     echo Failed to download AuroraOFF.nip.
     pause
     goto b
 )
 
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/_Modules/ResizableBarON.nip"
+curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/ResizableBarON.nip"
 if errorlevel 1 (
     echo Failed to download AuroraON.nip.
     pause
