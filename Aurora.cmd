@@ -71,12 +71,13 @@ curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubuserc
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd"
 
 echo Download button Files 
-curl -g -k -L -# -o "%targetDir%\Box.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Box.bat"
-curl -g -k -L -# -o "%targetDir%\Button.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Button.bat"
-curl -g -k -L -# -o "%targetDir%\GetInput.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/GetInput.exe"
-curl -g -k -L -# -o "%targetDir%\Getlen.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Getlen.bat"
-curl -g -k -L -# -o "%targetDir%\batbox.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/batbox.exe"
+curl -g -k -L -# -o "%targetDir%\Files\Box.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Files/Box.bat"
+curl -g -k -L -# -o "%targetDir%\Files\GetInput.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Files/GetInput.exe"
+curl -g -k -L -# -o "%targetDir%\Files\Getlen.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Files/Getlen.bat"
+curl -g -k -L -# -o "%targetDir%\Files\batbox.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Files/batbox.exe"
+curl -g -k -L -# -o "%targetDir%\Files\quickedit.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Files/quickedit.exe"
 
+curl -g -k -L -# -o "%targetDir%\Button.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Button.bat"
 
 :: Ensure Current Directory Exists
 if not exist "%currentDir%" mkdir "%currentDir%"
@@ -127,7 +128,8 @@ echo             [38;5;213m ╚══════^> [38;5;213mAurora
 
 :: Create Main Buttons in Two Rows: 3 Top, 3 Bottom
 pushd "%currentDir%"
-call "Button.bat" 10 19 F2 "Windows Tweaks" 35 19 F2 "GPU Tweaks" 60 19 F2 "Network Tweaks" 10 24 F2 "Power-Plan" 35 24 F2 "Discord Website " 65 24 F2 "Exit" X _Var_Box _Var_Hover
+call "Button.bat" 10 19 F2 "Windows Tweaks" 35 19 F2 "GPU Tweaks" 60 19 F2 "Network Tweaks" 10 24 F2 "Power-Plan" 35 24 F2 "Discord Website" 65 24 F2 "Exit" X _Var_Box _Var_Hover _Var_Code
+batbox "%_Var_Code%"
 popd
 
 :: Get User Choice
