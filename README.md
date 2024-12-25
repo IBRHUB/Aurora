@@ -1,10 +1,11 @@
 # Aurora
 
-<div dir="rtl">
+<div dir="rtl" style="text-align: right;">
 
-[Aurora بالعربي](https://github.com/IBRHUB/Aurora-AR/edit/main/README.md)
+[أورورا بالعربي](https://github.com/IBRHUB/Aurora-AR/edit/main/README.md)
 
 </div>
+
 
 
 ---
