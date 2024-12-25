@@ -12,11 +12,6 @@ Script Version: 1.3
 Last Updated: December 2024
 #>
 
-# Function to pause the script
-function Pause-Script {
-    Read-Host -Prompt "Press Enter to continue..."
-}
-
 # Check if the script is running as an admin
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     # Relaunch as an administrator
@@ -78,7 +73,6 @@ Clear-Host
 function Check-Admin {
     if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
         Write-Host "This script must be run as Administrator."
-        Pause-Script
         exit 1
     }
 }
@@ -114,7 +108,6 @@ function Create-RestorePoint {
     } catch {
         Write-Host "An error occurred while creating the restore point: $_" -ForegroundColor Red
     }
-    Pause-Script
 }
 
 # Function to restore a backup from a selected restore point
@@ -138,7 +131,6 @@ function Restore-Backup {
     } else {
         Write-Host "No restore points available." -ForegroundColor Red
     }
-    Pause-Script
 }
 
 # Main script execution
@@ -177,7 +169,6 @@ switch ($choice) {
     }
     default {
         Write-Host "Invalid choice. Please enter 1, 2, or 3." -ForegroundColor Red
-        Pause-Script
     }
 }
 
