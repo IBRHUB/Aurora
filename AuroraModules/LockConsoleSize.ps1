@@ -69,5 +69,3 @@ if (-not $refreshResult) {
 # Optional: Lock the window size by handling the window resize event
 # This part requires a more advanced approach, such as creating a window hook.
 # For simplicity, this script only removes the ability to resize via the window border.
-
-Write-Output "Console window size locked and Exit/Minimize buttons disabled."
