@@ -2,7 +2,7 @@
 
 <div dir="rtl" style="text-align: right;">
 
-[أورورا بالعربي](https://github.com/IBRHUB/Aurora-AR/edit/main/README.md)
+[أورورا بالعربي](https://github.com/IBRHUB/Aurora-AR/edit/main/README.ar.md)
 
 </div>
 
