@@ -7,6 +7,8 @@ REM
 REM Modified: 06-FEB-2016
 REM Version: 2.0
 
+:: - Adapted from https://github.com/Batch-Man/Button
+
 REM INITIALIZE LENGTH VARIABLE
 Set ver=2.0
 
