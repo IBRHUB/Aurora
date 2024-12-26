@@ -17,6 +17,7 @@ Set _Ver=4.0
 :: [%8 = Box style/type (e.g., single border, double border, etc.).]
 :: [%9 = Variable to save the output instead of printing directly.]
 
+:: - Adapted from https://github.com/Batch-Man/Button
 
 :: Validate inputs or display help
 If /i "%~1" == "" (goto :help)
