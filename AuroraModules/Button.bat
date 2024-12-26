@@ -17,6 +17,8 @@ Set _Ver=2.0
 :: [%6 = Variable to save button coordinates]
 :: [%7 = Variable to save mouse hover color]
 
+:: - Adapted from https://github.com/Batch-Man/Button
+
 
 If /i "%~1" == "" (goto :help)
 If /i "%~1" == "/?" (goto :help)
