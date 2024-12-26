@@ -1,16 +1,8 @@
-# Aurora
-
-<div dir="rtl" style="text-align: right;">
-
-[أورورا بالعربي](https://github.com/IBRHUB/Aurora/blob/main/README.ar.md)
-
+<div align="center">
+  <h1>Aurora</h1>
 </div>
 
-
-
----
-
-## 🤔 What is Aurora?
+# 🤔 What is Aurora?
 
 Aurora ,is an open-source project that enhances Windows by conveniently applying privacy, usability, and performance optimizations
 
