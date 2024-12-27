@@ -85,12 +85,15 @@ if %errorlevel% neq 0 echo Error moving files to current directory >> "%logFile%
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
-mode con: cols=75 lines=28
+
+
+
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"  
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\LockConsoleSize.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\SetConsoleOpacity.ps1"
-powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\resizeConsole.ps1"
-cls
+:: powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\resizeConsole.ps1"
+
+timeout /t 15 /nobreak > NUL
 
 powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 cls
@@ -99,6 +102,7 @@ chcp 65001 >nul
 color f
 :Main
 CLS
+mode con cols=85 lines=33
 echo.
 echo.
 echo	      [38;5;105m ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
@@ -396,12 +400,13 @@ if /I "%input%" EQU "1" goto :AuroraOFF
 if /I "%input%" EQU "2" goto :AuroraON
 
 :AuroraOFF
-start "" /wait "%~dp0AuroraModules\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\NvidiaProfileInspector\AuroraOFF.nip" 
+start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip"
 if errorlevel 1 (
     echo Failed to apply AuroraOFF.nip.
     pause
     goto relaunch
 )
+
 echo.
 echo [38;5;213mResizable BAR has been disabled successfully.%[0m
 timeout /t 3 /nobreak > NUL
@@ -409,12 +414,13 @@ timeout /t 3 /nobreak > NUL
 goto :Main
 
 :AuroraON
-start "" /wait "%~dp0AuroraModules\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\NvidiaProfileInspector\AuroraON.nip" 
+start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
 if errorlevel 1 (
     echo Failed to apply AuroraON.nip.
     pause
     goto relaunch
 )
+
 echo.
 echo [38;5;213mResizable BAR has been enabled successfully.%[0m
 timeout /t 3 /nobreak > NUL
