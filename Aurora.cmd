@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 
 
 
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"; if exist "%temp%\Disclaimer.txt" start notepad "%temp%\Disclaimer.txt"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"; if (Test-Path "$env:TEMP\Disclaimer.txt") { start-process notepad "$env:TEMP\Disclaimer.txt" }
 
 
 echo [93m********************************************
