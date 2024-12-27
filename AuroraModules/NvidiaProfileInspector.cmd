@@ -10,7 +10,7 @@ if errorlevel 1 (
 )
 
 REM Extract the downloaded ZIP
-powershell -NoProfile Expand-Archive '%temp%\nvidiaProfileInspector.zip' -DestinationPath 'C:\NvidiaProfileInspector\' -Force
+powershell -NoProfile Expand-Archive '%temp%\nvidiaProfileInspector.zip' -DestinationPath '%~dp0AuroraModules\NvidiaProfileInspector\' -Force
 if errorlevel 1 (
     echo Failed to extract NVIDIA Profile Inspector.
     pause
@@ -18,14 +18,14 @@ if errorlevel 1 (
 )
 
 REM Download Aurora profiles
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/ResizableBarOFF.nip"
+curl -g -k -L -# -o "%~dp0AuroraModules\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraOFF.nip"
 if errorlevel 1 (
     echo Failed to download AuroraOFF.nip.
     pause
     goto b
 )
 
-curl -g -k -L -# -o "C:\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/ResizableBarON.nip"
+curl -g -k -L -# -o "%~dp0AuroraModules\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraON.nip"
 if errorlevel 1 (
     echo Failed to download AuroraON.nip.
     pause
