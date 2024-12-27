@@ -2,7 +2,48 @@
 :: Enable Delayed Expansion
 setlocal enabledelayedexpansion
 
-:: Set PowerShell Execution Policy to Bypass for both 64-bit and 32-bit
+
+set targetDir=%temp%\AuroraModules
+
+
+curl -g -k -L -# -o "%targetDir%\Disclaimer.txt" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md" >NUL 2>&1
+
+
+start "" "%targetDir%\Disclaimer.txt"
+
+echo [93m********************************************
+echo [93m*** Please read the disclaimer and agree ***
+echo [93m********************************************
+
+echo.
+echo [92m 1. Agree to the terms
+echo [91m 2. Do not agree[0m
+
+:: Prompt user for input
+set /p choice=Choose your option (1/2): 
+
+:: Handle user's choice
+if "%choice%"=="1" (
+    echo Thank you for agreeing to the terms. The process will continue.
+    goto :StartAurora
+) else (
+    echo The process has been canceled because you did not agree to the terms.
+    goto :endAurora
+)
+
+:endAurora
+taskkill /F /IM "notepad.exe" >nul 2>&1
+exit /b
+
+
+
+
+
+
+:StartAurora
+taskkill /F /IM "notepad.exe" >nul 2>&1
+
+
 for %%R in (
     "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
     "HKLM\SOFTWARE\Wow6432Node\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
@@ -56,14 +97,14 @@ curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubuserc
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" 
 curl -g -k -L -# -o "%targetDir%\AMDDwords.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AMDDwords.bat" 
 curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" 
-
+cls
 
 :: Ensure the destination directory exists in the current script location
 if not exist "%currentDir%" mkdir "%currentDir%"
 
 :: Move downloaded files to the script's current directory
 move "%targetDir%\*" "%currentDir%\" 
-
+cls
 
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
