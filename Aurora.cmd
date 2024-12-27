@@ -3,10 +3,8 @@
 setlocal enabledelayedexpansion
 
 
-curl -g -k -L -# -o "%temp%\Disclaimer.txt" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md" >NUL 2>&1
+where curl > NUL 2>&1 && curl -g -k -L -# -o "%temp%\Disclaimer.txt" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md" > NUL 2>&1 || powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"; if exist "%temp%\Disclaimer.txt" start "" "%temp%\Disclaimer.txt"
 
-
-start "" "%temp%\Disclaimer.txt"
 
 echo [93m********************************************
 echo [93m*** Please read the disclaimer and agree ***
