@@ -11,6 +11,23 @@ fltmc > nul 2>&1 || (
 	exit /b
 )
 
+for %%R in (
+    "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
+    "HKLM\SOFTWARE\Wow6432Node\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
+) do (
+    powershell.exe "Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope LocalMachine" >NUL 2>&1
+    REG QUERY "%%R" /v ExecutionPolicy >nul 2>&1
+    if !errorlevel! neq 0 (
+        REG ADD "%%R" /v ExecutionPolicy /t REG_SZ /d Bypass /f >nul 2>&1
+    ) else (
+        for /f "tokens=2*" %%A in ('REG QUERY "%%R" /v ExecutionPolicy ^| findstr ExecutionPolicy') do (
+            if /I "%%B" neq "Bypass" (
+                REG ADD "%%R" /v ExecutionPolicy /t REG_SZ /d Bypass /f >nul 2>&1
+            )
+        )
+    )
+)
+
 :: Enable Delayed Expansion
 setlocal enabledelayedexpansion
 
@@ -52,22 +69,7 @@ exit /b
 taskkill /F /IM "notepad.exe" >nul 2>&1
 
 
-for %%R in (
-    "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
-    "HKLM\SOFTWARE\Wow6432Node\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell"
-) do (
-    powershell.exe "Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope LocalMachine" >NUL 2>&1
-    REG QUERY "%%R" /v ExecutionPolicy >nul 2>&1
-    if !errorlevel! neq 0 (
-        REG ADD "%%R" /v ExecutionPolicy /t REG_SZ /d Bypass /f >nul 2>&1
-    ) else (
-        for /f "tokens=2*" %%A in ('REG QUERY "%%R" /v ExecutionPolicy ^| findstr ExecutionPolicy') do (
-            if /I "%%B" neq "Bypass" (
-                REG ADD "%%R" /v ExecutionPolicy /t REG_SZ /d Bypass /f >nul 2>&1
-            )
-        )
-    )
-)
+
 :: Check Internet Connection
 ping -n 1 "google.com" >nul 2>&1
 if !ERRORLEVEL! neq 0 (
