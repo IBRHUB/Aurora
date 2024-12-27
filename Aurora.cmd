@@ -39,53 +39,35 @@ fltmc > nul 2>&1 || (
 	)
 	exit /b
 )
-set logFile=%temp%\Aurora_log.txt
 set targetDir=%temp%\AuroraModules
 set currentDir=%~dp0AuroraModules
 
 :: Ensure the target directory exists
 if not exist "%targetDir%" mkdir "%targetDir%"
 
-:: Clear the log file
-> "%logFile%" echo Download Log - %date% %time%
 
 echo Download files for Aurora
 
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading LockConsoleSize.ps1 >> "%logFile%"
+curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" 
+curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" 
+curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" 
+curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" 
+curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" 
+curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" 
+curl -g -k -L -# -o "%targetDir%\AMDDwords.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AMDDwords.bat" 
+curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" 
 
-curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading OneDrive.ps1 >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading Power.ps1 >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading RestorePoint.ps1 >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading SetConsoleOpacity.ps1 >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading NvidiaProfileInspector.cmd >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\AMDDwords.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AMDDwords.bat" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading AMDDwords.bat >> "%logFile%"
-
-curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error downloading NetworkBufferBloatFixer.ps1 >> "%logFile%"
 
 :: Ensure the destination directory exists in the current script location
 if not exist "%currentDir%" mkdir "%currentDir%"
 
 :: Move downloaded files to the script's current directory
-move "%targetDir%\*" "%currentDir%\" >> "%logFile%" 2>&1
-if %errorlevel% neq 0 echo Error moving files to current directory >> "%logFile%"
+move "%targetDir%\*" "%currentDir%\" 
+
 
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
-
 
 
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"  
@@ -93,7 +75,7 @@ powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\LockConsoleSiz
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\SetConsoleOpacity.ps1"
 :: powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\resizeConsole.ps1"
 
-timeout /t 15 /nobreak > NUL
+timeout /t 1 /nobreak > NUL
 
 powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 cls
