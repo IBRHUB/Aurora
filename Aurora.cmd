@@ -4,15 +4,8 @@ setlocal enabledelayedexpansion
 
 
 
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"
+powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"; if exist "%temp%\Disclaimer.txt" start notepad "%temp%\Disclaimer.txt"
 
-:: Check if the download was successful
-if exist "%temp%\Disclaimer.txt" (
-    start "" "%temp%\Disclaimer.txt"
-) else (
-    echo Error: Failed to download the file.
-    exit /b 1
-)
 
 echo [93m********************************************
 echo [93m*** Please read the disclaimer and agree ***
