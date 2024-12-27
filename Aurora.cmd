@@ -1,4 +1,16 @@
 @echo off
+
+:: Check for administrator privileges
+fltmc > nul 2>&1 || (
+	echo Administrator privileges are required.
+	powershell -c "Start-Process -Verb RunAs -FilePath 'cmd' -ArgumentList " 2> nul || (
+		echo You must run this script as admin.
+		if "%*"=="" pause
+		exit /b 1
+	)
+	exit /b
+)
+
 :: Enable Delayed Expansion
 setlocal enabledelayedexpansion
 
@@ -66,16 +78,7 @@ if !ERRORLEVEL! neq 0 (
     exit /b
 )
 
-:: Check for administrator privileges
-fltmc > nul 2>&1 || (
-	echo Administrator privileges are required.
-	powershell -c "Start-Process -Verb RunAs -FilePath 'cmd' -ArgumentList " 2> nul || (
-		echo You must run this script as admin.
-		if "%*"=="" pause
-		exit /b 1
-	)
-	exit /b
-)
+
 set targetDir=%temp%\AuroraModules
 set currentDir=%~dp0AuroraModules
 
