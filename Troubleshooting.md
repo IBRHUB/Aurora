@@ -47,10 +47,10 @@ Close PowerShell and re-run the Aurora script as administrator.
 </details>
 <p align="center">
 <a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting.ar.md">
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20"> &nbsp; Aurora in Arabic
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20"> &nbsp; Troubleshooting in Arabic
 </a>
 ⠂ 
-<a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting">Troubleshooting</a>
+<a href="https://github.com/IBRHUB/Aurora">Aurora</a>
 </p>
 </p>
 
