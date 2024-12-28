@@ -63,7 +63,8 @@ $downloadedHash = [BitConverter]::ToString(
 ) -replace '-'
 
 if ($downloadedHash -ne $releaseHash) {
-    Write-Host "Hash mismatch! Expected $releaseHash but got $downloadedHash" -ForegroundColor Red
+    Write-Host "Hash mismatch! Expected $releaseHash`nBut got $downloadedHash" -ForegroundColor Red
+    Write-Host "Help - https://github.com/IBRHUB/Aurora/troubleshoot.md" -ForegroundColor Cyan
     Write-Host "Aborting..." -ForegroundColor Yellow
     Remove-Item $AuroraPath -ErrorAction SilentlyContinue
     return
