@@ -1,21 +1,25 @@
-# Aurora
+<p align="center">
 
-<div dir="rtl" style="text-align: right;">
+<h1 align="center">Aurora</h1>
 
-[أورورا بالعربي](https://github.com/IBRHUB/Aurora/blob/main/README.ar.md)
+<p align="center">
+<a href="https://github.com/IBRHUB/Aurora/blob/main/README.ar.md">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="30" height="30"> Aurora in Arabic
+</a>
+⠂ 
+<a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting">Troubleshooting</a>
+</p>
 
-</div>
-
-
+<br>
 
 ---
 
-## 🤔 What is Aurora?
+### 🤔 What is Aurora?
 
 Aurora ,is an open-source project that enhances Windows by conveniently applying privacy, usability, and performance optimizations
 
 
-## 💡 Usage
+### 💡 Usage
 
 Aurora must be run in Admin mode because it performs system-wide tweaks. To achieve this, run PowerShell as an administrator. Here are a few ways to do it:
 
