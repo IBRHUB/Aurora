@@ -208,13 +208,13 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync"
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d "1" /f > $null 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d "0" /f > $null 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d "0" /f > $null 2>&1
-
+timeout /t 3 /nobreak > NUL
 start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
 
 
-goto :SkipUpdates
+goto :SkipOneDrive
 
-:SkipUpdates
+:SkipOneDrive
 
 rem - Setting UAC - never notify
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -442,6 +442,7 @@ if /I %input% EQU 2 goto :AMDTweakss
 :NVIDIATweaks
 
 mode con cols=85 lines=33
+timeout /t 3 /nobreak > NUL
 start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
 
 echo.
@@ -455,6 +456,7 @@ if /I "%input%" EQU "1" goto :AuroraOFF
 if /I "%input%" EQU "2" goto :AuroraON
 
 :AuroraOFF
+timeout /t 3 /nobreak > NUL
 start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip"
 if errorlevel 1 (
     echo Failed to apply AuroraOFF.nip.
@@ -469,6 +471,7 @@ timeout /t 3 /nobreak > NUL
 goto :Main
 
 :AuroraON
+timeout /t 3 /nobreak > NUL
 start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
 if errorlevel 1 (
     echo Failed to apply AuroraON.nip.
@@ -487,7 +490,7 @@ cls
 goto :Main
 
 :AMDTweaks
-
+timeout /t 3 /nobreak > NUL
 start %~dp0\AuroraModules\AMDDwords.bat
 
 cls
@@ -513,8 +516,8 @@ if errorlevel 1 goto Win10Net
 
 
 :Win11Net
-
 cls 
+timeout /t 3 /nobreak > NUL
 start powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
 goto :Main
 
@@ -522,6 +525,7 @@ goto :Main
 
 :Win10Net 
 cls
+timeout /t 3 /nobreak > NUL
 start powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
 goto :Main
 
