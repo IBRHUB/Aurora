@@ -34,7 +34,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 
 # 3) Download Aurora to the system temp folder
 $AuroraPath = Join-Path $env:Temp "Aurora.cmd"
-$url        = 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Aurora.cmd'
+$url        = 'https://github.com/IBRHUB/Aurora/releases/download/0.4/Aurora.cmd'
 
 try {
     Invoke-WebRequest -Uri $url -UseBasicParsing -OutFile $AuroraPath -ErrorAction Stop
