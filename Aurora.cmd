@@ -1,5 +1,4 @@
 @echo off
-powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 :: Check for administrator privileges
 fltmc > nul 2>&1 || (
@@ -71,7 +70,7 @@ echo.IIII                                                       IIII
 echo.II-----------------------------------------------------------II
 echo.II-----------------------------------------------------------II[0m
 echo.Please wait for 15 seconds, and read the disclaimer.  
-PING localhost -n 6 >NUL
+PING localhost -n 6 >NUL					
 echo.
 echo [92m 1. Agree to the terms
 echo [91m 2. Do not agree[0m
@@ -99,7 +98,7 @@ exit /b
 
 :StartAurora
 taskkill /F /IM "notepad.exe" >nul 2>&1
-mode con cols=90 lines=33
+
 
 
 :: Check Internet Connection
@@ -141,6 +140,7 @@ cls
 
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
+powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"  
