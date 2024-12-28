@@ -55,7 +55,7 @@ if (-not (Test-Path $AuroraPath)) {
 
 # 4) Verify the downloaded file's SHA-256 hash
 #    This is the hash you provided:
-$releaseHash = '79580E3B53DBBE31E35DB44EA8F1ADD0EACF9B2C49A67EF71E0714DFFD30F27C'
+$releaseHash = 'C78E36C6813EF3966FEF59C5F2E40150E59E967E8AEE1C5DA2DE7F191D586184'
 
 $fileBytes     = [System.IO.File]::ReadAllBytes($AuroraPath)
 $downloadedHash = [BitConverter]::ToString(
