@@ -197,9 +197,9 @@ ECHO. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
 ECHO. 
 set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
 if /I %input% EQU 1 goto :DisableOneDrive
-if /I %input% EQU 2 goto :SkipUpdates
+if /I %input% EQU 2 goto :SkipOneDrive
 
-:DisableOneDrive
+:SkipOneDrive
 
 rem -  Disabling OneDrive
 reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > $null 2>&1
