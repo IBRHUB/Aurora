@@ -1,4 +1,5 @@
 @echo off
+powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 :: Check for administrator privileges
 fltmc > nul 2>&1 || (
@@ -32,14 +33,45 @@ for %%R in (
 setlocal enabledelayedexpansion
 
 
+:: The URL you want to download from
+set "DOWNLOAD_URL=https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md"
 
-powershell -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md' -OutFile '$env:TEMP\Disclaimer.txt'"; if (Test-Path "$env:TEMP\Disclaimer.txt") { start-process notepad "$env:TEMP\Disclaimer.txt" }
+:: Output file path in %TEMP%
+set "OUTFILE=%TEMP%\Disclaimer.txt"
 
+:: Use curl to download. 
+:: -L follows redirects. 
+:: --fail (optional) makes curl return an error code if the HTTP status is >= 400.
+"C:\Windows\System32\curl.exe" -L --fail -o "%OUTFILE%" "%DOWNLOAD_URL%"
+if errorlevel 1 (
+    echo Download failed or returned an error code.
+    exit /b 1
+)
 
-echo [93m********************************************
-echo [93m*** Please read the disclaimer and agree ***
-echo [93m********************************************
+:: Check if the file was actually created
+if not exist "%OUTFILE%" (
+    echo Disclaimer.txt not found after download!
+    exit /b 1
+)
 
+:: Open the file in Notepad
+start notepad "%OUTFILE%"
+mode con:cols=64 lines=18
+cls
+echo.[41m
+echo.II-----------------------------------------------------------II
+echo.II-----------------------------------------------------------II
+echo.IIII                                                       IIII
+echo.IIII                                                       IIII
+echo.IIII                                                       IIII
+echo.IIII        Please read the disclaimer and agree           IIII
+echo.IIII                                                       IIII
+echo.IIII                                                       IIII
+echo.IIII                                                       IIII
+echo.II-----------------------------------------------------------II
+echo.II-----------------------------------------------------------II[0m
+echo.Please wait for 15 seconds, and read the disclaimer.  
+PING localhost -n 6 >NUL
 echo.
 echo [92m 1. Agree to the terms
 echo [91m 2. Do not agree[0m
@@ -67,7 +99,7 @@ exit /b
 
 :StartAurora
 taskkill /F /IM "notepad.exe" >nul 2>&1
-
+mode con cols=90 lines=33
 
 
 :: Check Internet Connection
@@ -109,7 +141,6 @@ cls
 
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
-powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"  
