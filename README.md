@@ -27,7 +27,7 @@ Aurora must be run in Admin mode because it performs system-wide tweaks. To achi
 ### Launch Command
 
 ```powershell
-irm " https://ibrpride.com/Aurora" | iex
+irm "https://ibrpride.com/Aurora" | iex
 ```
 
 
