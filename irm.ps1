@@ -33,10 +33,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # 3. Attempt to download Aurora from multiple URLs
-$URLs = @(
-    'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Aurora.cmd',
-    'https://github.com/IBRHUB/Aurora/releases/download/0.3/Aurora.cmd'
-)
+$url = 'https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Aurora.cmd'
 
 $AuroraContent = $null
 foreach ($URL in $URLs) {
