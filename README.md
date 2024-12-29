@@ -6,11 +6,11 @@
 
 </p>
 
-### 🤔 What is Aurora?
+##🤔 What is Aurora?
 
 **Aurora** is an open-source project designed to enhance your Windows experience by applying privacy, usability, and performance optimizations.
 
-### Features
+## Features
 
 - **Privacy Enhancements:** Safeguard your privacy by disabling unnecessary tracking. This process eliminates most telemetry embedded in Windows and enforces various group policies to significantly reduce data collection
 
@@ -19,7 +19,7 @@
 - **User-Friendly:** With simple and intuitive usage for all users, Aurora operates through a single PowerShell command. Just input the corresponding numbers, and it will execute the tasks automatically, making it accessible and efficient for everyone.
 
 
-### 💡 How to Use Aurora
+## 💡 How to Use Aurora
 
 Aurora requires administrative privileges to apply system-wide tweaks. Follow these steps to run it:
 
@@ -33,14 +33,14 @@ Aurora requires administrative privileges to apply system-wide tweaks. Follow th
 
 ---
 
-### ⚠️ Important Notes
+## ⚠️ Important Notes
 Before using Aurora:
 -  **Create a System Restore Point** to ensure you can undo any changes if needed.
 -  **Back Up Your Data** for additional safety.
 
 ---
 
-### Launch Command
+## Launch Command
 
 Run the following command in PowerShell (Admin):
 
