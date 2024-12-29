@@ -172,7 +172,7 @@ echo	      [38;5;69m                     ███    ███
 echo.
 echo.
 echo			╔═══════════════════════════════════════════════╗
-echo			║ Made by [0m[95mIbrahim[90m \ [37mhttps://ibrpride.com/       ║[38;5;105m 
+echo			║ [0m[95mAURORA[90m \ [37m – Lighting Up Your PC's Performance       ║[38;5;105m 
 echo			╚═══════════════════════════════════════════════╝
 echo.
 echo		        ╔═══════════════════════════════════════════════╗[38;5;105m
