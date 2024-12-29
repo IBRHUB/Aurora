@@ -6,7 +6,7 @@
 
 </p>
 
-##🤔 What is Aurora?
+## 🤔 What is Aurora?
 
 **Aurora** is an open-source project designed to enhance your Windows experience by applying privacy, usability, and performance optimizations.
 
