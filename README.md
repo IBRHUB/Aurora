@@ -10,8 +10,6 @@
 
 **Aurora** is an open-source project designed to enhance your Windows experience by applying privacy, usability, and performance optimizations.
 
----
-
 ### Features
 
 - **Privacy Enhancements:** Safeguard your privacy by disabling unnecessary tracking. This process eliminates most telemetry embedded in Windows and enforces various group policies to significantly reduce data collection
