@@ -47,6 +47,11 @@ Run the following command in PowerShell (Admin):
 ```powershell
 irm "https://ibrpride.com/Aurora" | iex
 ```
+Run the following command in Cmd (Admin):
+
+```cmd
+powershell -Command "irm 'https://ibrpride.com/Aurora' | iex"
+```
 
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20">
