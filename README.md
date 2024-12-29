@@ -2,7 +2,7 @@
 <p align="center">
 
 <h1 align="center">Aurora</h1>
-
+<h3 align="center">Lighting Up Your PC's Performance</h3>
 <br>
 
 
@@ -29,18 +29,22 @@ Aurora must be run in Admin mode because it performs system-wide tweaks. To achi
 > [!IMPORTANT]  
 > Create a System Restore Point before using Aurora
 
+
 ```powershell
 irm "https://ibrpride.com/Aurora" | iex
 ```
 
  
 <p align="center">
-<a href="https://github.com/IBRHUB/Aurora/blob/main/README.ar.md">
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20"> &nbsp; Aurora in Arabic
-</a>
-⠂ 
-<a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting">Troubleshooting</a>
-</p>
+  <a href="https://github.com/IBRHUB/Aurora/blob/main/README.ar.md">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20"> 
+    &nbsp; Aurora in Arabic
+  </a>
+  ⠂
+  <a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting">
+    Troubleshooting
+  </a>
 </p>
 
 <br>
+
