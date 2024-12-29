@@ -18,7 +18,6 @@
 
 - **User-Friendly:** With simple and intuitive usage for all users, Aurora operates through a single PowerShell command. Just input the corresponding numbers, and it will execute the tasks automatically, making it accessible and efficient for everyone.
 
----
 
 ### 💡 How to Use Aurora
 
