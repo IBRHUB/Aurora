@@ -1,17 +1,3 @@
-﻿<!--
-NVIDIA Profile Inspector Configuration File
-
-DESCRIPTION:
-  This file contains NVIDIA graphics driver profile settings for optimal gaming performance.
-  It enables various graphics optimizations like shader cache, texture filtering, vertical sync,
-  and other performance-related parameters to their recommended values.
-
-NOTES:
-  - File must be in UTF-16 encoding
-  - Contains base profile settings that apply globally
-  - Individual settings are controlled via ProfileSetting elements
-  - Settings are optimized for maximum gaming performance
--->
 <?xml version="1.0" encoding="utf-16"?>
 <ArrayOfProfile>
   <Profile>
