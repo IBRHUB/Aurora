@@ -1,4 +1,38 @@
 #Requires -RunAsAdministrator
+<#
+.SYNOPSIS
+    Windows Power Optimization Script for Performance
+
+.DESCRIPTION
+    This script optimizes Windows power settings for maximum performance and reduced latency.
+    It creates a custom power scheme based on Ultimate Performance and applies optimized settings.
+
+    Key features:
+    - Creates custom "@IBRHUB Power Scheme" based on Ultimate Performance
+    - Disables power saving features that can impact latency/performance
+    - Optimizes USB, NVMe, and processor power management
+    - Includes special handling for laptop systems
+    
+    The script focuses on:
+    - Disabling storage device power saving
+    - Disabling USB selective suspend
+    - Optimizing processor performance settings
+    - Disabling display power management
+    
+.NOTES
+    Version: 1.0
+    Author: IBRHUB
+    Requirements: Must be run with Administrator privileges
+    Warning: Will increase power usage and heat output. Use adequate cooling.
+
+.EXAMPLE
+    .\Power.ps1
+    Runs the script with interactive prompts and warnings
+
+.EXAMPLE
+    .\Power.ps1 -Silent
+    Runs the script without prompts or warnings
+#>
 
 param (
     [switch]$Silent

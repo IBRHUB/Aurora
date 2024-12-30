@@ -1,3 +1,30 @@
+#Requires -Version 5.0
+
+<#
+.SYNOPSIS
+    Sets console window opacity for PowerShell.
+
+.DESCRIPTION
+    This script modifies the opacity/transparency of the PowerShell console window
+    using Windows API calls. It provides a semi-transparent effect while keeping
+    the window usable.
+
+    Key features:
+    - Sets console opacity to 90% (230/255)
+    - Uses Windows API for window manipulation
+    - Handles errors gracefully
+    - Requires PowerShell 5.0 or later
+
+.NOTES
+    Version: 1.0
+    Author: IBRHUB
+    Requirements: PowerShell 5.0+
+    Warning: Uses Windows API calls that may change in future OS versions
+
+.EXAMPLE
+    .\SetConsoleOpacity.ps1
+    Sets the PowerShell console window to 90% opacity
+#>
 
 # Define the ConsoleOpacity class using Add-Type
 Add-Type -TypeDefinition @"

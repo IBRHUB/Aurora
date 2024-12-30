@@ -1,13 +1,25 @@
+#Requires -RunAsAdministrator
+
 <#
 .SYNOPSIS
-    Automatically creates a system restore point named "Aurora".
+    Creates a system restore point for Aurora configuration changes.
 
 .DESCRIPTION
-    This script checks for administrative privileges, enables system protection on the C: drive if necessary,
-    and creates a system restore point named "Aurora". It logs all actions and errors to a log file for troubleshooting.
+    This script creates a system restore point before making Aurora configuration changes.
+    It provides a safety net by allowing users to revert system changes if needed.
+
+    Key features:
+    - Creates restore point named "Aurora" 
+    - Enables system protection on C: drive if needed
+    - Logs all operations for troubleshooting
+    - Requires administrator privileges
+    - Handles errors gracefully with logging
 
 .NOTES
+    Version: 1.0
     Author: Ibrahim
+    Requirements: Must be run with Administrator privileges
+    Warning: Modifies system restore settings
 #>
 
 # Define constants
