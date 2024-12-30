@@ -42,7 +42,6 @@ public class ConsoleOpacity {
 try {
     # Set opacity (0-255, where 255 is fully opaque and 0 is fully transparent)
     [ConsoleOpacity]::SetOpacity(230)
-    Write-Host "Console opacity set successfully." -ForegroundColor Green
 } catch {
-    Write-Host "An error occurred: $_" -ForegroundColor Red
+    throw $_
 }
