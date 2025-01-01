@@ -1,6 +1,5 @@
 <p align="center">
-
-<h1 align="center">Aurora</h1>
+<a href="https://ibrpride.com/" target="_blank"><img src="./Docs/Assets/AuroraBenner.png" alt="Aurora" width="800"></a>
 <h3 align="center">Lighting Up Your PC's Performance</h3>
 <br>
 
