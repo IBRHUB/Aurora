@@ -356,7 +356,7 @@ if exist "%currentDir%\Avatar.ico" (
     :: Check if PowerShell is available
     where powershell >nul 2>&1
     if %ERRORLEVEL% NEQ 0 (
-        goto :Main
+        goto :StartupAuroraMain
     )
 
     :: Create temporary VBS script to change console icon silently
@@ -378,12 +378,13 @@ if exist "%currentDir%\Avatar.ico" (
     powershell -Command "$shell = New-Object -COM WScript.Shell; $shortcut = $shell.CreateShortcut([System.IO.Path]::Combine($env:USERPROFILE, 'Desktop', 'Aurora.lnk')); $shortcut.TargetPath = '%~dp0\Aurora.cmd'; $shortcut.IconLocation = '%currentDir%\Avatar.ico'; $shortcut.Save()" >nul 2>&1
 
     :: Verify shortcut creation silently
-    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" goto :Main
+    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" goto :StartupAuroraMain
 
 ) else (
     goto :Main
 )
 
+:StartupAuroraMain
 chcp 65001 >NUL
 
 color f
