@@ -182,6 +182,8 @@ set "bullet= %ESC%[34m-%ESC%[0m"
 
 
 cls
+goto :DISCLAIMER
+
 
 :DISCLAIMER
 mode con cols=78 lines=30
@@ -208,9 +210,9 @@ echo.
 timeout /t 1 /nobreak > NUL
 
 echo.
-echo.              %bullet% 1 I have read and agree to the terms
-
-echo.              %bullet% 2 I do not agree
+echo.               1%bullet% I have read and agree to the terms
+echo.
+echo.               2%bullet% I do not agree
 echo.
 echo. 
 :: Prompt user for input
@@ -270,10 +272,12 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
                                 if exist "%currentDir%\Cloud.bat" (
                                     if exist "%currentDir%\Telemetry.bat" (
                                         if exist "%currentDir%\Privacy.bat" (
-                                            if exist "%currentDir%\RunAsTI.cmd" (
-                                                echo Files already exist in AuroraModules directory. Skipping download...
-                                                goto :skipDownload
-                                            )
+                                             if exist "%currentDir%\RepairWindows.cmd" (
+                                                if exist "%currentDir%\Avatar.ico" (
+                                                    echo Files already exist in AuroraModules directory. Skipping download...
+                                                    goto :skipDownload
+                                                )
+                                             )
                                         )
                                     )
                                 )
@@ -300,6 +304,8 @@ curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubuserconten
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" > NUL 2>&1
 
+cls
+
 echo Downloading batch and command modules...
 
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" > NUL 2>&1
@@ -307,11 +313,10 @@ curl -g -k -L -# -o "%targetDir%\AMDDwords.bat" "https://raw.githubusercontent.c
 curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Telemetry.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\RunAsTI.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RunAsTI.cmd" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\Avatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/Avatar.ico" > NUL 2>&1
 
 echo All modules downloaded successfully!
-echo.
-
 cls
 
 :: Ensure the destination directory exists in the current script location
@@ -330,8 +335,6 @@ reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 
-
-
 :: Set console size and appearance
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\RestorePoint.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\LockConsoleSize.ps1"
@@ -348,13 +351,45 @@ powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Para
 }" >NUL 2>&1
 
 
+:: Set custom icon for the current CMD window
+if exist "%currentDir%\Avatar.ico" (
+    :: Check if PowerShell is available
+    where powershell >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        goto :Main
+    )
+
+    :: Create temporary VBS script to change console icon silently
+    echo Set objShell = CreateObject("Shell.Application") > "%TEMP%\seticon.vbs"
+    echo Set objWin = objShell.Windows() >> "%TEMP%\seticon.vbs"
+    echo For Each win In objWin >> "%TEMP%\seticon.vbs"
+    echo     If InStr(win.LocationName, "cmd.exe") Then >> "%TEMP%\seticon.vbs"
+    echo         win.Document.DefaultIcon = "%currentDir%\Avatar.ico" >> "%TEMP%\seticon.vbs"
+    echo     End If >> "%TEMP%\seticon.vbs"
+    echo Next >> "%TEMP%\seticon.vbs"
+
+    :: Run the VBS script silently
+    cscript //nologo "%TEMP%\seticon.vbs" >nul 2>&1
+    
+    :: Clean up silently
+    del "%TEMP%\seticon.vbs" >nul 2>&1
+
+    :: Create shortcut with custom icon on desktop silently
+    powershell -Command "$shell = New-Object -COM WScript.Shell; $shortcut = $shell.CreateShortcut([System.IO.Path]::Combine($env:USERPROFILE, 'Desktop', 'Aurora.lnk')); $shortcut.TargetPath = '%~dp0\Aurora.cmd'; $shortcut.IconLocation = '%currentDir%\Avatar.ico'; $shortcut.Save()" >nul 2>&1
+
+    :: Verify shortcut creation silently
+    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" goto :Main
+
+) else (
+    goto :Main
+)
 
 chcp 65001 >NUL
 
 color f
 :Main
 CLS
-mode con cols=95 lines=37
+mode con cols=95 lines=38
 echo.
 echo.
 echo		      [38;5;105m ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
@@ -368,29 +403,28 @@ echo		      [38;5;105m █▀   ▄█████████▀    ███ 
 echo		      [38;5;69m                     ███    ███                                       
 echo.
 echo.
+echo                              [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
 echo.
 echo.
-echo                         [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
+echo                         ╔══════════════════════════════════════════════════╗[38;5;105m
+echo                         ║                                                  ║
+echo                         ║ [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
+echo                         ║                                                  ║
+echo                         ║ [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
+echo                         ║                                                  ║
+echo                         ║ [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
+echo                         ║                                                  ║
+echo                         ║ [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
+echo                         ║                                                  ║
+echo                         ║                                                  ║
+echo                         ║                  [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
+echo                         ║                                                  ║
+echo                         ╚══════════════════════════════════════════════════╝[38;5;105m
 echo.
 echo.
-echo.
-echo                          ╔══════════════════════════════════════════════════╗[38;5;105m
-echo                          ║                                                  ║
-echo                        ╔═╣ [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
-echo                        ║ ║                                                  ║
-echo                      ╔═╝ ║ [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
-echo                      ║   ║                                                  ║
-echo                    ╔═╝   ║ [38;5;213m[5] - [37mDisk Optimization[37m  [38;5;213m[7] - [37mSystem Monitoring[37m ║[38;5;105m
-echo                    ║     ║                                                  ║
-echo                    ║     ║ [38;5;213m[6] - [37mBackup Options[37m     [38;5;213m[8] - [37mExit[37m              ║[38;5;213m
-echo                    ║     ║                                                  ║
-echo                    ║     ╚══════════════════════════════════════════════════╝[38;5;105m
-echo                    ║
-echo                    ║[38;5;177m
-echo                    ║
-echo                    ╚╗[38;5;69m
-echo                     ║
-set /p input=%BS% [38;5;213m                    ╚══════^> [38;5;213m
+echo.                                     
+echo.                     
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213 m[38;5;105m
 
 if not defined input goto :Main
 if "%input%"=="" goto :Main
@@ -399,10 +433,11 @@ if "%input%"=="1" goto :WinTweaks
 if "%input%"=="2" goto :GPUTweaks  
 if "%input%"=="3" goto :NetworkTweaks
 if "%input%"=="4" goto :Power-Plan
-if "%input%"=="5" goto :DiskOptimization
-if "%input%"=="6" goto :BackupOptions
-if "%input%"=="7" goto :SystemMonitoring
-if "%input%"=="8" exit /b
+if "%input%"=="5" goto :ManualServices
+if "%input%"=="6" goto :DarkMode
+if "%input%"=="7" goto :RepairWindows
+if "%input%"=="8" goto :Discord
+if "%input%"=="0" exit /b
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
 timeout /t 2 /nobreak >nul
 goto :Main
@@ -411,17 +446,29 @@ goto :Main
 
 
 :WinTweaks
+CLS
 echo.
-echo. 		     [38;5;213m  Disable OneDrive?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                        %ESC%[7mDisable OneDrive?%ESC%[0m
+echo.
+echo.                                      [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m[38;5;105m
+
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :Tweaks
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].
 echo.
 timeout /t 2 /nobreak > NUL
 goto :WinTweaks
@@ -454,9 +501,9 @@ goto :Tweaks
 :Tweaks
 
 rem - Setting UAC - never notify
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
+:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
+:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
+:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
 
 rem - Setting Edge policies
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -468,7 +515,7 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdatem" /v Start /t REG_DWO
 
 rem - Setting Chrome policies
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HighEfficiencyModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
@@ -730,18 +777,23 @@ Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32Prior
 rem ========================================================================================================================================
 
 :QoSPacketScheduler
-rem - QoS Packet Scheduler
 cls
 echo.
 echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m  Enable QoS Packet Scheduler?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                    %ESC%[7mEnable QoS Packet Scheduler ?%ESC%[0m
+echo.
+echo.                                            [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
 if /I "%input%"=="1" (
     reg add "HKLM\System\CurrentControlSet\Services\Psched" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
     sc config Psched start=auto >nul 2>&1
@@ -752,14 +804,14 @@ if /I "%input%"=="1" (
     goto :CloudSync
 ) else (
     echo.
-    echo.          [38;5;196mInvalid input. Please enter [1] or [2].
-    echo.
+    echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
     timeout /t 2 /nobreak > NUL
     goto :QoSPacketScheduler
 )
 
 rem ========================================================================================================================================
-
+                        ══════════>
 :CloudSync
 CLS
 echo.
@@ -767,16 +819,23 @@ echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m  Disable Cloud Sync?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                  %ESC%[7mDisable Cloud Sync ?%ESC%[0m
+echo.
+echo.                                        [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :CloudSync
@@ -803,21 +862,29 @@ rem ============================================================================
 
 :Telemetry
 CLS
+mode con cols=95 lines=38
 echo.
 echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m  Disable Telemetry?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                    %ESC%[7mDisable Telemetry ?%ESC%[0m
+echo.
+echo.                                       [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Telemetry
@@ -838,16 +905,23 @@ echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m  Disable Privacy?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                      %ESC%[7mDisable Privacy ?%ESC%[0m
+echo.
+echo.                                      [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Privacy
@@ -868,16 +942,25 @@ echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m      Remove Edge ?
 echo.
-echo. 		             [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
-if /I "%input%"=="1" goto  :runRemoveEdge
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                                %ESC%[7mRemove Edge ?%ESC%[0m
+echo.
+echo.                                                [38;5;105m[1] Yes Or [38;5;105m[2] No
+echo.
+set /p input=%BS% [38;5;213m                              ══════════^> [38;5;213m
+if /I "%input%"=="1" goto :runRemoveEdge
 if /I "%input%"=="2" goto :Main
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :RemoveEdge
@@ -909,17 +992,26 @@ echo.
 echo.
 echo.
 echo.
-echo. 		     [38;5;213m  Do You Have NVIDIA (1) or AMD (2)?
 echo.
-echo. 		           [38;5;105m[1] NVIDIA Or [38;5;105m[2] AMD
-echo. 
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                %ESC%[7mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
+echo.
+echo.                                         [38;5;105m[1] NVIDIA Or [38;5;105m[2] AMD
+echo.
+set /p input=%BS% [38;5;105m                             ══════════^> 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
-
+if /I "%input%"=="3" goto :Main
 
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :GPUTweaks
@@ -941,17 +1033,22 @@ echo.
 echo.
 echo.
 echo.
-echo.           [38;5;213m  Resizable Bar OFF (1) or Resizable Bar ON (2)?
 echo.
-echo.                 [38;5;105m[1] ResizableBarOFF   [38;5;105m[2] ResizableBarON
 echo.
-set /p input=%BS% [38;5;213m             ╚══════^> [38;5;213m
+echo.
+echo.
+echo.                                         %ESC%[7mResizable Bar OFF (1) or Resizable Bar ON (2) ?%ESC%[0m
+echo.
+echo.                                   [38;5;105m[1] ResizableBarOFF   [38;5;105m[2] ResizableBarON
+echo.
+set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
 
 if /I "%input%"=="1" goto  :AuroraOFF
 if /I "%input%"=="2" goto  :AuroraON
-
+if /I "%input%"=="3" goto :Main
 echo.
-echo.          [38;5;196mInvalid input. Please enter [1] or [2].
+echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+
 echo.
 timeout /t 2 /nobreak > NUL
 goto :NVIDIATweaks
@@ -966,7 +1063,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo          [38;5;213mResizable BAR has been disabled successfully.%[0m
+echo                                            [38;5;213mResizable BAR has been disabled successfully.%[0m
 timeout /t 3 /nobreak > NUL
 
 goto :Main
@@ -981,7 +1078,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo          [38;5;213mResizable BAR has been enabled successfully.%[0m
+echo                                            [38;5;213mResizable BAR has been enabled successfully.%[0m
 timeout /t 3 /nobreak > NUL
 
 goto :Main
@@ -989,7 +1086,7 @@ cls
 
 
 
-rem ========================================================================================================================================
+rem ======================================================================================================================================== 
 
 
 
@@ -1013,18 +1110,18 @@ rem ============================================================================
 
 
 :Power-Plan
-
+cls
 if exist "%~dp0\AuroraModules\Power.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\Power.ps1" -Silent
     if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: Failed to apply power plan optimizations.[0m
+        echo                                             [38;5;196mError: Failed to apply power plan optimizations.[0m
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo [92mPower plan optimizations applied successfully.[0m
+        echo                                             [38;5;192mPower plan optimizations applied successfully.[0m
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo [91mError: Power.ps1 script not found in AuroraModules folder.[0m
+    echo                                             [38;5;196mError: Power.ps1 script not found in AuroraModules folder.[0m
     timeout /t 2 /nobreak > NUL
 )
 
@@ -1036,15 +1133,39 @@ rem ============================================================================
 
 
 :NetworkTweaks
+cls
 echo.
-echo. 		     [38;5;213m  Are You On Windows 10 (1) or Windows 11 (2)?
 echo.
-echo. 		        [38;5;105m[1] 10 Or [38;5;105m[2] 11
-echo. 
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                            %ESC%[7mAre You On Windows 10 (1) or Windows 11 (2) ?%ESC%[0m
+echo.
+echo.                                            [38;5;105m[1] 10 Or [38;5;105m[2] 11
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
 choice /c:12 /n > NUL 2>&1
 if "%errorlevel%"=="1" goto :Win10Net
 if "%errorlevel%"=="2" goto :Win11Net
-
+if "%errorlevel%"=="3" goto :Main
 
 :Win11Net
 cls 
@@ -1052,14 +1173,14 @@ timeout /t 3 /nobreak > NUL
 if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: Failed to apply network optimizations.[0m
+        echo                                             [38;5;196mError: Failed to apply network optimizations.[0m
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo [92mNetwork optimizations applied successfully.[0m
+        echo                                             [38;5;192mNetwork optimizations applied successfully.[0m
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo [91mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
+    echo                                             [38;5;196mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
     timeout /t 2 /nobreak > NUL
 )
 goto :Main
@@ -1072,14 +1193,14 @@ timeout /t 3 /nobreak > NUL
 if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: Failed to apply network optimizations.[0m
+        echo                                             [38;5;196mError: Failed to apply network optimizations.[0m
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo [92mNetwork optimizations applied successfully.[0m
+        echo                                             [38;5;192mNetwork optimizations applied successfully.[0m
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo [91mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
+    echo                                             [91mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
     timeout /t 2 /nobreak > NUL
 )
 goto :Main
@@ -1087,6 +1208,89 @@ goto :Main
 
 
 rem ========================================================================================================================================
+:ManualServices
+
+:: List of services to check/configure
+set "services=AudioEndpointBuilder Audiosrv EventLog SysMain Themes WSearch NVDisplay.ContainerLocalSystem WlanSvc"
+
+:: Process each service
+for %%s in (%services%) do (
+    sc query "%%s" >nul 2>&1
+    if !errorlevel! equ 0 (
+        echo                                             [38;5;192mConfiguring service: %%s[0m
+        sc config "%%s" start= auto >nul 2>&1
+        sc start "%%s" >nul 2>&1
+    ) else (
+        echo                                             [38;5;196mService not found: %%s[0m
+    )
+)
+
+
+goto :Main
+
+rem ========================================================================================================================================
+:DarkMode
+cls
+echo                                             [38;5;213mEnabling Dark Mode...
+
+:: Enable dark mode for system
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+
+:: Enable dark mode for current user
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1 
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+
+echo                                             [38;5;192mDark Mode enabled successfully.[0m
+timeout /t 2 /nobreak > NUL
+goto :Main
+
+rem ========================================================================================================================================
+
+:RepairWindows
+cls
+echo                                             [38;5;213mRepairing Windows components...
+echo.
+
+if exist "%~dp0\AuroraModules\RepairWindows.cmd" (
+    start "" /wait "%~dp0\AuroraModules\RepairWindows.cmd"
+    echo                                        [38;5;192mLaunched Windows repair utility.[0m
+) else (
+    echo                                 [38;5;196mError: RepairWindows.cmd script not found in AuroraModules folder.[0m
+)
+
+timeout /t 2 /nobreak > NUL
+goto :Main
+
+rem ========================================================================================================================================
+
+:Discord
+cls
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo                                     %ESC%[7mJoin Our Discord Community%ESC%[0m
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+start "" "https://discord.gg/fVYtpuYuZ6"
+timeout /t 7 /nobreak > NUL
+goto :Main
 
 
 :relaunch
@@ -1110,5 +1314,45 @@ if errorlevel 2 (
     timeout /t 2 /nobreak > NUL
     goto :Main
 )
+
+
+:SetIcon
+:: Set custom icon for the current CMD window
+if exist "%~dp0\Docs\Assets\Avatar.ico" (
+    :: Check if PowerShell is available
+    where powershell >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        echo [91mError: PowerShell is not available on this system.[0m
+        timeout /t 2 /nobreak > NUL
+        goto :Main
+    )
+
+    :: Create temporary VBS script to change console icon
+    echo Set objShell = CreateObject("Shell.Application") > "%TEMP%\seticon.vbs"
+    echo Set objWin = objShell.Windows() >> "%TEMP%\seticon.vbs"
+    echo For Each win In objWin >> "%TEMP%\seticon.vbs"
+    echo     If InStr(win.LocationName, "cmd.exe") Then >> "%TEMP%\seticon.vbs"
+    echo         win.Document.DefaultIcon = "%~dp0\Docs\Assets\Avatar.ico" >> "%TEMP%\seticon.vbs"
+    echo     End If >> "%TEMP%\seticon.vbs"
+    echo Next >> "%TEMP%\seticon.vbs"
+
+    :: Run the VBS script
+    cscript //nologo "%TEMP%\seticon.vbs" >nul 2>&1
+    
+    :: Clean up
+    del "%TEMP%\seticon.vbs" >nul 2>&1
+
+    :: Also create a shortcut with the custom icon for future use
+    powershell -Command "$shell = New-Object -COM WScript.Shell; $shortcut = $shell.CreateShortcut('%~dp0\Aurora.lnk'); $shortcut.TargetPath = '%~f0'; $shortcut.IconLocation = '%~dp0\Docs\Assets\Avatar.ico'; $shortcut.Save()" >nul 2>&1
+
+    echo [38;5;213mCustom icon has been set for the current window and future launches.[0m
+) else (
+    echo [91mError: Avatar.ico not found in Docs\Assets folder.[0m
+    echo [91mPlease ensure Avatar.ico exists in: %~dp0\Docs\Assets\[0m
+)
+
+timeout /t 3 /nobreak > NUL
+goto :Main
+
 
 
