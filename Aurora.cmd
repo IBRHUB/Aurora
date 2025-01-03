@@ -267,15 +267,17 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
             if exist "%currentDir%\RestorePoint.ps1" (
                 if exist "%currentDir%\SetConsoleOpacity.ps1" (
                     if exist "%currentDir%\NvidiaProfileInspector.cmd" (
-                        if exist "%currentDir%\AMDDwords.bat" (
+                        if exist "%currentDir%\AuroraAMD.bat" (
                             if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
                                 if exist "%currentDir%\Cloud.bat" (
                                     if exist "%currentDir%\Telemetry.bat" (
                                         if exist "%currentDir%\Privacy.bat" (
                                              if exist "%currentDir%\RepairWindows.cmd" (
-                                                if exist "%currentDir%\Avatar.ico" (
-                                                    echo Files already exist in AuroraModules directory. Skipping download...
-                                                    goto :skipDownload
+                                                if exist "%currentDir%\AuroraAvatar.ico" (
+                                                    if exist "%currentDir%\RemoveEdge.ps1" (
+                                                        echo Files already exist in AuroraModules directory. Skipping download...
+                                                        goto :skipDownload
+                                                    )
                                                 )
                                              )
                                         )
@@ -303,18 +305,18 @@ curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/I
 curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" > NUL 2>&1
-
+curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RemoveEdge.ps1" > NUL 2>&1
 cls
 
 echo Downloading batch and command modules...
 
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AMDDwords.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AMDDwords.bat" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Telemetry.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Avatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/Avatar.ico" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" > NUL 2>&1
 
 echo All modules downloaded successfully!
 cls
@@ -351,12 +353,23 @@ powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Para
 }" >NUL 2>&1
 
 
-:: Set custom icon for the current CMD window
-if exist "%currentDir%\Avatar.ico" (
+:: Set custom icon for the current CMD window and handle OneDrive
+if exist "%currentDir%\AuroraAvatar.ico" (
     :: Check if PowerShell is available
     where powershell >nul 2>&1
     if %ERRORLEVEL% NEQ 0 (
         goto :StartupAuroraMain
+    )
+
+    :: Check if OneDrive is installed
+    if exist "%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe" (
+        :: Create OneDrive backup folder
+        if not exist "%USERPROFILE%\OneDrive\Aurora_Backup" (
+            mkdir "%USERPROFILE%\OneDrive\Aurora_Backup" >nul 2>&1
+        )
+        
+        :: Copy icon to OneDrive backup
+        copy /y "%currentDir%\AuroraAvatar.ico" "%USERPROFILE%\OneDrive\Aurora_Backup\" >nul 2>&1
     )
 
     :: Create temporary VBS script to change console icon silently
@@ -364,7 +377,7 @@ if exist "%currentDir%\Avatar.ico" (
     echo Set objWin = objShell.Windows() >> "%TEMP%\seticon.vbs"
     echo For Each win In objWin >> "%TEMP%\seticon.vbs"
     echo     If InStr(win.LocationName, "cmd.exe") Then >> "%TEMP%\seticon.vbs"
-    echo         win.Document.DefaultIcon = "%currentDir%\Avatar.ico" >> "%TEMP%\seticon.vbs"
+    echo         win.Document.DefaultIcon = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\seticon.vbs"
     echo     End If >> "%TEMP%\seticon.vbs"
     echo Next >> "%TEMP%\seticon.vbs"
 
@@ -374,14 +387,38 @@ if exist "%currentDir%\Avatar.ico" (
     :: Clean up silently
     del "%TEMP%\seticon.vbs" >nul 2>&1
 
-    :: Create shortcut with custom icon on desktop silently
-    powershell -Command "$shell = New-Object -COM WScript.Shell; $shortcut = $shell.CreateShortcut([System.IO.Path]::Combine($env:USERPROFILE, 'Desktop', 'Aurora.lnk')); $shortcut.TargetPath = '%~dp0\Aurora.cmd'; $shortcut.IconLocation = '%currentDir%\Avatar.ico'; $shortcut.Save()" >nul 2>&1
+    :: Create shortcuts with custom icon
+    echo Set WshShell = CreateObject("WScript.Shell") > "%TEMP%\createshortcut.vbs"
+    
+    :: Create desktop shortcut
+    echo Set shortcut = WshShell.CreateShortcut("%USERPROFILE%\Desktop\Aurora.lnk") >> "%TEMP%\createshortcut.vbs"
+    echo shortcut.TargetPath = "%~dp0Aurora.cmd" >> "%TEMP%\createshortcut.vbs"
+    echo shortcut.IconLocation = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\createshortcut.vbs"
+    echo shortcut.Save >> "%TEMP%\createshortcut.vbs"
 
-    :: Verify shortcut creation silently
-    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" goto :StartupAuroraMain
+    :: Create OneDrive shortcut if available
+    if exist "%USERPROFILE%\OneDrive" (
+        echo Set oneDriveShortcut = WshShell.CreateShortcut("%USERPROFILE%\OneDrive\Aurora.lnk") >> "%TEMP%\createshortcut.vbs"
+        echo oneDriveShortcut.TargetPath = "%~dp0Aurora.cmd" >> "%TEMP%\createshortcut.vbs"
+        echo oneDriveShortcut.IconLocation = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\createshortcut.vbs"
+        echo oneDriveShortcut.Save >> "%TEMP%\createshortcut.vbs"
+    )
+
+    :: Run the shortcut creation script silently
+    cscript //nologo "%TEMP%\createshortcut.vbs" >nul 2>&1
+    
+    :: Clean up
+    del "%TEMP%\createshortcut.vbs" >nul 2>&1
+
+    :: Verify at least one shortcut creation silently
+    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" (
+        if not exist "%USERPROFILE%\OneDrive\Aurora.lnk" (
+            goto :StartupAuroraMain
+        )
+    )
 
 ) else (
-    goto :Main
+    goto :StartupAuroraMain
 )
 
 :StartupAuroraMain
@@ -404,28 +441,28 @@ echo		      [38;5;105m █▀   ▄█████████▀    ███ 
 echo		      [38;5;69m                     ███    ███                                       
 echo.
 echo.
-echo                              [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
+echo                             [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
 echo.
 echo.
-echo                         ╔══════════════════════════════════════════════════╗[38;5;105m
-echo                         ║                                                  ║
-echo                         ║ [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
-echo                         ║                                                  ║
-echo                         ║ [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
-echo                         ║                                                  ║
-echo                         ║ [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
-echo                         ║                                                  ║
-echo                         ║ [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
-echo                         ║                                                  ║
-echo                         ║                                                  ║
-echo                         ║                  [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
-echo                         ║                                                  ║
-echo                         ╚══════════════════════════════════════════════════╝[38;5;105m
+echo                        ╔══════════════════════════════════════════════════╗[38;5;105m
+echo                        ║                                                  ║
+echo                        ║ [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
+echo                        ║                                                  ║
+echo                        ║ [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
+echo                        ║                                                  ║
+echo                        ║ [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
+echo                        ║                                                  ║
+echo                        ║ [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
+echo                        ║                                                  ║
+echo                        ║                                                  ║
+echo                        ║                  [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
+echo                        ║                                                  ║
+echo                        ╚══════════════════════════════════════════════════╝[38;5;105m
 echo.
 echo.
 echo.                                     
 echo.                     
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213 m[38;5;105m
+set /p input=%BS% [38;5;213m                                           ══════════^> [38;5;213 m[38;5;105m
 
 if not defined input goto :Main
 if "%input%"=="" goto :Main
@@ -439,7 +476,7 @@ if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
 if "%input%"=="0" exit /b
-echo [91mInvalid input. Please select a number between 1 and 8.[0m
+echo [91mInvalid input. Please select a number between 1 and 8.[0m
 timeout /t 2 /nobreak >nul
 goto :Main
 
@@ -488,11 +525,11 @@ timeout /t 1 /nobreak > NUL
 if exist "%~dp0\AuroraModules\OneDrive.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: Failed to execute OneDrive removal script.[0m
+        echo [91mError: Failed to execute OneDrive removal script.[0m
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo [91mError: OneDrive.ps1 script not found in AuroraModules folder.[0m
+    echo [91mError: OneDrive.ps1 script not found in AuroraModules folder.[0m
     timeout /t 2 /nobreak > NUL
 )
 
@@ -775,42 +812,7 @@ Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32Prior
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 
 
-rem ========================================================================================================================================
-
-:QoSPacketScheduler
-cls
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                                    %ESC%[7mEnable QoS Packet Scheduler ?%ESC%[0m
-echo.
-echo.                                            [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
-if /I "%input%"=="1" (
-    reg add "HKLM\System\CurrentControlSet\Services\Psched" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
-    sc config Psched start=auto >nul 2>&1
-    sc start Psched >nul 2>&1
-    netsh int tcp set global congestionprovider=ctcp >nul 2>&1
-    netsh int tcp set global ecncapability=enabled >nul 2>&1
-) else if /I "%input%"=="2" (
-    goto :CloudSync
-) else (
-    echo.
-    echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
-    timeout /t 2 /nobreak > NUL
-    goto :QoSPacketScheduler
-)
-
+goto :CloudSync
 rem ========================================================================================================================================
                         ══════════>
 :CloudSync
@@ -891,7 +893,7 @@ timeout /t 2 /nobreak > NUL
 goto :Telemetry
 
 :DisableTelemetry
-start "" /wait %~dp0\AuroraModules\Telemetry.bat
+CALL %~dp0\AuroraModules\Telemetry.bat
 goto :Privacy
 
 
@@ -928,7 +930,7 @@ timeout /t 2 /nobreak > NUL
 goto :Privacy
 
 :DisablePrivacy
-start "" /wait %~dp0\AuroraModules\Privacy.bat
+CALL %~dp0\AuroraModules\Privacy.bat
 
 goto :RemoveEdge
 cls
@@ -1148,7 +1150,7 @@ echo.
 echo.
 echo.
 echo.
-echo.                                            %ESC%[7mAre You On Windows 10 (1) or Windows 11 (2) ?%ESC%[0m
+echo.                               %ESC%[7mAre You On Windows 10 (1) or Windows 11 (2) ?%ESC%[0m
 echo.
 echo.                                            [38;5;105m[1] 10 Or [38;5;105m[2] 11
 echo.
@@ -1226,7 +1228,7 @@ for %%s in (%services%) do (
     )
 )
 
-
+timeout /t 5 /nobreak > NUL
 goto :Main
 
 rem ========================================================================================================================================
