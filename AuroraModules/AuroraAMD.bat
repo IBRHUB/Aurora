@@ -114,6 +114,5 @@ Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /t R
 Reg.exe add "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 
 
-pause
 endlocal
 exit /b 0
