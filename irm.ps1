@@ -62,7 +62,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     }
     exit
 }
-Write-Host "`n"
+
 # Purpose: Enables secure HTTPS communications and bypasses certificate validation
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -92,7 +92,6 @@ try {
     Write-Host "Failed to set TLS 1.2 and certificate bypass. This might cause download issues." -ForegroundColor Yellow
 }
 
-Write-Host "`n"
 # 3) Purpose: Sets up temporary storage location for Aurora
 $AuroraPath = Join-Path $env:Temp "Aurora.cmd"
 

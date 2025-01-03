@@ -99,8 +99,6 @@
 ::
 :: ============================================================
 
-
-
 :: Check for administrator privileges
 fltmc > nul 2>&1 || (
 	echo Administrator privileges are required.
@@ -174,7 +172,6 @@ if not exist "%OUTFILE%" (
 :: Open the file in Notepad
 start notepad "%OUTFILE%"
 
-::https://ansi.gabebanks.net/
 
 :: set ANSI escape characters
 cd /d "%~dp0"
@@ -608,7 +605,7 @@ set tasksToDisable=^
 for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
 )
-timeout /t 2 /nobreak > NUL
+timeout /t 1 /nobreak > NUL
 
 echo. - Visual Effects
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
@@ -843,7 +840,7 @@ goto :RemoveEdge
 
 :runRemoveEdge
 if exist "%~dp0\AuroraModules\RemoveEdge.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\RemoveEdge.ps1" -UninstallEdge
+    start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\RemoveEdge.ps1" -UninstallEdge -NonInteractive
     if %ERRORLEVEL% NEQ 0 (
         echo [91mError: Failed to execute Edge removal script.[0m
         timeout /t 2 /nobreak > NUL
@@ -1115,23 +1112,147 @@ goto :Main
 rem ========================================================================================================================================
 :ManualServices
 mode con cols=76 lines=33
-:: List of services to check/configure
-set "services=AudioEndpointBuilder Audiosrv EventLog SysMain Themes WSearch NVDisplay.ContainerLocalSystem WlanSvc"
+cls
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.
+echo.                                %ESC%[4mWarning:%ESC%[0m
+echo.
+echo.          %ESC%[31mThese changes may cause issues with Windows functionality%ESC%[0m
+echo.          %ESC%[31mOnly proceed if you understand the potential risks%ESC%[0m
+echo.
+echo.                    Press [1] if you want to continue
+echo.                    Press [2] to return to main menu
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" goto :ConfirmServices
+if /I "%input%"=="2" goto :Main
+echo Invalid input
+timeout /t 2 /nobreak > NUL
+goto :ManualServices
 
-:: Process each service
-for %%s in (%services%) do (
-    sc query "%%s" >nul 2>&1
-    if !errorlevel! equ 0 (
-        echo %ESC%[32mConfiguring service: %%s%ESC%[0m
-        sc config "%%s" start= demand >nul 2>&1
-        sc start "%%s" >nul 2>&1
-    ) else (
-        echo %ESC%[33mService not found: %%s%ESC%[0m
-    )
+:ConfirmServices
+cls
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.                        Are you absolutely sure?
+echo.                     This cannot be easily undone
+echo.
+echo.                    Press [1] to confirm and proceed
+echo.                    Press [2] to return to main menu
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" goto :StartServiceChanges
+if /I "%input%"=="2" goto :Main
+echo Invalid input
+timeout /t 2 /nobreak > NUL
+goto :ConfirmServices
+
+:StartServiceChanges
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Audiosrv" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\WlanSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+
+echo !ESC![32mServices configured successfully!ESC![0m
+timeout /t 5 /nobreak > NUL
+goto :DisableServices
+
+rem ========================================================================================================================================
+:DisableServices
+mode con cols=76 lines=33
+cls
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.                     Disabling unnecessary services...
+echo.
+
+echo.
+echo.                     Do you want to disable Bluetooth services?
+echo.                             [1] Yes [2] No
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" (
+    :: Disable Bluetooth services
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\bthserv" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+) else if /I "%input%"=="2" (
+    goto :SkipBluetooth
+) else (
+    echo Invalid input
+    timeout /t 2 /nobreak > NUL
+    goto :DisableServices
 )
 
-timeout /t 5 /nobreak > NUL
+:SkipBluetooth
+
+echo.
+echo.                     Do you want to disable Printing services?
+echo.                             [1] Yes [2] No
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" (
+    :: Disable printing services
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintWorkflowUserSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+) else if /I "%input%"=="2" (
+    goto :SkipPrinting
+) else (
+    echo Invalid input
+    timeout /t 2 /nobreak > NUL
+    goto :DisableServices
+)
+
+:SkipPrinting
+
+:: Disable other unnecessary services
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\shpamsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\RmSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+
+:: Disable rarely used Windows services
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\tzautoupdate" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\WalletService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\Ndu" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+
+echo.
+echo.                     Services disabled successfully.
+echo.
+timeout /t 2 /nobreak > NUL
 goto :Main
+
 
 rem ========================================================================================================================================
 :DarkMode
@@ -1197,12 +1318,12 @@ choice /c:12 /n /m "Enter your choice (1-2): "
 
 if errorlevel 2 (
     echo.
-    echo Exiting Aurora...
+    echo - Exiting Aurora...
     timeout /t 2 /nobreak > NUL
     exit
 ) else if errorlevel 1 (
     echo.
-    echo Restarting Aurora...
+    echo - Restarting Aurora...
     timeout /t 2 /nobreak > NUL
     goto :Main
 )
