@@ -19,6 +19,16 @@
 - قد يؤدي استخدام السكربت إلى تعطيل بعض الميزات الافتراضية في النظام.
 - قد يؤدي استخدام هذا السكربت تحسين الاداء او جعل الاداء اسواء
 
+#### **التحسينات المتوقعة:**
+- تحسين أداء الألعاب وتقليل زمن الاستجابة
+- تحسين سرعة تحميل النظام والبرامج
+- تقليل استهلاك موارد النظام
+- تحسين أداء كرت الشاشة AMD/NVIDIA
+- تحسين إعدادات الشبكة وتقليل التأخير
+- تحسين استهلاك البطارية وأداء الطاقة
+- إيقاف الخدمات والعمليات غير الضرورية
+- تحسين تجربة سطح المكتب العامة
+
 ---
 
 ## English :
@@ -40,5 +50,15 @@ Please ensure you read all instructions and understand the operations performed 
 #### **Additional Instructions:**
 - Ensure a stable internet connection.
 - Running the script may disable some default system features.
+
+#### **Expected Improvements:**
+- Enhanced gaming performance and reduced latency
+- Faster system and program loading times
+- Reduced system resource usage
+- Optimized AMD/NVIDIA GPU performance
+- Improved network settings and reduced lag
+- Better battery life and power performance
+- Disabled unnecessary services and processes
+- Enhanced overall desktop experience
 
 ---

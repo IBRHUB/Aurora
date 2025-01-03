@@ -1,3 +1,30 @@
+#Requires -RunAsAdministrator
+
+<#
+.SYNOPSIS
+    OneDrive and Teams Debloating Script for Windows
+
+.DESCRIPTION
+    This script helps remove OneDrive and Teams integration while preserving user data.
+    It safely copies OneDrive files to local storage and removes OneDrive/Teams components.
+
+    Key features:
+    - Backs up OneDrive data to C:\OneDrive before removal
+    - Preserves Desktop, Documents and Pictures folders
+    - Logs all operations for troubleshooting
+    - Requires administrator privileges
+    
+.NOTES
+    Version: 1.0
+    Author: IBRHUB
+    Requirements: Must be run with Administrator privileges
+    Warning: This script modifies system settings. Use at your own risk.
+
+.EXAMPLE
+    .\OneDrive.ps1
+    Runs the script to debloat OneDrive and Teams while preserving user data.
+#>
+
 # Function to Debloat Teams and OneDrive
 function Debloat-TeamsOneDrive {
     # Step 1: Copy OneDrive Files to C:\OneDrive\Desktop, C:\OneDrive\Documents, C:\OneDrive\Pictures

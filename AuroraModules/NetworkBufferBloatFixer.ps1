@@ -3,12 +3,21 @@
 .SYNOPSIS
   IBRPRIDE.COM - Network Buffer Bloat Fixer (Improved v3)
 .DESCRIPTION
-  Applies (Enable) or Reverts (Disable) registry/network tweaks to reduce buffer bloat.
+  A PowerShell script that helps optimize network performance by reducing buffer bloat.
+  Buffer bloat occurs when network buffers get too full, causing increased latency.
+  This script applies registry and network tweaks to:
+  - Adjust TCP window sizes and scaling
+  - Optimize QoS settings
+  - Fine-tune network adapter parameters
+  - Configure system network stack settings
+  
+  Use the Enable option to apply optimizations or Disable to revert changes.
 .NOTES
   Version: 3.0
   Author:  IBRHUB
-  Date:    2024-xx-xx
+  Requirements: Must be run with Administrator privileges
   Disclaimer: Use at your own risk. May affect your network/system settings.
+  Support: Visit IBRPRIDE.COM for documentation and updates
 #>
 
 # -----------------------------------------------------------
