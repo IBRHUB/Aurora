@@ -72,7 +72,9 @@ echo %ESC%[36m╔═════════════════════
 echo ║ Checking and Repairing Windows Tweaks  ║
 echo ╚════════════════════════════════════════╝%ESC%[0m
 
-
+mode con: cols=60 lines=25
+echo.
+echo.
 :: Check SvcHostSplitThresholdInKB
 reg query "HKLM\SYSTEM\CurrentControlSet\Control" /v SvcHostSplitThresholdInKB | find "3670016" >nul
 if errorlevel 1 (
