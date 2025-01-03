@@ -174,6 +174,28 @@ if (-not (Test-Path $AuroraPath) -or (Get-Item $AuroraPath).Length -eq 0) {
 }
 Write-Host "`n"
 Clear-Host
+
+Write-Host @"
+                         @@@%    %@@-    @@@   @@@@@@@@+    -@@@@@@@+   -@@@@@@@@-     @@@@                             
+                        @@@@@=  .@@@@   -@@@- =@@@   .@@@  @@@=   .@@@  @@@@   @@@@   *@@@@@                            
+                       #@@@@@@  +@@@@   +@.@+ #@ @@@@@@@@ @@%@@@@@@@@@@ @@@@@@@@@@@   @@@@@@%                           
+                      .@@@@@ @@ +@@@@   +@ @+ #@*@@@@@@@@ @@@@.   .@@@@ @@@@@@@@@@@  @@ @@@@@.                          
+                      @@*@@@@@@@-@@@@   @@ @= #@=@  @@@@% @@@@.    @@@@ @@ @ +@@@@@ @@@@@@@ @@                          
+"@ -ForegroundColor Cyan
+Write-Host @"
+                     @@=@@ @@@@@-@@+@@@@@@@@  *@#@@@@@@@* +@ @@@@@@@=@@ @@@@@@@@@@-%@@@@% @@@@@                         
+                     @@@@   @@@@@*@@# -- @@+ -+@%@+=-# @@*=.= -##*..@@  @@@@ .@@@@*@@@@@  =@@@@                         
+"@ -ForegroundColor Magenta
+Write-Host @"
+                     @@@*    @@@=  @@@@@@@ =*#*+ *@@@# .%@@#  #@@@@@-    @@*   @@@-*@@@    @@@@                         
+"@ -ForegroundColor Yellow
+Write-Host @"
+                                          ...        .=*%@@@@@@@@@%*=--                                                 
+                                 .-==+*%@@@@@@@@@@@@@@@@@@@@@@@@@@@#**+=--.                                             
+                                 .=+#%@@@@@@@@@@@@@@@%*-                                                                
+"@ -ForegroundColor DarkCyan
+Write-Host "`n"
+
 # 5) Purpose: Executes Aurora and cleans up temporary files
 Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
