@@ -93,9 +93,7 @@ $AuroraPath = Join-Path $env:Temp "Aurora.cmd"
 
 # Purpose: Provides fallback download sources if primary fails
 $urls = @(
-    'https://raw.githubusercontent.com/IBRHUB/Aurora/main/Aurora.cmd',
-    'https://github.com/IBRHUB/Aurora/releases/latest/download/Aurora.cmd',
-    'https://ibrpride.com/Aurora'
+    'https://raw.githubusercontent.com/IBRHUB/Aurora/main/Aurora.cmd'
 )
 
 $downloadSuccess = $false
@@ -168,27 +166,6 @@ if (-not (Test-Path $AuroraPath) -or (Get-Item $AuroraPath).Length -eq 0) {
     Write-Host "Aurora.cmd not found or empty after download, aborting!" -ForegroundColor Red
     pause
     return
-}
-
-# 4) Purpose: Ensures file integrity through hash verification
-$releaseHash = '0D479451FA70D548BC67851791E0F23347C30BBEA123A32F4636278790532C50'
-
-try {
-    $fileBytes = [System.IO.File]::ReadAllBytes($AuroraPath)
-    $downloadedHash = [BitConverter]::ToString(
-        [Security.Cryptography.SHA256]::Create().ComputeHash($fileBytes)
-    ) -replace '-'
-
-    if ($downloadedHash -ne $releaseHash) {
-        Write-Host "Hash mismatch! Expected $releaseHash`nBut got $downloadedHash" -ForegroundColor Red
-        Write-Host "Help - https://github.com/IBRHUB/Aurora/troubleshoot.md" -ForegroundColor Cyan
-        Write-Host "Aborting..." -ForegroundColor Yellow
-        Remove-Item $AuroraPath -ErrorAction SilentlyContinue
-        pause
-        return
-    }
-} catch {
-    Write-Host "Failed to verify file hash. Continuing anyway..." -ForegroundColor Yellow
 }
 
 # 5) Purpose: Executes Aurora and cleans up temporary files
