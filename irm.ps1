@@ -93,7 +93,7 @@ $AuroraPath = Join-Path $env:Temp "Aurora.cmd"
 
 # Purpose: Provides fallback download sources if primary fails
 $urls = @(
-    'https://raw.githubusercontent.com/IBRHUB/Aurora/main/Aurora.cmd'
+    'https://github.com/IBRHUB/Aurora/releases/download/0.5/Aurora.cmd'
 )
 
 $downloadSuccess = $false
