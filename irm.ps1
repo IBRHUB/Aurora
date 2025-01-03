@@ -25,9 +25,13 @@
 
 ## powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-WebRequest "https://github.com/IBRHUB/Aurora/releases/download/0.4/Aurora.cmd" -OutFile "$env:temp\Aurora.cmd"; Start-process $env:temp\Aurora.cmd
 
+# Set console background color to black
+$Host.UI.RawUI.BackgroundColor = "Black"
+Clear-Host
 
 # 1) Check for any 3rd-party Antivirus and System Type
 # Purpose: Detects antivirus software that might interfere with Aurora's operation
+Clear-Host
 function Check3rdAV {
     $avList = Get-CimInstance -Namespace root\SecurityCenter2 -Class AntiVirusProduct |
         Where-Object { $_.displayName -notlike '*windows*' } |
@@ -37,9 +41,9 @@ function Check3rdAV {
         Write-Host " $($avList -join ', ')" -ForegroundColor Red
     }
 }
-
+Write-Host "`n"
 # Purpose: Identifies if running on laptop or desktop for optimized settings
-$systemType = (Get-WmiObject -Class Win32_ComputerSystem).PCSystemType
+$systemType = (Get-CimInstance -ClassName Win32_ComputerSystem).PCSystemType
 $isLaptop = $systemType -eq 2
 $isDesktop = $systemType -eq 1
 
@@ -58,7 +62,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     }
     exit
 }
-
+Write-Host "`n"
 # Purpose: Enables secure HTTPS communications and bypasses certificate validation
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -88,6 +92,7 @@ try {
     Write-Host "Failed to set TLS 1.2 and certificate bypass. This might cause download issues." -ForegroundColor Yellow
 }
 
+Write-Host "`n"
 # 3) Purpose: Sets up temporary storage location for Aurora
 $AuroraPath = Join-Path $env:Temp "Aurora.cmd"
 
@@ -145,7 +150,7 @@ foreach ($url in $urls) {
     
     if ($downloadSuccess) { break }
 }
-
+Write-Host "`n"
 # Purpose: Provides troubleshooting steps if download fails
 if (-not $downloadSuccess) {
     Check3rdAV
@@ -167,9 +172,10 @@ if (-not (Test-Path $AuroraPath) -or (Get-Item $AuroraPath).Length -eq 0) {
     pause
     return
 }
-
+Write-Host "`n"
+Clear-Host
 # 5) Purpose: Executes Aurora and cleans up temporary files
-Write-Host "Running Aurora..." -ForegroundColor Green
+Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
     Start-Process -FilePath $AuroraPath -Wait
     Write-Host "Aurora completed successfully." -ForegroundColor Green
@@ -179,5 +185,5 @@ try {
 }
 
 Remove-Item $AuroraPath -ErrorAction SilentlyContinue
-Write-Host "Done." -ForegroundColor Green
-pause
+Write-Host "Thank you! Don't forget to rate us on our Discord server." -ForegroundColor Green
+
