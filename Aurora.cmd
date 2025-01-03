@@ -186,6 +186,7 @@ goto :DISCLAIMER
 
 
 :DISCLAIMER
+cls
 mode con cols=78 lines=30
 color 0f
 
@@ -240,7 +241,7 @@ exit /b
 
 :StartAurora
 taskkill /F /IM "notepad.exe" >nul 2>&1
-
+cls
 
 
 :: Check Internet Connection
@@ -353,75 +354,7 @@ powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Para
 }" >NUL 2>&1
 
 
-:: Set custom icon for the current CMD window and handle OneDrive
-if exist "%currentDir%\AuroraAvatar.ico" (
-    :: Check if PowerShell is available
-    where powershell >nul 2>&1
-    if %ERRORLEVEL% NEQ 0 (
-        goto :StartupAuroraMain
-    )
 
-    :: Check if OneDrive is installed
-    if exist "%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe" (
-        :: Create OneDrive backup folder
-        if not exist "%USERPROFILE%\OneDrive\Aurora_Backup" (
-            mkdir "%USERPROFILE%\OneDrive\Aurora_Backup" >nul 2>&1
-        )
-        
-        :: Copy icon to OneDrive backup
-        copy /y "%currentDir%\AuroraAvatar.ico" "%USERPROFILE%\OneDrive\Aurora_Backup\" >nul 2>&1
-    )
-
-    :: Create temporary VBS script to change console icon silently
-    echo Set objShell = CreateObject("Shell.Application") > "%TEMP%\seticon.vbs"
-    echo Set objWin = objShell.Windows() >> "%TEMP%\seticon.vbs"
-    echo For Each win In objWin >> "%TEMP%\seticon.vbs"
-    echo     If InStr(win.LocationName, "cmd.exe") Then >> "%TEMP%\seticon.vbs"
-    echo         win.Document.DefaultIcon = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\seticon.vbs"
-    echo     End If >> "%TEMP%\seticon.vbs"
-    echo Next >> "%TEMP%\seticon.vbs"
-
-    :: Run the VBS script silently
-    cscript //nologo "%TEMP%\seticon.vbs" >nul 2>&1
-    
-    :: Clean up silently
-    del "%TEMP%\seticon.vbs" >nul 2>&1
-
-    :: Create shortcuts with custom icon
-    echo Set WshShell = CreateObject("WScript.Shell") > "%TEMP%\createshortcut.vbs"
-    
-    :: Create desktop shortcut
-    echo Set shortcut = WshShell.CreateShortcut("%USERPROFILE%\Desktop\Aurora.lnk") >> "%TEMP%\createshortcut.vbs"
-    echo shortcut.TargetPath = "%~dp0Aurora.cmd" >> "%TEMP%\createshortcut.vbs"
-    echo shortcut.IconLocation = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\createshortcut.vbs"
-    echo shortcut.Save >> "%TEMP%\createshortcut.vbs"
-
-    :: Create OneDrive shortcut if available
-    if exist "%USERPROFILE%\OneDrive" (
-        echo Set oneDriveShortcut = WshShell.CreateShortcut("%USERPROFILE%\OneDrive\Aurora.lnk") >> "%TEMP%\createshortcut.vbs"
-        echo oneDriveShortcut.TargetPath = "%~dp0Aurora.cmd" >> "%TEMP%\createshortcut.vbs"
-        echo oneDriveShortcut.IconLocation = "%currentDir%\AuroraAvatar.ico" >> "%TEMP%\createshortcut.vbs"
-        echo oneDriveShortcut.Save >> "%TEMP%\createshortcut.vbs"
-    )
-
-    :: Run the shortcut creation script silently
-    cscript //nologo "%TEMP%\createshortcut.vbs" >nul 2>&1
-    
-    :: Clean up
-    del "%TEMP%\createshortcut.vbs" >nul 2>&1
-
-    :: Verify at least one shortcut creation silently
-    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" (
-        if not exist "%USERPROFILE%\OneDrive\Aurora.lnk" (
-            goto :StartupAuroraMain
-        )
-    )
-
-) else (
-    goto :StartupAuroraMain
-)
-
-:StartupAuroraMain
 chcp 65001 >NUL
 
 color f
@@ -444,25 +377,25 @@ echo.
 echo                             [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
 echo.
 echo.
-echo                        ╔══════════════════════════════════════════════════╗[38;5;105m
-echo                        ║                                                  ║
-echo                        ║ [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
-echo                        ║                                                  ║
-echo                        ║ [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
-echo                        ║                                                  ║
-echo                        ║ [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
-echo                        ║                                                  ║
-echo                        ║ [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
-echo                        ║                                                  ║
-echo                        ║                                                  ║
-echo                        ║                  [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
-echo                        ║                                                  ║
-echo                        ╚══════════════════════════════════════════════════╝[38;5;105m
+echo                        ╔═══════════════════════════════════════════════════╗[38;5;105m
+echo                        ║                                                   ║
+echo                        ║  [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
+echo                        ║                                                   ║
+echo                        ║  [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
+echo                        ║                                                   ║
+echo                        ║  [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
+echo                        ║                                                   ║
+echo                        ║  [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
+echo                        ║                                                   ║
+echo                        ║                                                   ║
+echo                        ║                   [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
+echo                        ║                                                   ║
+echo                        ╚═══════════════════════════════════════════════════╝[38;5;105m
 echo.
 echo.
 echo.                                     
 echo.                     
-set /p input=%BS% [38;5;213m                                           ══════════^> [38;5;213 m[38;5;105m
+set /p input=%BS% [38;5;213m                                           ══════════^> [38;5;213 m[0m
 
 if not defined input goto :Main
 if "%input%"=="" goto :Main
@@ -480,70 +413,15 @@ echo [91mInvalid input. Please select a number between 1 and 8.[0m
 timeout /t 2 /nobreak >nul
 goto :Main
 
-
-
-
 :WinTweaks
-CLS
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                                        %ESC%[7mDisable OneDrive?%ESC%[0m
-echo.
-echo.                                      [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m[38;5;105m
+mode con cols=76 lines=35
 
-if /I "%input%"=="1" goto :DisableOneDrive
-if /I "%input%"=="2" goto :Tweaks
-if /I "%input%"=="3" goto :Main
-echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].
-echo.
-timeout /t 2 /nobreak > NUL
-goto :WinTweaks
-
-:DisableOneDrive
-
-rem -  Disabling OneDrive
-reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > NUL 2>&1
-reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" >NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /t REG_DWORD /d "1" /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d "1" /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d "0" /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d "0" /f > NUL 2>&1
-
-timeout /t 1 /nobreak > NUL
-if exist "%~dp0\AuroraModules\OneDrive.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
-    if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: Failed to execute OneDrive removal script.[0m
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo [91mError: OneDrive.ps1 script not found in AuroraModules folder.[0m
-    timeout /t 2 /nobreak > NUL
-)
-
-
-goto :Tweaks
-
-:Tweaks
-
-rem - Setting UAC - never notify
+:: - Setting UAC - never notify
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Setting Edge policies
+echo. - Setting Edge policies
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -551,30 +429,30 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService" /
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdate" /v Start /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdatem" /v Start /t REG_DWORD /d 4 /f > NUL 2>&1
 
-rem - Setting Chrome policies
+echo. - Setting Chrome policies
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HighEfficiencyModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-rem - Enabling old NVIDIA sharpening
+echo. - Enabling old NVIDIA sharpening
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableGR535 /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Disabling NVIDIA Telemetry
+echo. - Disabling NVIDIA Telemetry
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v NvBackend /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v OptInOrOutPreference /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID66610 /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID64640 /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID44231 /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Disable Hardware Accel Steam
+echo. - Disable Hardware Accel Steam
 reg add "HKCU\SOFTWARE\Valve\Steam" /v "GPUAccelWebViewsV2" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Valve\Steam" /v "H264HWAccel" /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Graphics settings: Disabling MPO
+echo. - Graphics settings: Disabling MPO
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Dwm" /v OverlayTestMode /t REG_DWORD /d 5 /f > NUL 2>&1
 
-rem - Setting game scheduling (performance)
+echo. - Setting game scheduling (performance)
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Affinity /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Background Only" /t REG_SZ /d False /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Clock Rate" /t REG_DWORD /d 10000 /f > NUL 2>&1
@@ -583,28 +461,28 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProf
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d High /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "SFIO Priority" /t REG_SZ /d High /f > NUL 2>&1
 
-rem - Disabling Background Apps
+echo. - Disabling Background Apps
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v BackgroundAppGlobalToggle /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Enabling Hardware-Accelerated GPU Scheduling
+echo. - Enabling Hardware-Accelerated GPU Scheduling
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v HwSchMode /t REG_DWORD /d 2 /f > NUL 2>&1
 
-rem - Enabling Game Mode
+echo. - Enabling Game Mode
 reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AllowAutoGameMode /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AutoGameModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-rem - Adjusting for best performance of programs
+echo. - Adjusting for best performance of programs
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f > NUL 2>&1
 
-rem - Reducing Menu Delay
+echo. - Reducing Menu Delay
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d "0" /f > NUL 2>&1
 
-rem - Increase taskbar transparency
+echo. - Increase taskbar transparency
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "UseOLEDTaskbarTransparency" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Dwm" /v "ForceEffectMode" /t REG_DWORD /d 2 /f > NUL 2>&1
 
-rem - Disable showing recent and mostly used item
+echo. - Disable showing recent and mostly used item
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideRecentlyAddedApps" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg Delete "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "HideRecentlyAddedApps" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "HideRecentlyAddedApps" /t REG_DWORD /d 1 /f > NUL 2>&1
@@ -618,7 +496,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "N
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarSh" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUsedApps" /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Browser background optimizations
+echo. - Browser background optimizations
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
@@ -632,7 +510,7 @@ reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "BatterySaverModeAvailab
 reg add "HKLM\Software\Policies\BraveSoftware\Brave\Recommended" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave\Recommended" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 
-rem - Disables updates for Firefox, Edge and Chrome
+echo. - Disables updates for Firefox, Edge and Chrome
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdate" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdatem" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
@@ -643,7 +521,7 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Services\gupdate" /v "Start" /t REG_DWORD
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\gupdatem" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Mozilla\Firefox" /v "DisableAppUpdate" /t REG_DWORD /d 1 /f > NUL 2>&1
 
-rem - Explorer Optimizations
+echo. - Explorer Optimizations
 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f > NUL 2>&1
@@ -666,11 +544,11 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /t
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f > NUL 2>&1
 
-rem - Optimizing Windows Scheduled Tasks
+echo. - Optimizing Windows Scheduled Tasks
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v MaintenanceDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" /v EnabledExecution /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Disable specific scheduled tasks
+echo. - Disable specific scheduled tasks
 set "tasksToDisable="
 set tasksToDisable=^
  "\Microsoft\Windows\Application Experience\StartupAppTask"^
@@ -728,13 +606,9 @@ set tasksToDisable=^
 for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
 )
+timeout /t 2 /nobreak > NUL
 
-rem - Disable SleepStudy logging
-wevtutil.exe set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:false > NUL 2>&1
-wevtutil.exe set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:false > NUL 2>&1
-wevtutil.exe set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:false > NUL 2>&1
-
-rem - Visual Effects
+echo. - Visual Effects
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "UserPreferencesMask" /t REG_BINARY /d "9012038010000000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "DragFullWindows" /t REG_SZ /d "1" /f > NUL 2>&1
@@ -747,7 +621,7 @@ reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" 
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "EnableAeroPeek" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "AlwaysHibernateThumbnails" /t REG_DWORD /d 0 /f > NUL 2>&1
 
-rem - Disable USB Power Savings
+echo. - Disable USB Power Savings
 for /f "tokens=*" %%a in ('Reg query "HKLM\System\CurrentControlSet\Enum" /s /f "StorPort" 2^>nul ^| findstr "StorPort"') do reg add "%%a" /v "EnableIdlePowerManagement" /t REG_DWORD /d "0" /f > NUL 2>&1
 for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "EnhancedPowerManagementEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -758,8 +632,8 @@ for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "SelectiveSuspendOn" /t REG_DWORD /d "0" /f > NUL 2>&1
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "D3ColdSupported" /t REG_DWORD /d "0" /f > NUL 2>&1
 )
-
-rem - Quick Boot 
+timeout /t 2 /nobreak > NUL
+echo. - Quick Boot 
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DelayedDesktopSwitchTimeout" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_SZ /d "0" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "RunStartupScriptSync" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -767,59 +641,61 @@ bcdedit /set bootuxdisabled on > NUL 2>&1
 bcdedit /set bootmenupolicy standard > NUL 2>&1
 bcdedit /set quietboot yes > NUL 2>&1
 
-rem - Quick Shutdown Settings
+echo. - Quick Shutdown Settings
 reg add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
 reg add "HKLM\System\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f > NUL 2>&1
 
-rem - Additional Performance Optimizations
+echo. - Additional Performance Optimizations
 reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > NUL 2>&1
 
-rem - Usb Overclock with secure boot enabled
+echo. - Usb Overclock with secure boot enabled
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
-rem - Disable Hibernation
+echo. - Disable Hibernation
 powercfg /h off > NUL 2>&1
 
-rem - Disable Superfetch
+echo. - Disable Superfetch
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "4" /f > NUL 2>&1
 
-rem - Enable GPU MSI Mode
+echo. - Enable GPU MSI Mode
 for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
 reg query "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" >nul 2>&1 && (
 reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d "1" /f > NUL 2>&1
 )
-
-rem - Background Apps
+timeout /t 2 /nobreak > NUL
+echo. - Background Apps
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul
 Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul
 
-rem - Disable Hibernation
+echo. - Disable Hibernation
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
 powercfg /h off >nul
 
-rem - Disable Sleep Study
+echo. - Disable Sleep Study
 schtasks /change /tn "\microsoft\windows\power efficiency diagnostics\analyzesystem" /disable >nul 2>&1
 wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul
 wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul
 wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul
-
-rem - Adjust processor scheduling to allocate processor resources to programs
-rem - 2A Hex/42 Dec = Short, Fixed, High foreground boost.
+timeout /t 2 /nobreak > NUL
+echo. - Adjust processor scheduling to allocate processor resources to programs
+echo. - 2A Hex/42 Dec = Short, Fixed, High foreground boost.
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x18" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 
-
+timeout /t 4 /nobreak > NUL
 goto :CloudSync
 rem ========================================================================================================================================
-                        ══════════>
+
 :CloudSync
+mode con cols=76 lines=33
 CLS
 echo.
 echo.
 echo.
+echo:       ______________________________________________________________
 echo.
 echo.
 echo.
@@ -827,18 +703,17 @@ echo.
 echo.
 echo.
 echo.
+echo.                      %ESC%[33mDo you want to Disable Cloud Sync ?%ESC%[0m
 echo.
-echo.                                  %ESC%[7mDisable Cloud Sync ?%ESC%[0m
+echo.                             [1] Yes Or [2] No
 echo.
-echo.                                        [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
+set /p input=%BS%══════════^> 
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
 if /I "%input%"=="3" goto :Main
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
+echo.    Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
 goto :CloudSync
@@ -861,11 +736,13 @@ goto :Telemetry
 
 rem ========================================================================================================================================
 
-
-
 :Telemetry
+mode con cols=76 lines=33
 CLS
-mode con cols=95 lines=38
+echo.
+echo.
+echo.
+echo:       ______________________________________________________________
 echo.
 echo.
 echo.
@@ -873,21 +750,17 @@ echo.
 echo.
 echo.
 echo.
+echo.                      %ESC%[33mDo you want to Disable Telemetry ?%ESC%[0m
 echo.
+echo.                             [1] Yes Or [2] No
 echo.
-echo.
-echo.
-echo.                                    %ESC%[7mDisable Telemetry ?%ESC%[0m
-echo.
-echo.                                       [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
+set /p input=%BS%══════════^> 
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
 if /I "%input%"=="3" goto :Main
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
+echo.    Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Telemetry
@@ -899,13 +772,13 @@ goto :Privacy
 
 rem ========================================================================================================================================
 
-
-
 :Privacy
+mode con cols=76 lines=33
 CLS
 echo.
 echo.
 echo.
+echo:       ______________________________________________________________
 echo.
 echo.
 echo.
@@ -913,18 +786,17 @@ echo.
 echo.
 echo.
 echo.
+echo.                      %ESC%[33mDo you want to Disable Privacy ?%ESC%[0m
 echo.
-echo.                                      %ESC%[7mDisable Privacy ?%ESC%[0m
+echo.                             [1] Yes Or [2] No
 echo.
-echo.                                      [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
+set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
 if /I "%input%"=="3" goto :Main
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
+echo.    Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Privacy
@@ -937,12 +809,13 @@ cls
 
 rem ========================================================================================================================================
 
-
 :RemoveEdge
+mode con cols=76 lines=33
 CLS
 echo.
 echo.
 echo.
+echo:       ______________________________________________________________
 echo.
 echo.
 echo.
@@ -950,20 +823,18 @@ echo.
 echo.
 echo.
 echo.
+echo.                        %ESC%[33mDo you want to Remove Edge ?%ESC%[0m
+echo.
+echo.                             [1] Yes Or [2] No
 echo.
 echo.
-echo.
-echo.                                                %ESC%[7mRemove Edge ?%ESC%[0m
-echo.
-echo.                                                [38;5;105m[1] Yes Or [38;5;105m[2] No
-echo.
-set /p input=%BS% [38;5;213m                              ══════════^> [38;5;213m
+set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :runRemoveEdge
-if /I "%input%"=="2" goto :Main
+if /I "%input%"=="2" goto :OneDrive
 if /I "%input%"=="3" goto :Main
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
+echo.- Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
 goto :RemoveEdge
@@ -987,12 +858,13 @@ cls
 
 rem ========================================================================================================================================
 
-
-:GPUTweaks
+:OneDrive
+mode con cols=76 lines=33
 CLS
 echo.
 echo.
 echo.
+echo:       ______________________________________________________________
 echo.
 echo.
 echo.
@@ -1000,21 +872,71 @@ echo.
 echo.
 echo.
 echo.
+echo.                       %ESC%[33mDo you want to Remove OneDrive? %ESC%[0m
+echo.
+echo.                                 [1] Yes [2] No
+echo.
+set /p input=%BS%              ══════════^> 
+if /I "%input%"=="1" goto :DisableOneDrive
+if /I "%input%"=="2" goto :Main
+echo.
+echo.    Invalid input. Please enter [1] or [2].
+echo.
+timeout /t 2 /nobreak > NUL
+goto :OneDrive
+
+:DisableOneDrive
+
+rem -  Disabling OneDrive
+reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > NUL 2>&1
+reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" >NUL 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /t REG_DWORD /d "1" /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /t REG_DWORD /d "1" /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d "0" /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d "0" /f > NUL 2>&1
+
+timeout /t 1 /nobreak > NUL
+if exist "%~dp0\AuroraModules\OneDrive.ps1" (
+    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
+    if %ERRORLEVEL% NEQ 0 (
+        echo - Error: Failed to execute OneDrive removal script.
+        timeout /t 2 /nobreak > NUL
+    )
+) else (
+    echo - Error: OneDrive.ps1 script not found in AuroraModules folder.
+    timeout /t 2 /nobreak > NUL
+)
+
+goto :Main
+
+rem ========================================================================================================================================
+
+:GPUTweaks
+mode con cols=76 lines=33
+CLS
 echo.
 echo.
 echo.
-echo.                                %ESC%[7mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
+echo:       ______________________________________________________________
 echo.
-echo.                                         [38;5;105m[1] NVIDIA Or [38;5;105m[2] AMD
 echo.
-set /p input=%BS% [38;5;105m                             ══════════^> 
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                    %ESC%[33mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
+echo.
+echo.                           [1] NVIDIA Or [2] AMD
+echo.
+set /p input=%BS%      ══════════^> 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
 if /I "%input%"=="3" goto :Main
 
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
-
+echo.    Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
 goto :GPUTweaks
@@ -1023,34 +945,35 @@ goto :GPUTweaks
 
 rem ========================================================================================================================================
 
-
-
 :NVIDIATweaks
 CLS
-mode con cols=85 lines=33
-timeout /t 3 /nobreak > NUL
-start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
+mode con cols=76 lines=33
+:: start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
+:: timeout /t 3 /nobreak > NUL
+echo.
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.               %ESC%[33mResizable Bar OFF (1) or Resizable Bar ON (2) ?%ESC%[0m
+echo.
+echo.
+echo.
+echo.
+echo. 
+set /p input=%BS% ══════════^> 
 
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                                         %ESC%[7mResizable Bar OFF (1) or Resizable Bar ON (2) ?%ESC%[0m
-echo.
-echo.                                   [38;5;105m[1] ResizableBarOFF   [38;5;105m[2] ResizableBarON
-echo.
-set /p input=%BS% [38;5;213m                        ══════════^> [38;5;213m
-
-if /I "%input%"=="1" goto  :AuroraOFF
-if /I "%input%"=="2" goto  :AuroraON
+if /I "%input%"=="1" goto :AuroraOFF
+if /I "%input%"=="2" goto :AuroraON
 if /I "%input%"=="3" goto :Main
 echo.
-echo.                                            [38;5;196mInvalid input. Please enter [1] or [2].[38;5;105m
+echo. Invalid input. Please enter [1] or [2].
 
 echo.
 timeout /t 2 /nobreak > NUL
@@ -1060,13 +983,13 @@ goto :NVIDIATweaks
 timeout /t 3 /nobreak > NUL
 start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip"
 if errorlevel 1 (
-    echo Failed to apply AuroraOFF.nip.
+    echo - Failed to apply AuroraOFF.nip.
     pause
-    goto relaunch
+    goto :relaunch
 )
 
 echo.
-echo                                            [38;5;213mResizable BAR has been disabled successfully.%[0m
+echo - Resizable BAR has been disabled successfully.
 timeout /t 3 /nobreak > NUL
 
 goto :Main
@@ -1075,27 +998,24 @@ goto :Main
 timeout /t 3 /nobreak > NUL
 start "" /wait "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
 if errorlevel 1 (
-    echo Failed to apply AuroraON.nip.
+    echo - Failed to apply AuroraON.nip.
     pause
-    goto relaunch
+    goto :relaunch
 )
 
 echo.
-echo                                            [38;5;213mResizable BAR has been enabled successfully.%[0m
+echo - Resizable BAR has been enabled successfully.
 timeout /t 3 /nobreak > NUL
 
 goto :Main
 cls
 
 
-
 rem ======================================================================================================================================== 
-
-
 
 :AMDTweaks
 timeout /t 3 /nobreak > NUL
-start %~dp0\AuroraModules\AuroraAMD.bat
+call %~dp0\AuroraModules\AuroraAMD.bat
 
 echo.
 echo AMD GPU optimizations have been successfully applied!
@@ -1106,25 +1026,21 @@ timeout /t 3 /nobreak > NUL
 goto :Main
 cls
 
-
 rem ========================================================================================================================================
-
-
-
 
 :Power-Plan
 cls
 if exist "%~dp0\AuroraModules\Power.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\Power.ps1" -Silent
     if %ERRORLEVEL% NEQ 0 (
-        echo                                             [38;5;196mError: Failed to apply power plan optimizations.[0m
+        echo - Error: Failed to apply power plan optimizations.
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo                                             [38;5;192mPower plan optimizations applied successfully.[0m
+        echo - Power plan optimizations applied successfully.
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo                                             [38;5;196mError: Power.ps1 script not found in AuroraModules folder.[0m
+    echo - Error: Power.ps1 script not found in AuroraModules folder.
     timeout /t 2 /nobreak > NUL
 )
 
@@ -1136,10 +1052,26 @@ rem ============================================================================
 
 
 :NetworkTweaks
+mode con cols=76 lines=33
 cls
 echo.
 echo.
 echo.
+echo:           ______________________________________________________
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                                  %ESC%[4mWarning:%ESC%[0m
+echo.
+echo.                      %ESC%[31mThese network tweaks may improve 
+echo.                     or worsen your internet performance%ESC%[0m
+echo.
+echo.                        [1] Network Tweaks [2] menu
 echo.
 echo.
 echo.
@@ -1149,70 +1081,38 @@ echo.
 echo.
 echo.
 echo.
-echo.
-echo.                               %ESC%[7mAre You On Windows 10 (1) or Windows 11 (2) ?%ESC%[0m
-echo.
-echo.                                            [38;5;105m[1] 10 Or [38;5;105m[2] 11
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
+echo:           ______________________________________________________
 echo.
 echo.
 echo.
 choice /c:12 /n > NUL 2>&1
-if "%errorlevel%"=="1" goto :Win10Net
-if "%errorlevel%"=="2" goto :Win11Net
-if "%errorlevel%"=="3" goto :Main
+if "%errorlevel%"=="1" goto :NetworkTweaks
+if "%errorlevel%"=="2" goto :Main
 
-:Win11Net
+:NetworkTweaks1
 cls 
 timeout /t 3 /nobreak > NUL
 if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo                                             [38;5;196mError: Failed to apply network optimizations.[0m
+        echo     Error: Failed to apply network optimizations.
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo                                             [38;5;192mNetwork optimizations applied successfully.[0m
+        echo     Network optimizations applied successfully.
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo                                             [38;5;196mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
+    echo     Error: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.
     timeout /t 2 /nobreak > NUL
 )
 goto :Main
 
-
-
-:Win10Net 
-cls
-timeout /t 3 /nobreak > NUL
-if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
-    if %ERRORLEVEL% NEQ 0 (
-        echo                                             [38;5;196mError: Failed to apply network optimizations.[0m
-        timeout /t 2 /nobreak > NUL
-    ) else (
-        echo                                             [38;5;192mNetwork optimizations applied successfully.[0m
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo                                             [91mError: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.[0m
-    timeout /t 2 /nobreak > NUL
-)
-goto :Main
 
 
 
 rem ========================================================================================================================================
 :ManualServices
-
+mode con cols=76 lines=33
 :: List of services to check/configure
 set "services=AudioEndpointBuilder Audiosrv EventLog SysMain Themes WSearch NVDisplay.ContainerLocalSystem WlanSvc"
 
@@ -1220,11 +1120,11 @@ set "services=AudioEndpointBuilder Audiosrv EventLog SysMain Themes WSearch NVDi
 for %%s in (%services%) do (
     sc query "%%s" >nul 2>&1
     if !errorlevel! equ 0 (
-        echo                                             [38;5;192mConfiguring service: %%s[0m
-        sc config "%%s" start= auto >nul 2>&1
+        echo %ESC%[32mConfiguring service: %%s%ESC%[0m
+        sc config "%%s" start= demand >nul 2>&1
         sc start "%%s" >nul 2>&1
     ) else (
-        echo                                             [38;5;196mService not found: %%s[0m
+        echo %ESC%[33mService not found: %%s%ESC%[0m
     )
 )
 
@@ -1233,8 +1133,9 @@ goto :Main
 
 rem ========================================================================================================================================
 :DarkMode
+mode con cols=76 lines=33
 cls
-echo                                             [38;5;213mEnabling Dark Mode...
+echo - Enabling Dark Mode...
 
 :: Enable dark mode for system
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
@@ -1244,22 +1145,25 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Per
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1 
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
 
-echo                                             [38;5;192mDark Mode enabled successfully.[0m
+echo - Dark Mode enabled successfully.
+
+C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe & start %windir%\explorer.exe >nul 2>&1
 timeout /t 2 /nobreak > NUL
 goto :Main
 
 rem ========================================================================================================================================
 
 :RepairWindows
+mode con cols=76 lines=33
 cls
-echo                                             [38;5;213mRepairing Windows components...
+echo - Repairing Windows components...
 echo.
 
 if exist "%~dp0\AuroraModules\RepairWindows.cmd" (
     start "" /wait "%~dp0\AuroraModules\RepairWindows.cmd"
-    echo                                        [38;5;192mLaunched Windows repair utility.[0m
+    echo - Launched Windows repair utility
 ) else (
-    echo                                 [38;5;196mError: RepairWindows.cmd script not found in AuroraModules folder.[0m
+    echo - Error: RepairWindows.cmd script not found in AuroraModules folder.
 )
 
 timeout /t 2 /nobreak > NUL
@@ -1272,25 +1176,8 @@ cls
 echo.
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo                                     %ESC%[7mJoin Our Discord Community%ESC%[0m
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
+echo - Join Our Discord Community
+
 start "" "https://discord.gg/fVYtpuYuZ6"
 timeout /t 7 /nobreak > NUL
 goto :Main
@@ -1299,63 +1186,95 @@ goto :Main
 :relaunch
 cls
 echo.
-echo [38;5;213mDo you want to restart Aurora or exit?
+echo Do you want to restart Aurora or exit?
 echo.
-echo [38;5;105m[1] Restart Aurora
-echo [38;5;105m[2] Exit
+echo [1] Restart Aurora
+echo [2] Exit
 echo.
 choice /c:12 /n /m "Enter your choice (1-2): "
 
 if errorlevel 2 (
     echo.
-    echo [38;5;213mExiting Aurora...
+    echo Exiting Aurora...
     timeout /t 2 /nobreak > NUL
     exit
 ) else if errorlevel 1 (
     echo.
-    echo [38;5;213mRestarting Aurora...
+    echo Restarting Aurora...
     timeout /t 2 /nobreak > NUL
     goto :Main
 )
 
 
-:SetIcon
-:: Set custom icon for the current CMD window
-if exist "%~dp0\Docs\Assets\Avatar.ico" (
-    :: Check if PowerShell is available
+
+:Seticon
+:: Set custom icon for the current CMD window and handle OneDrive
+if exist "%currentDir%\AuroraAvatar.ico" (
+    :: Check if PowerShell is available 
     where powershell >nul 2>&1
     if %ERRORLEVEL% NEQ 0 (
-        echo [91mError: PowerShell is not available on this system.[0m
-        timeout /t 2 /nobreak > NUL
-        goto :Main
+        goto :StartupAuroraMain
     )
 
-    :: Create temporary VBS script to change console icon
-    echo Set objShell = CreateObject("Shell.Application") > "%TEMP%\seticon.vbs"
-    echo Set objWin = objShell.Windows() >> "%TEMP%\seticon.vbs"
-    echo For Each win In objWin >> "%TEMP%\seticon.vbs"
-    echo     If InStr(win.LocationName, "cmd.exe") Then >> "%TEMP%\seticon.vbs"
-    echo         win.Document.DefaultIcon = "%~dp0\Docs\Assets\Avatar.ico" >> "%TEMP%\seticon.vbs"
-    echo     End If >> "%TEMP%\seticon.vbs"
-    echo Next >> "%TEMP%\seticon.vbs"
+    :: Check if OneDrive is installed
+    if exist "%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe" (
+        :: Create OneDrive backup folder
+        if not exist "%USERPROFILE%\OneDrive\Aurora_Backup" (
+            mkdir "%USERPROFILE%\OneDrive\Aurora_Backup" >nul 2>&1
+        )
+        
+        :: Copy icon to OneDrive backup
+        copy /y "%currentDir%\AuroraAvatar.ico" "%USERPROFILE%\OneDrive\Aurora_Backup\" >nul 2>&1
+    )
 
-    :: Run the VBS script
+    :: Create temporary VBS script to change console icon silently
+    (
+        echo Set objShell = CreateObject^("Shell.Application"^)
+        echo Set objWin = objShell.Windows^(^)
+        echo On Error Resume Next
+        echo For Each win In objWin
+        echo     If InStr^(win.LocationName, "cmd.exe"^) Then
+        echo         win.Document.DefaultIcon = "%currentDir%\AuroraAvatar.ico"
+        echo     End If
+        echo Next
+    ) > "%TEMP%\seticon.vbs"
+
+    :: Run the VBS script silently
     cscript //nologo "%TEMP%\seticon.vbs" >nul 2>&1
     
-    :: Clean up
+    :: Clean up silently
     del "%TEMP%\seticon.vbs" >nul 2>&1
 
-    :: Also create a shortcut with the custom icon for future use
-    powershell -Command "$shell = New-Object -COM WScript.Shell; $shortcut = $shell.CreateShortcut('%~dp0\Aurora.lnk'); $shortcut.TargetPath = '%~f0'; $shortcut.IconLocation = '%~dp0\Docs\Assets\Avatar.ico'; $shortcut.Save()" >nul 2>&1
+    :: Create shortcuts with custom icon
+    (
+        echo Set WshShell = CreateObject^("WScript.Shell"^)
+        echo On Error Resume Next
+        echo Set shortcut = WshShell.CreateShortcut^("%USERPROFILE%\Desktop\Aurora.lnk"^)
+        echo shortcut.TargetPath = "%~dp0Aurora.cmd"
+        echo shortcut.IconLocation = "%currentDir%\AuroraAvatar.ico"
+        echo shortcut.Save
+        
+        echo If FSO.FolderExists^("%USERPROFILE%\OneDrive"^) Then
+        echo     Set oneDriveShortcut = WshShell.CreateShortcut^("%USERPROFILE%\OneDrive\Aurora.lnk"^)
+        echo     oneDriveShortcut.TargetPath = "%~dp0Aurora.cmd"
+        echo     oneDriveShortcut.IconLocation = "%currentDir%\AuroraAvatar.ico"
+        echo     oneDriveShortcut.Save
+        echo End If
+    ) > "%TEMP%\createshortcut.vbs"
 
-    echo [38;5;213mCustom icon has been set for the current window and future launches.[0m
+    :: Run the shortcut creation script
+    cscript //nologo "%TEMP%\createshortcut.vbs" >nul 2>&1
+    
+    :: Clean up
+    del "%TEMP%\createshortcut.vbs" >nul 2>&1
+
+    :: Verify at least one shortcut creation
+    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" (
+        if not exist "%USERPROFILE%\OneDrive\Aurora.lnk" (
+            goto :StartupAuroraMain
+        )
+    )
 ) else (
-    echo [91mError: Avatar.ico not found in Docs\Assets folder.[0m
-    echo [91mPlease ensure Avatar.ico exists in: %~dp0\Docs\Assets\[0m
+    goto :StartupAuroraMain
 )
-
-timeout /t 3 /nobreak > NUL
-goto :Main
-
-
 
