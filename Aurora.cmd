@@ -174,6 +174,8 @@ if not exist "%OUTFILE%" (
 :: Open the file in Notepad
 start notepad "%OUTFILE%"
 
+::https://ansi.gabebanks.net/
+
 :: set ANSI escape characters
 cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
