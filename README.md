@@ -17,6 +17,15 @@
 
 - **User-Friendly:** With simple and intuitive usage for all users, Aurora operates through a single PowerShell command. Just input the corresponding numbers, and it will execute the tasks automatically, making it accessible and efficient for everyone.
 
+## Expected Improvements :
+
+- Enhanced gaming performance and reduced latency
+- Faster system and program loading times
+- Reduced system resource usage
+- Optimized AMD/NVIDIA GPU performance
+- Improved network settings and reduced lag
+- Disabled unnecessary services and processes
+- Enhanced overall desktop experience
 
 ## 💡 How to Use Aurora
 
@@ -52,6 +61,12 @@ Run the following command in Cmd (Admin):
 powershell -Command "irm 'https://ibrpride.com/Aurora' | iex"
 ```
 
+If you encounter any errors or the above command doesn't work, try this alternative command:
+
+
+```powershell
+powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-WebRequest "https://github.com/IBRHUB/Aurora/releases/download/0.6/Aurora.cmd" -OutFile "$env:temp\Aurora.cmd"; Start-process $env:temp\Aurora.cmd
+```
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20">
   &nbsp;<a href="https://github.com/IBRHUB/Aurora/blob/main/README.ar.md">Aurora in Arabic</a>
