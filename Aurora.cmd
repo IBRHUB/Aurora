@@ -275,8 +275,14 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
                                              if exist "%currentDir%\RepairWindows.cmd" (
                                                 if exist "%currentDir%\AuroraAvatar.ico" (
                                                     if exist "%currentDir%\RemoveEdge.ps1" (
-                                                        echo Files already exist in AuroraModules directory. Skipping download...
-                                                        goto :skipDownload
+                                                        if exist "%currentDir%\Components.ps1" (
+                                                            if exist "%currentDir%\AuroraTimerResolution.cs" (
+                                                                if exist "%currentDir%\AuroraTimerResolution.ps1" (
+                                                                    echo Files already exist in AuroraModules directory. Skipping download...
+                                                                    goto :skipDownload
+                                                                )
+                                                            )
+                                                        )
                                                     )
                                                 )
                                              )
@@ -306,10 +312,12 @@ curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubuserconten
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RemoveEdge.ps1" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\Components.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Components.ps1" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.cs" > NUL 2>&1
+curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.ps1" > NUL 2>&1
 cls
 
 echo Downloading batch and command modules...
-
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" > NUL 2>&1
@@ -329,9 +337,6 @@ move "%targetDir%\*" "%currentDir%\" > NUL 2>&1
 cls
 
 :skipDownload
-
-
-
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
@@ -345,15 +350,12 @@ powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\SetConsoleOpac
 :: Disabled modules:
 :: powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\resizeConsole.ps1"
 
-timeout /t 1 /nobreak >NUL
-
 :: Disable process mitigations
-powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues) {
-    Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue
-}" >NUL 2>&1
+:: powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 
 
-
+cls
+timeout /t 1 /nobreak >NUL
 chcp 65001 >NUL
 
 color f
@@ -376,25 +378,25 @@ echo.
 echo                             [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
 echo.
 echo.
-echo                        ╔═══════════════════════════════════════════════════╗[38;5;105m
-echo                        ║                                                   ║
-echo                        ║  [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m    ║[38;5;105m
-echo                        ║                                                   ║
-echo                        ║  [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m        ║[38;5;213m
-echo                        ║                                                   ║
-echo                        ║  [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m    ║[38;5;105m
-echo                        ║                                                   ║
-echo                        ║  [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m           ║[38;5;213m
-echo                        ║                                                   ║
-echo                        ║                                                   ║
-echo                        ║                   [38;5;213m[0] - [37mExit[37m         [38;5;213m             ║
-echo                        ║                                                   ║
-echo                        ╚═══════════════════════════════════════════════════╝[38;5;105m
+echo                       ═══════════════════════════════════════════════════════[38;5;105m
+echo.                                                                            
+echo                           [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m     [38;5;105m
+echo.                                                                            
+echo                           [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m         [38;5;213m
+echo.                                                                            
+echo                           [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m     [38;5;105m
+echo.                                                                            
+echo                           [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m            [38;5;213m
+echo.                                                                            
+echo.                                                                             
+echo                                            [38;5;213m[0] - [37mExit[37m         [38;5;213m              
+echo.                                                                             
+echo                       ═══════════════════════════════════════════════════════[38;5;105m
 echo.
 echo.
 echo.                                     
 echo.                     
-set /p input=%BS% [38;5;213m                                           ══════════^> [38;5;213 m[0m
+set /p input=%BS% [38;5;213m                                       ══════════^> [38;5;213 m[0m
 
 if not defined input goto :Main
 if "%input%"=="" goto :Main
@@ -407,7 +409,7 @@ if "%input%"=="5" goto :ManualServices
 if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
-if "%input%"=="0" exit /b
+if "%input%"=="0" goto :AuroraExit
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
 timeout /t 2 /nobreak >nul
 goto :Main
@@ -543,6 +545,11 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /t
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f > NUL 2>&1
 
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /t REG_BINARY /d "0" /f >nul 2>&1
+
+:: Allow for paths over 260 characters
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d "1" /f >nul 2>&1
+
 echo. - Optimizing Windows Scheduled Tasks
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v MaintenanceDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" /v EnabledExecution /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -605,7 +612,6 @@ set tasksToDisable=^
 for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
 )
-timeout /t 1 /nobreak > NUL
 
 echo. - Visual Effects
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
@@ -631,7 +637,7 @@ for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "SelectiveSuspendOn" /t REG_DWORD /d "0" /f > NUL 2>&1
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "D3ColdSupported" /t REG_DWORD /d "0" /f > NUL 2>&1
 )
-timeout /t 2 /nobreak > NUL
+
 echo. - Quick Boot 
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DelayedDesktopSwitchTimeout" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_SZ /d "0" /f > NUL 2>&1
@@ -653,10 +659,6 @@ echo. - Usb Overclock with secure boot enabled
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
 echo. - Disable Hibernation
-powercfg /h off > NUL 2>&1
-
-echo. - Disable Superfetch
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "4" /f > NUL 2>&1
 
 echo. - Enable GPU MSI Mode
 for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
@@ -671,20 +673,31 @@ Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAp
 
 echo. - Disable Hibernation
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
-powercfg /h off >nul
 
 echo. - Disable Sleep Study
 schtasks /change /tn "\microsoft\windows\power efficiency diagnostics\analyzesystem" /disable >nul 2>&1
 wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul
 wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul
 wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul
-timeout /t 2 /nobreak > NUL
+timeout /t 1 /nobreak > NUL
 echo. - Adjust processor scheduling to allocate processor resources to programs
 echo. - 2A Hex/42 Dec = Short, Fixed, High foreground boost.
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x18" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 
-timeout /t 4 /nobreak > NUL
+
+:: Check Windows version using wmic
+for /f "tokens=2 delims==" %%a in ('wmic os get BuildNumber /value') do set "build=%%a"
+if %build% LSS 22000 (
+    :: Windows 10 - skip timer resolution
+    echo. - Windows 10 detected, skipping timer resolution adjustment...
+) else (
+    :: Windows 11 - run timer resolution
+    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\AuroraTimerResolution.ps1"
+)
+
+timeout /t 2 /nobreak > NUL
+
 goto :CloudSync
 rem ========================================================================================================================================
 
@@ -850,7 +863,7 @@ if exist "%~dp0\AuroraModules\RemoveEdge.ps1" (
     timeout /t 2 /nobreak > NUL
 )
 
-goto :Main
+goto :OneDrive
 cls
 
 
@@ -877,7 +890,7 @@ echo.                                 [1] Yes [2] No
 echo.
 set /p input=%BS%              ══════════^> 
 if /I "%input%"=="1" goto :DisableOneDrive
-if /I "%input%"=="2" goto :Main
+if /I "%input%"=="2" goto :DeblootWindows
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo.
@@ -885,6 +898,12 @@ timeout /t 2 /nobreak > NUL
 goto :OneDrive
 
 :DisableOneDrive
+echo.
+echo Please wait while OneDrive is being removed...
+echo This may take a few minutes...
+echo.
+
+taskkill /F /IM "OneDrive.exe" > NUL 2>&1
 
 rem -  Disabling OneDrive
 reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > NUL 2>&1
@@ -903,6 +922,47 @@ if exist "%~dp0\AuroraModules\OneDrive.ps1" (
     )
 ) else (
     echo - Error: OneDrive.ps1 script not found in AuroraModules folder.
+    timeout /t 2 /nobreak > NUL
+)
+
+goto :DeblootWindows
+
+:DeblootWindows
+mode con cols=76 lines=33
+CLS
+echo.
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                     %ESC%[33mDo you want to Debloat Windows? %ESC%[0m
+echo.
+echo.                                 [1] Yes [2] No
+echo.
+set /p input=%BS%              ══════════^> 
+if /I "%input%"=="1" goto :RunDebloot
+if /I "%input%"=="2" goto :Main
+echo.
+echo.    Invalid input. Please enter [1] or [2].
+echo.
+timeout /t 2 /nobreak > NUL
+goto :DeblootWindows
+
+:RunDebloot
+if exist "%~dp0\AuroraModules\Components.ps1" (
+    start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\Components.ps1" 
+    if %ERRORLEVEL% NEQ 0 (
+        echo - Error: Failed to execute Windows debloating script.
+        timeout /t 2 /nobreak > NUL
+    )
+) else (
+    echo - Error: Components.ps1 script not found in AuroraModules folder.
     timeout /t 2 /nobreak > NUL
 )
 
@@ -947,8 +1007,8 @@ rem ============================================================================
 :NVIDIATweaks
 CLS
 mode con cols=76 lines=33
-:: start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
-:: timeout /t 3 /nobreak > NUL
+start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
+timeout /t 3 /nobreak > NUL
 echo.
 echo.
 echo.
@@ -1085,11 +1145,10 @@ echo.
 echo.
 echo.
 choice /c:12 /n > NUL 2>&1
-if "%errorlevel%"=="1" goto :NetworkTweaks
+if "%errorlevel%"=="1" goto :NetworkTweaks1
 if "%errorlevel%"=="2" goto :Main
 
 :NetworkTweaks1
-cls 
 timeout /t 3 /nobreak > NUL
 if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
@@ -1153,13 +1212,11 @@ timeout /t 2 /nobreak > NUL
 goto :ConfirmServices
 
 :StartServiceChanges
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\Audiosrv" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\WlanSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
@@ -1180,7 +1237,7 @@ echo.                     Disabling unnecessary services...
 echo.
 
 echo.
-echo.                     Do you want to disable Bluetooth services?
+echo.                 Do you want to disable Bluetooth services?
 echo.                             [1] Yes [2] No
 echo.
 set /p input=%BS% ══════════^> 
@@ -1201,7 +1258,7 @@ if /I "%input%"=="1" (
 :SkipBluetooth
 
 echo.
-echo.                     Do you want to disable Printing services?
+echo.                 Do you want to disable Printing services?
 echo.                             [1] Yes [2] No
 echo.
 set /p input=%BS% ══════════^> 
@@ -1246,6 +1303,8 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+
+
 
 echo.
 echo.                     Services disabled successfully.
@@ -1308,24 +1367,37 @@ goto :Main
 
 :relaunch
 cls
+mode con cols=76 lines=33
 echo.
-echo Do you want to restart Aurora or exit?
 echo.
-echo [1] Restart Aurora
-echo [2] Exit
+echo:       ______________________________________________________________
 echo.
-choice /c:12 /n /m "Enter your choice (1-2): "
+echo.
+echo                    Do you want to restart Aurora or exit?
+echo.
+echo                           [1] Restart Aurora
+echo                           [2] Exit
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.
+set /p input=%BS%══════════^> 
 
-if errorlevel 2 (
+if /I "%input%"=="2" (
     echo.
     echo - Exiting Aurora...
     timeout /t 2 /nobreak > NUL
-    exit
-) else if errorlevel 1 (
+    exit /b
+) else if /I "%input%"=="1" (
     echo.
     echo - Restarting Aurora...
     timeout /t 2 /nobreak > NUL
     goto :Main
+) else (
+    echo.
+    echo - Invalid input. Please enter [1] or [2].
+    timeout /t 2 /nobreak > NUL
+    goto :relaunch
 )
 
 
@@ -1400,4 +1472,76 @@ if exist "%currentDir%\AuroraAvatar.ico" (
 ) else (
     goto :StartupAuroraMain
 )
+
+:AuroraExit
+cls
+mode con: cols=75 lines=28
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:                               [96m Auto Cleaner[0m     
+echo:            ___________________________________________________ 
+echo:                                                               
+echo:                   	[1] [93m Temp and Prefetch  [0m
+echo:                  	[2] [93m Event Viewer[0m 
+echo:
+echo:                                                               
+echo:                            	 [0] [91mExit[0m
+echo:            ___________________________________________________
+echo:
+set /p choice=                            "Enter your choice: "
+if "%choice%"=="1" (
+    goto TempPrefetch
+) else if "%choice%"=="2" (
+    goto EventViewer
+) else if "%choice%"=="0" (
+    goto end
+) else (
+    echo                    [91m Invalid choice. Please enter 1, 2, or 0.[0m
+    pause
+    cls
+    goto Auto-Cleaner
+)
+
+
+:TempPrefetch
+echo.
+echo [93m- Clean up temp folders[0m
+
+rd /s /q !TEMP! >nul 2>&1
+rd /s /q !windir!\temp >nul 2>&1
+md !TEMP! >nul 2>&1
+md !windir!\temp >nul 2>&1
+
+echo  [92mTemp folders have been cleaned[0m
+echo.
+echo.
+echo [93m- Clean up the Prefetch folder[0m
+rd /s /q !windir!\Prefetch >nul 2>&1
+
+echo  [92mPrefetch folder has been cleaned[0m
+echo.
+
+
+goto EventViewer
+
+:EventViewer
+echo.
+echo [93m- Clear all Event Viewer logs[0m
+echo.
+echo.
+for /f "tokens=*" %%a in ('wevtutil el') do (
+    wevtutil cl "%%a"
+) >nul 2>&1
+
+echo [93m- Event Viewer logs has been cleaned[0m
+echo.
+
+goto :end
+
+:end
+exit /b
 
