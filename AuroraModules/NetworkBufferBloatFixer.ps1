@@ -55,7 +55,7 @@ function Set-ConsoleBackground {
     $Host.PrivateData.ProgressBackgroundColor = "Black"
     $Host.PrivateData.ProgressForegroundColor = "White"
     # Adjust console window size as needed
-    $Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size(65, 28)
+    $Host.UI.RawUI.WindowSize = New-Object System.Management.Automation.Host.Size(60, 29)
 }
 
 # -----------------------------------------------------------
