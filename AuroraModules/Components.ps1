@@ -6,17 +6,34 @@ param (
 $Host.UI.RawUI.BackgroundColor = "Black"
 
 function Disable-SystemSounds {
-    # Turn off system sounds by clearing default values and excluding certain events
     if ($SILENT) {
         Write-Progress -Activity "Disabling System Sounds" -Status "In Progress..." -PercentComplete 0
         $ProgressPreference = 'SilentlyContinue'
     }
-    $excludes = Get-ChildItem -LiteralPath 'Registry::HKEY_USERS\.DEFAULT\AppEvents\EventLabels' |
-        Where-Object -FilterScript { ($_ | Get-ItemProperty).ExcludeFromCPL -eq 1; } |
-        Select-Object -ExpandProperty 'PSChildName';
-    Get-ChildItem -Path 'Registry::HKEY_USERS\.DEFAULT\AppEvents\Schemes\Apps\*\*' |
-        Where-Object -Property 'PSChildName' -NotIn $excludes |
-        Get-ChildItem -Include '.Current' | Set-ItemProperty -Name '(Default)' -Value '';
+
+    # Launch mmsys.cpl and set sound scheme to "No Sounds"
+    $process = Start-Process -FilePath "rundll32.exe" -ArgumentList "shell32.dll,Control_RunDLL mmsys.cpl,,2" -PassThru
+    Start-Sleep -Seconds 2
+
+    # Set registry keys for "No Sounds" scheme
+    Set-ItemProperty -Path "HKCU:\AppEvents\Schemes" -Name "(Default)" -Value ".None" -Force
+    
+    # Disable all system sounds
+    $schemeKeys = @(
+        "HKCU:\AppEvents\Schemes\Apps\.Default\*",
+        "HKCU:\AppEvents\Schemes\Apps\Explorer\*",
+        "HKCU:\AppEvents\Schemes\Apps\sapisvr\*"
+    )
+
+    foreach ($keyPath in $schemeKeys) {
+        Get-ChildItem -Path $keyPath -ErrorAction SilentlyContinue | ForEach-Object {
+            Set-ItemProperty -Path "$($_.PSPath)\Current" -Name "(Default)" -Value "" -Type String -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    # Close mmsys.cpl
+    Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+
     if ($SILENT) {
         Write-Progress -Activity "Disabling System Sounds" -Status "Complete" -PercentComplete 100
     }
