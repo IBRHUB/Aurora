@@ -1,6 +1,4 @@
 @echo off
-Title Aurora Telemetry
-
 :: ============================================================
 :: Windows Telemetry Configuration Script
 :: ============================================================
