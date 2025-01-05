@@ -686,16 +686,43 @@ Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32Prior
 Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
 
 
-:: Check Windows version using wmic
-for /f "tokens=2 delims==" %%a in ('wmic os get BuildNumber /value') do set "build=%%a"
-if %build% LSS 22000 (
-    :: Windows 10 - skip timer resolution
-    echo. - Windows 10 detected, skipping timer resolution adjustment...
-) else (
-    :: Windows 11 - run timer resolution
-    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\AuroraTimerResolution.ps1"
-)
-
+mode con cols=76 lines=33
+CLS
+echo.
+echo.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.
+echo.                 %ESC%[33mDo you want to Enable Timer Resolution ?%ESC%[0m
+echo.
+echo.                             [1] Yes Or [2] No
+echo.
+set /p input=%BS%══════════^> 
+if /I "%input%"=="1" (
+    :: Check Windows version using wmic
+    for /f "tokens=2 delims==" %%a in ('wmic os get BuildNumber /value') do set "build=%%a"
+    if !build! LSS 22000 (
+        :: Windows 10 - skip timer resolution
+        echo. - Windows 10 or Windows Server detected, skipping timer resolution adjustment...
+        timeout /t 2 /nobreak > NUL
+        goto :CloudSync
+    ) else (
+        :: Windows 11 - run timer resolution
+        start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\AuroraTimerResolution.ps1"
+    )
+    )
+if /I "%input%"=="2" goto :CloudSync
+if /I "%input%"=="3" goto :Main
+echo.
+echo.    Invalid input. Please enter [1] or [2].
+echo:       ______________________________________________________________
+echo.
 timeout /t 2 /nobreak > NUL
 
 goto :CloudSync
