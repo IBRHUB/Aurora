@@ -12,6 +12,7 @@
  * - Event logging for diagnostics
  * 
  * Copyright © Aurora Project
+ * Publisher: 
  */
 
 using System;
@@ -26,10 +27,11 @@ using System.Management;
 using System.Threading;
 using System.Diagnostics;
 
-[assembly: AssemblyVersion("2.1")]
+[assembly: AssemblyVersion("1.0")]
 [assembly: AssemblyProduct("Aurora Timer Resolution Service")]
 [assembly: AssemblyDescription("Aurora Timer Resolution Service - Optimizes system timer resolution")]
 [assembly: AssemblyCopyright("Copyright © Aurora Project")]
+[assembly: AssemblyCompany("IBRHUB")]
 
 namespace WindowsService {
     // Windows service that controls system timer resolution
