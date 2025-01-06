@@ -30,3 +30,4 @@ powershell -NoProfile Expand-Archive '%temp%\nvidiaProfileInspector.zip' -Destin
 
 curl -g -k -L -# -o "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraOFF.nip" > NUL 2>&1
 curl -g -k -L -# -o "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraON.nip" > NUL 2>&1
+exit /b
