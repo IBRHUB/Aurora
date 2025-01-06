@@ -36,7 +36,6 @@ if %errorlevel% neq 0 (
 
 :: Initialize environment
 setlocal EnableExtensions DisableDelayedExpansion
-title Aurora AMD Optimization
 
 
 :: Registry modifications
