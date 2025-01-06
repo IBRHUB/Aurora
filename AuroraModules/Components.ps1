@@ -341,15 +341,18 @@ function Set-WallpaperImage {
 function Show-Menu {
     if (-not $SILENT) {
         Clear-Host
-        Write-Host "================ Windows Configuration Menu ================"
-        Write-Host "1: Disable System Sounds"
-        Write-Host "2: Enable Edge Uninstallation"
-        Write-Host "3: Remove Unwanted Apps"
-        Write-Host "4: Remove Windows Features"
-        Write-Host "5: Remove Windows Capabilities"
-        Write-Host "6: Set Black Wallpaper"
-        Write-Host "Q: Quit"
-        Write-Host "========================================================"
+        Write-Host "╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
+        Write-Host "║                                                            ║" -ForegroundColor Cyan
+        Write-Host "║  1: Disable System Sounds                                  ║" -ForegroundColor White
+        Write-Host "║  2: Enable Edge Uninstallation                             ║" -ForegroundColor White
+        Write-Host "║  3: Remove Unwanted Apps                                   ║" -ForegroundColor White
+        Write-Host "║  4: Remove Windows Features                                ║" -ForegroundColor White
+        Write-Host "║  5: Remove Windows Capabilities                            ║" -ForegroundColor White
+        Write-Host "║  6: Set Black Wallpaper                                    ║" -ForegroundColor White
+        Write-Host "║                                                            ║" -ForegroundColor Cyan
+        Write-Host "║  0: Exit Program                                           ║" -ForegroundColor RED
+        Write-Host "║                                                            ║" -ForegroundColor Cyan
+        Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
     }
 }
 
@@ -357,10 +360,10 @@ function Show-Menu {
 do {
     Show-Menu
     if (-not $SILENT) {
-        $input = Read-Host "Please make a selection"
+        $userSelection = Read-Host "Please make a selection (0-6)"
     }
     
-    switch ($input) {
+    switch ($userSelection) {
         '1' {
             if (-not $SILENT) { Write-Host "Disabling system sounds..." }
             Disable-SystemSounds
@@ -388,11 +391,12 @@ do {
         }
         '6' {
             if (-not $SILENT) { Write-Host "Setting black wallpaper..." }
-            Set-WallpaperColor -HtmlColor '#000000'
+            Set-WallpaperColor -HtmlColor "#000000"
             if (-not $SILENT) { pause }
         }
-        'q' {
+        '0' {
             return
         }
     }
-} until ($input -eq 'q')
+} until ($userSelection -eq '0')
+
