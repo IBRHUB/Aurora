@@ -1,9 +1,60 @@
-param (
-    [switch]
-    $SILENT
-)
+﻿# -----------------------------------------------------------
+# Check if the script is running with Administrator privileges
+# -----------------------------------------------------------
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+    [Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Please run this script as Administrator." -ForegroundColor Yellow
+    Start-Process powershell.exe -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "{0}"' -f `
+        $MyInvocation.MyCommand.Definition) -Verb RunAs
+    exit
+}
+
 
 $Host.UI.RawUI.BackgroundColor = "Black"
+
+# Set the console window size
+cmd /c "mode con: cols=70 lines=29"
+
+# Set Console Opacity Transparent
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+
+public class ConsoleOpacity {
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr GetConsoleWindow();
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+    private const uint LWA_ALPHA = 0x00000002;
+
+    public static void SetOpacity(byte opacity) {
+        IntPtr hwnd = GetConsoleWindow();
+        if (hwnd == IntPtr.Zero) {
+            throw new InvalidOperationException("Failed to get console window handle.");
+        }
+        bool result = SetLayeredWindowAttributes(hwnd, 0, opacity, LWA_ALPHA);
+        if (!result) {
+            throw new InvalidOperationException("Failed to set window opacity.");
+        }
+    }
+}
+"@
+
+try {
+    # Set opacity (0-255, where 255 is fully opaque and 0 is fully transparent)
+    [ConsoleOpacity]::SetOpacity(230)
+    Write-Host "Console opacity set successfully." -ForegroundColor Green
+} catch {
+    Write-Host "An error occurred: $_" -ForegroundColor Red
+}
+
+Set-ConsoleBackground
+Clear-Host
+
+
+
 
 function Disable-SystemSounds {
     if ($SILENT) {
@@ -341,18 +392,19 @@ function Set-WallpaperImage {
 function Show-Menu {
     if (-not $SILENT) {
         Clear-Host
-        Write-Host "╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
-        Write-Host "║                                                            ║" -ForegroundColor Cyan
-        Write-Host "║  1: Disable System Sounds                                  ║" -ForegroundColor White
-        Write-Host "║  2: Enable Edge Uninstallation                             ║" -ForegroundColor White
-        Write-Host "║  3: Remove Unwanted Apps                                   ║" -ForegroundColor White
-        Write-Host "║  4: Remove Windows Features                                ║" -ForegroundColor White
-        Write-Host "║  5: Remove Windows Capabilities                            ║" -ForegroundColor White
-        Write-Host "║  6: Set Black Wallpaper                                    ║" -ForegroundColor White
-        Write-Host "║                                                            ║" -ForegroundColor Cyan
-        Write-Host "║  0: Exit Program                                           ║" -ForegroundColor RED
-        Write-Host "║                                                            ║" -ForegroundColor Cyan
-        Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+        Write-Host "    ╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
+        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
+        Write-Host "    ║  1: Disable System Sounds                                  ║" -ForegroundColor White
+        Write-Host "    ║  2: Enable Edge Uninstallation                             ║" -ForegroundColor White
+        Write-Host "    ║  3: Remove Unwanted Apps                                   ║" -ForegroundColor White
+        Write-Host "    ║  4: Remove Windows Features                                ║" -ForegroundColor White
+        Write-Host "    ║  5: Remove Windows Capabilities                            ║" -ForegroundColor White
+        Write-Host "    ║  6: Set Black Wallpaper                                    ║" -ForegroundColor White
+        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
+        Write-Host "    ║  0: Exit Program                                           ║" -ForegroundColor RED
+        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
+        Write-Host "    ╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+        Write-Host "`n"
     }
 }
 
@@ -360,10 +412,10 @@ function Show-Menu {
 do {
     Show-Menu
     if (-not $SILENT) {
-        $userSelection = Read-Host "Please make a selection (0-6)"
+        $userInput = Read-Host "    Please make a selection (0-6)"
     }
     
-    switch ($userSelection) {
+    switch ($userInput) {
         '1' {
             if (-not $SILENT) { Write-Host "Disabling system sounds..." }
             Disable-SystemSounds
@@ -398,5 +450,4 @@ do {
             return
         }
     }
-} until ($userSelection -eq '0')
-
+} until ($userInput -eq '0')
