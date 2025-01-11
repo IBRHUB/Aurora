@@ -1,5 +1,4 @@
 @echo off
-
 :: ============================================================
 ::                            Aurora
 :: ============================================================
@@ -302,7 +301,6 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
 
 echo Download files for Aurora
 
-echo Downloading PowerShell modules...
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" > NUL 2>&1
@@ -616,17 +614,39 @@ for %%T in (%tasksToDisable%) do (
 )
 
 echo. - Visual Effects
+:: Enable font smoothing
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
+
+:: User Preferences Mask (affects visual effects settings)
 reg add "HKCU\Control Panel\Desktop" /v "UserPreferencesMask" /t REG_BINARY /d "9012038010000000" /f > NUL 2>&1
+
+:: Show window contents while dragging
 reg add "HKCU\Control Panel\Desktop" /v "DragFullWindows" /t REG_SZ /d "1" /f > NUL 2>&1
+
+:: Disable minimize/maximize animations
 reg add "HKCU\Control Panel\Desktop\WindowMetrics" /v "MinAnimate" /t REG_SZ /d "0" /f > NUL 2>&1
+
+:: Enable translucent selection rectangle
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ListviewAlphaSelect" /t REG_DWORD /d 1 /f > NUL 2>&1
+
+:: Show icons with details in File Explorer
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "IconsOnly" /t REG_DWORD /d 0 /f > NUL 2>&1
+
+:: Disable taskbar animations
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarAnimations" /t REG_DWORD /d 0 /f > NUL 2>&1
+
+:: Enable shadows under list view text
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ListviewShadow" /t REG_DWORD /d 1 /f > NUL 2>&1
+
+:: Set visual effects to "Adjust for best appearance"
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" /v "VisualFXSetting" /t REG_DWORD /d 3 /f > NUL 2>&1
+
+:: Disable Aero Peek
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "EnableAeroPeek" /t REG_DWORD /d 0 /f > NUL 2>&1
+
+:: Disable persistent thumbnails in memory
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "AlwaysHibernateThumbnails" /t REG_DWORD /d 0 /f > NUL 2>&1
+
 
 :: Check if WMIC is available
 wmic /? >nul 2>&1
@@ -949,7 +969,8 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibraries
 
 timeout /t 1 /nobreak > NUL
 if exist "%~dp0\AuroraModules\OneDrive.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
+    :: start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%~dp0\AuroraModules\OneDrive.ps1"
+	:: This operation has been disabled due to the large number of users relying on OneDrive and to prevent potential data loss.
     if %ERRORLEVEL% NEQ 0 (
         echo - Error: Failed to execute OneDrive removal script.
         timeout /t 2 /nobreak > NUL
@@ -1041,8 +1062,8 @@ rem ============================================================================
 :NVIDIATweaks
 CLS
 mode con cols=76 lines=33
-:: start %~dp0\AuroraModules\NvidiaProfileInspector.cmd
-:: timeout /t 3 /nobreak > NUL
+start /wait cmd /c "%~dp0\AuroraModules\NvidiaProfileInspector.cmd"
+timeout /t 3 /nobreak > NUL
 echo.
 echo.
 echo.
