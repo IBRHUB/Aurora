@@ -1,5 +1,5 @@
 @echo off
-
+goto :main
 :: ============================================================
 ::                            Aurora
 :: ============================================================
@@ -242,7 +242,7 @@ exit /b
 taskkill /F /IM "notepad.exe" >nul 2>&1
 cls
 
-
+rem ========================================================================================================================================
 :: Check Internet Connection
 ping -n 1 "google.com" >nul 2>&1
 if !ERRORLEVEL! neq 0 (
@@ -302,10 +302,6 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
 
 echo Download files for Aurora
 
-:: Download Aurora modules with progress indicator
-echo Downloading Aurora modules..
-echo.
-
 echo Downloading PowerShell modules...
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" > NUL 2>&1
@@ -319,8 +315,6 @@ curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubus
 curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.ps1" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\AuroraSudo.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraSudo.exe" > NUL 2>&1
 
-
-echo Downloading batch and command modules...
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" > NUL 2>&1
@@ -355,16 +349,15 @@ powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\SetConsoleOpac
 
 :: Disable process mitigations
 :: powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
-
-
 cls
-timeout /t 1 /nobreak >NUL
-chcp 65001 >NUL
+rem ========================================================================================================================================
+
 
 color f
 :Main
+chcp 65001 >NUL
 CLS
-mode con cols=95 lines=38
+mode con cols=95 lines=40
 echo.
 echo.
 echo		      [38;5;105m ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
@@ -378,26 +371,29 @@ echo		      [38;5;105m █▀   ▄█████████▀    ███ 
 echo		      [38;5;69m                     ███    ███                                       
 echo.
 echo.
-echo                             [94mA[96mU[92mR[93mO[95mR[90mA[37m [37m – Lighting Up Your PC's Performance   [38;5;105m
+echo                             [1;94mA[1;96mU[1;92mR[1;93mO[1;92mR[1;90mA[1;37m [1;37m – Lighting Up Your PC's Performance   
 echo.
 echo.
-echo                       ═══════════════════════════════════════════════════════[38;5;105m
+echo                       ═══════════════════════════════════════════════════════
 echo.                                                                            
-echo                           [38;5;213m[1] - [37mWindows Tweaks[37m     [38;5;213m[3] - [37mNetwork Tweaks[37m     [38;5;105m
+echo                         [38;5;213m[1] - [1;37mWindows Tweaks[37m       [38;5;213m[3] - [1;37mNetwork Tweaks[37m     [38;5;105m
 echo.                                                                            
-echo                           [38;5;213m[2] - [37mGPU Tweaks[37m         [38;5;213m[4] - [37mPower-Plan[37m         [38;5;213m
+echo                         [38;5;213m[2] - [1;37mGPU Tweaks[37m           [38;5;213m[4] - [1;37mPower Plan[37m         [38;5;213m
 echo.                                                                            
-echo                           [38;5;213m[5] - [37mManual Services[37m    [38;5;213m[7] - [37mRepair Windows[37m     [38;5;105m
+echo                         [38;5;213m[5] - [1;37mDisable Services[37m     [38;5;213m[7] - [1;37mRepair Windows[37m     [38;5;105m
 echo.                                                                            
-echo                           [38;5;213m[6] - [37mDark Mode[37m          [38;5;213m[8] - [37mDiscord[37m            [38;5;213m
+echo                         [38;5;213m[6] - [1;37mDark Mode[37m            [38;5;213m[8] - [1;37mDiscord[37m            [38;5;213m
 echo.                                                                            
 echo.                                                                             
-echo                                            [38;5;213m[0] - [37mExit[37m         [38;5;213m              
+echo                                            [38;5;213m[0] - [1;37mExit[37m                       
 echo.                                                                             
-echo                       ═══════════════════════════════════════════════════════[38;5;105m
+echo                       ═══════════════════════════════════════════════════════
 echo.
+echo                         [38;5;213m[9] - [1;4;3;34mWebsite[0m            [38;5;213m[10] - [1;4;3;34mTroubleshooting![0m             
 echo.
-echo.                                     
+echo                       ═══════════════════════════════════════════════════════
+echo.
+echo.                                    
 echo.                     
 set /p input=%BS% [38;5;213m                                       ══════════^> [38;5;213 m[0m
 
@@ -412,6 +408,9 @@ if "%input%"=="5" goto :ManualServices
 if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
+if "%input%"=="9" (start https://ibrpride.com/aurora/p1380752167 & goto :Main)
+if "%input%"=="10" (start https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting.md & goto :Main)
+
 if "%input%"=="0" goto :AuroraExit
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
 timeout /t 2 /nobreak >nul
@@ -629,6 +628,17 @@ reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" 
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "EnableAeroPeek" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "AlwaysHibernateThumbnails" /t REG_DWORD /d 0 /f > NUL 2>&1
 
+:: Check if WMIC is available
+wmic /? >nul 2>&1
+if %errorlevel% equ 0 (
+    echo. - WMIC is already available on this system.
+    goto :USBPowerSavings
+) else (
+    echo. - WMIC is not available. Attempting to install...
+)
+    goto :skipUSBPowerSavings
+
+:USBPowerSavings
 echo. - Disable USB Power Savings
 for /f "tokens=*" %%a in ('Reg query "HKLM\System\CurrentControlSet\Enum" /s /f "StorPort" 2^>nul ^| findstr "StorPort"') do reg add "%%a" /v "EnableIdlePowerManagement" /t REG_DWORD /d "0" /f > NUL 2>&1
 for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
@@ -640,7 +650,17 @@ for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "SelectiveSuspendOn" /t REG_DWORD /d "0" /f > NUL 2>&1
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "D3ColdSupported" /t REG_DWORD /d "0" /f > NUL 2>&1
 )
+timeout /t 2 /nobreak > NUL
+echo. - Enable GPU MSI Mode
+for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
+reg query "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" >nul 2>&1 && (
+reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d "1" /f > NUL 2>&1
+)
+timeout /t 1 /nobreak > NUL
+goto:continue
+:skipUSBPowerSavings
 
+:continue
 echo. - Quick Boot 
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DelayedDesktopSwitchTimeout" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_SZ /d "0" /f > NUL 2>&1
@@ -658,30 +678,22 @@ echo. - Additional Performance Optimizations
 reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > NUL 2>&1
 
-echo. - Usb Overclock with secure boot enabled
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
+:: echo. - Usb Overclock with secure boot enabled
+:: reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
-echo. - Disable Hibernation
-
-echo. - Enable GPU MSI Mode
-for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
-reg query "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" >nul 2>&1 && (
-reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d "1" /f > NUL 2>&1
-)
-timeout /t 2 /nobreak > NUL
 echo. - Background Apps
-Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul
-Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul
-Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul
+Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul 2>&1
+Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul 2>&1
+Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul 2>&1
 
 echo. - Disable Hibernation
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
 
 echo. - Disable Sleep Study
 schtasks /change /tn "\microsoft\windows\power efficiency diagnostics\analyzesystem" /disable >nul 2>&1
-wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul
-wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul
-wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul
+wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul 2>&1
+wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul 2>&1
+wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul 2>&1
 timeout /t 1 /nobreak > NUL
 echo. - Adjust processor scheduling to allocate processor resources to programs
 echo. - 2A Hex/42 Dec = Short, Fixed, High foreground boost.
@@ -707,19 +719,7 @@ echo.
 echo.                             [1] Yes Or [2] No
 echo.
 set /p input=%BS%══════════^> 
-if /I "%input%"=="1" (
-    :: Check Windows version using wmic
-    for /f "tokens=2 delims==" %%a in ('wmic os get BuildNumber /value') do set "build=%%a"
-    if !build! LSS 22000 (
-        :: Windows 10 - skip timer resolution
-        echo. - Windows 10 or Windows Server detected, skipping timer resolution adjustment...
-        timeout /t 2 /nobreak > NUL
-        goto :CloudSync
-    ) else (
-        :: Windows 11 - run timer resolution
-        start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\AuroraTimerResolution.ps1"
-    )
-    )
+if /I "%input%"=="1" goto :TimerR
 if /I "%input%"=="2" goto :CloudSync
 if /I "%input%"=="3" goto :Main
 echo.
@@ -727,6 +727,10 @@ echo.    Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
 echo.
 timeout /t 2 /nobreak > NUL
+
+:TimerR
+start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\AuroraTimerResolution.ps1"
+
 
 goto :CloudSync
 rem ========================================================================================================================================
@@ -1186,14 +1190,14 @@ timeout /t 3 /nobreak > NUL
 if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo     Error: Failed to apply network optimizations.
+        echo - Error: Failed to apply network optimizations.
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo     Network optimizations applied successfully.
+        echo - Network optimizations applied successfully.
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo     Error: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.
+    echo - Error: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.
     timeout /t 2 /nobreak > NUL
 )
 goto :Main
@@ -1507,6 +1511,7 @@ if exist "%currentDir%\AuroraAvatar.ico" (
 )
 
 :AuroraExit
+goto :end
 cls
 mode con: cols=75 lines=28
 echo:
