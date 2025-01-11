@@ -4,6 +4,14 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     Exit
 }
 
+# Check Windows version
+$buildNumber = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuildNumber
+if ($buildNumber -lt 22000) {
+    Write-Error "This script is designed for Windows 11 only. Exiting..."
+	sleep 5
+    exit 1
+}
+cls
 Write-Host "Installing: Aurora Timer Resolution Service . . ."
 
 # Get current script directory
