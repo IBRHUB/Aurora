@@ -655,8 +655,8 @@ if %errorlevel% equ 0 (
     goto :USBPowerSavings
 ) else (
     echo. - WMIC is not available. Attempting to install...
-)
     goto :skipUSBPowerSavings
+)
 
 :USBPowerSavings
 echo. - Disable USB Power Savings
