@@ -15,8 +15,6 @@
 
 - **Performance Boost:** Aurora achieves harmony between optimal performance and seamless compatibility. It introduces carefully crafted adjustments to enhance Windows' speed and responsiveness while preserving critical functionality. Unlike others, Aurora avoids superficial tweaks or negligible improvements, ensuring greater stability and reliability
 
-- **User-Friendly:** With simple and intuitive usage for all users, Aurora operates through a single PowerShell command. Just input the corresponding numbers, and it will execute the tasks automatically, making it accessible and efficient for everyone.
-
 ## Expected Improvements :
 
 - Enhanced gaming performance and reduced latency
