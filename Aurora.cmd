@@ -466,6 +466,53 @@ echo. - Disabling Background Apps
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v BackgroundAppGlobalToggle /t REG_DWORD /d 0 /f > NUL 2>&1
 
+echo. - Disabling startup applications
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Discord" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Synapse3" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Spotify" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EpicGamesLauncher" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RiotClient" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Steam" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GoogleDrive" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OneDrive" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DropboxUpdate" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CCleaner" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iTunesHelper" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeCreativeCloud" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeGCClient" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EADesktop" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftConnect" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftGameLauncher" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "BattleNet" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "TeamViewer" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AnyDesk" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "LogitechGHub" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CorsairService" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RazerCentralService" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "MSIAfterburner" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "NVIDIAGeForceExperience" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AMDRyzenMaster" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Overwolf" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SteelSeriesEngine" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ASUSArmouryCrate" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGGameFirst" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGRangeboost" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iCUE" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Wallpaper Engine" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GOG Galaxy" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Microsoft Teams" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Slack" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Zoom" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Skype" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "WhatsApp" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Telegram" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OpenRGB" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SignalRGB" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Java Update Scheduler" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "QuickTime Task" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SoundBlasterConnect" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RealPlayer" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+
 echo. - Enabling Hardware-Accelerated GPU Scheduling
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v HwSchMode /t REG_DWORD /d 2 /f > NUL 2>&1
 
