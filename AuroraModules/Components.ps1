@@ -392,6 +392,9 @@ function Set-WallpaperImage {
 function Show-Menu {
     if (-not $SILENT) {
         Clear-Host
+		Write-Host "`n"
+		Write-Host "`n"
+		Write-Host "`n"
         Write-Host "    ╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
         Write-Host "    ║                                                            ║" -ForegroundColor Cyan
         Write-Host "    ║  1: Disable System Sounds                                  ║" -ForegroundColor White
@@ -401,7 +404,7 @@ function Show-Menu {
         Write-Host "    ║  5: Remove Windows Capabilities                            ║" -ForegroundColor White
         Write-Host "    ║  6: Set Black Wallpaper                                    ║" -ForegroundColor White
         Write-Host "    ║                                                            ║" -ForegroundColor Cyan
-        Write-Host "    ║  0: Exit Program                                           ║" -ForegroundColor RED
+        Write-Host "    ║  0: Exit                                                   ║" -ForegroundColor RED
         Write-Host "    ║                                                            ║" -ForegroundColor Cyan
         Write-Host "    ╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
         Write-Host "`n"

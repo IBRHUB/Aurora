@@ -222,15 +222,26 @@ if /I "%choice%"=="1" (
     echo Thank you for agreeing to the terms. The process will continue.
     timeout /t 2 /nobreak > NUL
     goto :StartAurora
-) else if /I "%choice%"=="2" (
-    echo The process has been canceled because you did not agree to the terms.
-    timeout /t 2 /nobreak > NUL
-    goto :endAurora
 ) else (
-    echo Invalid input. Please enter either 1 or 2.
-    timeout /t 2 /nobreak > NUL
-    goto :DISCLAIMER
+    if /I "%choice%"=="2" (
+        echo The process has been canceled because you did not agree to the terms.
+        timeout /t 2 /nobreak > NUL
+        goto :endAurora
+    ) else (
+        if /I "%choice%"=="x" (
+            goto :bypass
+        ) else (
+            echo Invalid input. Please enter either 1, 2
+            timeout /t 2 /nobreak > NUL
+            goto :DISCLAIMER
+        )
+    )
 )
+
+:bypass
+taskkill /F /IM "notepad.exe" >nul 2>&1
+goto :MainMenu
+
 
 :endAurora
 taskkill /F /IM "notepad.exe" >nul 2>&1
@@ -240,6 +251,8 @@ exit /b
 :StartAurora
 taskkill /F /IM "notepad.exe" >nul 2>&1
 cls
+
+
 
 rem ========================================================================================================================================
 :: Check Internet Connection
@@ -352,51 +365,48 @@ rem ============================================================================
 
 
 color f
-:Main
+:MainMenu
 chcp 65001 >NUL
 CLS
 mode con cols=95 lines=40
 echo.
+echo		      [38;5;141m  ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
+echo		      [38;5;111m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
+echo		      [38;5;81m ███▌   ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
+echo		      [38;5;51m ███▌  ▄███▄▄▄██▀   ▄███▄▄▄▄██▀  ▄███▄▄▄▄███▄▄ ███    ███  ▄███▄▄▄██▀  
+echo		      [38;5;78m ███▌ ▀▀███▀▀▀██▄  ▀▀███▀▀▀▀▀   ▀▀███▀▀▀▀███▀  ███    ███ ▀▀███▀▀▀██▄  
+echo		      [38;5;123m ███    ███    ██▄ ▀███████████   ███    ███   ███    ███   ███    ██▄ 
+echo		      [38;5;158m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
+echo		      [38;5;225m █▀   ▄█████████▀    ███    ███   ███    █▀    ████████▀  ▄█████████▀  
+echo		      [38;5;81m                     ███    ███                                       
 echo.
-echo		      [38;5;105m ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
-echo		      [38;5;105m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;69m ███▌   ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;69m ███▌  ▄███▄▄▄██▀   ▄███▄▄▄▄██▀  ▄███▄▄▄▄███▄▄ ███    ███  ▄███▄▄▄██▀  
-echo		      [38;5;133m ███▌ ▀▀███▀▀▀██▄  ▀▀███▀▀▀▀▀   ▀▀███▀▀▀▀███▀  ███    ███ ▀▀███▀▀▀██▄  
-echo		      [38;5;133m ███    ███    ██▄ ▀███████████   ███    ███   ███    ███   ███    ██▄ 
-echo		      [38;5;105m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;105m █▀   ▄█████████▀    ███    ███   ███    █▀    ████████▀  ▄█████████▀  
-echo		      [38;5;69m                     ███    ███                                       
 echo.
-echo.
-echo                             [1;94mA[1;96mU[1;92mR[1;93mO[1;92mR[1;90mA[1;37m [1;37m – Lighting Up Your PC's Performance   
-echo.
+echo                             [1;4;94mA[1;96mU[1;92mR[1;93mO[1;92mR[1;90mA[1;37m[0m ✓[1;3;37m%bullet% Lighting Up Your PC's Performance[0m   
 echo.
 echo                       ═══════════════════════════════════════════════════════
 echo.                                                                            
-echo                         [38;5;213m[1] - [1;37mWindows Tweaks[37m       [38;5;213m[3] - [1;37mNetwork Tweaks[37m     [38;5;105m
+echo                         [38;5;36m[1]%bullet% [1;37mWindows Tweaks[37m       [38;5;36m[3]%bullet% [1;37mNetwork Tweaks[37m     [38;5;105m
 echo.                                                                            
-echo                         [38;5;213m[2] - [1;37mGPU Tweaks[37m           [38;5;213m[4] - [1;37mPower Plan[37m         [38;5;213m
+echo                         [38;5;36m[2]%bullet% [1;37mGPU Tweaks[37m           [38;5;36m[4]%bullet% [1;37mPower Plan[37m         [38;5;36m
 echo.                                                                            
-echo                         [38;5;213m[5] - [1;37mDisable Services[37m     [38;5;213m[7] - [1;37mRepair Windows[37m     [38;5;105m
+echo                       ═══════════════════════════════════════════════════════                                                                                                                                                    
+echo                         [38;5;36m[5]%bullet% [1;37mDisable Services[37m     [38;5;36m[7]%bullet% [1;37mRepair Windows[37m     [38;5;105m
 echo.                                                                            
-echo                         [38;5;213m[6] - [1;37mDark Mode[37m            [38;5;213m[8] - [1;37mDiscord[37m            [38;5;213m
-echo.                                                                            
+echo                         [38;5;36m[6]%bullet% [1;37mDark Mode[37m            [38;5;36m[8]%bullet% [1;4;3;34mDiscord[0m            [38;5;36m
+echo.                                                                                   
+echo                       ═══════════════════════════════════════════════════════
+echo.
+echo                         [38;5;36m[9]%bullet% [1;4;3;34mWebsite[0m             [38;5;36m[10]%bullet% [1;4;3;34mTroubleshooting![0m             
+echo.
+echo                       ═══════════════════════════════════════════════════════
+echo.
 echo.                                                                             
-echo                                            [38;5;213m[0] - [1;37mExit[37m                       
-echo.                                                                             
-echo                       ═══════════════════════════════════════════════════════
-echo.
-echo                         [38;5;213m[9] - [1;4;3;34mWebsite[0m            [38;5;213m[10] - [1;4;3;34mTroubleshooting![0m             
-echo.
-echo                       ═══════════════════════════════════════════════════════
-echo.
-echo.                                    
-echo.                     
-set /p input=%BS% [38;5;213m                                       ══════════^> [38;5;213 m[0m
+echo                                               [91m[0][0m%bullet% [1;4;3;91mExit[0m  [37m                       
+echo.                                                                                                            
+set /p input=%BS% [38;5;36m                      ══════════^> [38;5;36 m[0m
 
-if not defined input goto :Main
-if "%input%"=="" goto :Main
+if not defined input goto :MainMenu
+if "%input%"=="" goto :MainMenu
 set "input=%input:"=%"
 if "%input%"=="1" goto :WinTweaks
 if "%input%"=="2" goto :GPUTweaks  
@@ -406,17 +416,17 @@ if "%input%"=="5" goto :ManualServices
 if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
-if "%input%"=="9" (start https://ibrpride.com/aurora/p1380752167 & goto :Main)
-if "%input%"=="10" (start https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting.md & goto :Main)
+if "%input%"=="9" (start https://ibrpride.com/aurora/p1380752167 & goto :MainMenu)
+if "%input%"=="10" (start https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting.md & goto :MainMenu)
 
 if "%input%"=="0" goto :AuroraExit
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
-timeout /t 2 /nobreak >nul
-goto :Main
+C:\Windows\System32\TIMEOUT.exe /t 1 /nobreak > nul 2> nul
+goto :MainMenu
 
 :WinTweaks
 mode con cols=76 lines=35
-
+cls
 :: - Setting UAC - never notify
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -436,8 +446,8 @@ reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v StartupBoostEnabled /t REG_DWO
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HighEfficiencyModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-echo. - Enabling old NVIDIA sharpening
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableGR535 /t REG_DWORD /d 0 /f > NUL 2>&1
+:: echo. - Enabling old NVIDIA sharpening
+:: reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableGR535 /t REG_DWORD /d 0 /f > NUL 2>&1
 
 echo. - Disabling NVIDIA Telemetry
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v NvBackend /f > NUL 2>&1
@@ -463,55 +473,194 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProf
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "SFIO Priority" /t REG_SZ /d High /f > NUL 2>&1
 
 echo. - Disabling Background Apps
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v BackgroundAppGlobalToggle /t REG_DWORD /d 0 /f > NUL 2>&1
+Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul 2>&1
+Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul 2>&1
+Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul 2>&1
 
 echo. - Disabling startup applications
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Discord" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Synapse3" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Spotify" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EpicGamesLauncher" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RiotClient" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Steam" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GoogleDrive" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OneDrive" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DropboxUpdate" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CCleaner" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iTunesHelper" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeCreativeCloud" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeGCClient" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EADesktop" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftConnect" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftGameLauncher" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "BattleNet" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "TeamViewer" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AnyDesk" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "LogitechGHub" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CorsairService" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RazerCentralService" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "MSIAfterburner" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "NVIDIAGeForceExperience" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AMDRyzenMaster" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Overwolf" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SteelSeriesEngine" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ASUSArmouryCrate" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGGameFirst" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGRangeboost" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iCUE" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Wallpaper Engine" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GOG Galaxy" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Microsoft Teams" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Slack" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Zoom" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Skype" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "WhatsApp" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Telegram" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OpenRGB" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SignalRGB" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Java Update Scheduler" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "QuickTime Task" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SoundBlasterConnect" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RealPlayer" /t REG_BINARY /d "030000000000000000000000" /f > nul 2>&1
+reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "C:\StartupBackup.reg" /y  >nul 2>&1 
+attrib +h "C:\StartupBackup.reg" >nul 2>&1
+
+:: Discord
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Discord" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Discord" /f >nul 2>&1
+
+:: Synapse3
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Synapse3" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Synapse3" /f >nul 2>&1
+
+:: Spotify
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Spotify" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Spotify" /f >nul 2>&1
+
+:: EpicGamesLauncher
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EpicGamesLauncher" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "EpicGamesLauncher" /f >nul 2>&1
+
+:: RiotClient
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RiotClient" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "RiotClient" /f >nul 2>&1
+
+:: Steam
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Steam" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Steam" /f >nul 2>&1
+
+:: GoogleDrive
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GoogleDrive" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "GoogleDrive" /f >nul 2>&1
+
+:: OneDrive
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OneDrive" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /f >nul 2>&1
+
+:: DropboxUpdate
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "DropboxUpdate" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "DropboxUpdate" /f >nul 2>&1
+
+:: CCleaner
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CCleaner" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "CCleaner" /f >nul 2>&1
+
+:: iTunesHelper
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iTunesHelper" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "iTunesHelper" /f >nul 2>&1
+
+:: AdobeCreativeCloud
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeCreativeCloud" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "AdobeCreativeCloud" /f >nul 2>&1
+
+:: AdobeGCClient
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AdobeGCClient" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "AdobeGCClient" /f >nul 2>&1
+
+:: EADesktop
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "EADesktop" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "EADesktop" /f >nul 2>&1
+
+:: UbisoftConnect
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftConnect" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "UbisoftConnect" /f >nul 2>&1
+
+:: UbisoftGameLauncher
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "UbisoftGameLauncher" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "UbisoftGameLauncher" /f >nul 2>&1
+
+:: BattleNet
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "BattleNet" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "BattleNet" /f >nul 2>&1
+
+:: TeamViewer
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "TeamViewer" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "TeamViewer" /f >nul 2>&1
+
+:: AnyDesk
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AnyDesk" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "AnyDesk" /f >nul 2>&1
+
+:: LogitechGHub
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "LogitechGHub" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "LogitechGHub" /f >nul 2>&1
+
+:: CorsairService
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "CorsairService" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "CorsairService" /f >nul 2>&1
+
+:: RazerCentralService
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RazerCentralService" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "RazerCentralService" /f >nul 2>&1
+
+:: MSIAfterburner
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "MSIAfterburner" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "MSIAfterburner" /f >nul 2>&1
+
+:: NVIDIAGeForceExperience
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "NVIDIAGeForceExperience" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "NVIDIAGeForceExperience" /f >nul 2>&1
+
+:: AMDRyzenMaster
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "AMDRyzenMaster" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "AMDRyzenMaster" /f >nul 2>&1
+
+:: Overwolf
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Overwolf" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Overwolf" /f >nul 2>&1
+
+:: SteelSeriesEngine
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SteelSeriesEngine" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SteelSeriesEngine" /f >nul 2>&1
+
+:: ASUSArmouryCrate
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ASUSArmouryCrate" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "ASUSArmouryCrate" /f >nul 2>&1
+
+:: ROGGameFirst
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGGameFirst" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "ROGGameFirst" /f >nul 2>&1
+
+:: ROGRangeboost
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "ROGRangeboost" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "ROGRangeboost" /f >nul 2>&1
+
+:: iCUE
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "iCUE" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "iCUE" /f >nul 2>&1
+
+:: Wallpaper Engine
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Wallpaper Engine" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Wallpaper Engine" /f >nul 2>&1
+
+:: GOG Galaxy
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "GOG Galaxy" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "GOG Galaxy" /f >nul 2>&1
+
+:: Microsoft Teams
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Microsoft Teams" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Microsoft Teams" /f >nul 2>&1
+
+:: Slack
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Slack" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Slack" /f >nul 2>&1
+
+:: Zoom
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Zoom" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Zoom" /f >nul 2>&1
+
+:: Skype
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Skype" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Skype" /f >nul 2>&1
+
+:: WhatsApp
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "WhatsApp" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "WhatsApp" /f >nul 2>&1
+
+:: Telegram
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Telegram" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Telegram" /f >nul 2>&1
+
+:: OpenRGB
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "OpenRGB" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OpenRGB" /f >nul 2>&1
+
+:: SignalRGB
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SignalRGB" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SignalRGB" /f >nul 2>&1
+
+:: Java Update Scheduler
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Java Update Scheduler" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "Java Update Scheduler" /f >nul 2>&1
+
+:: QuickTime Task
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "QuickTime Task" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "QuickTime Task" /f >nul 2>&1
+
+:: SoundBlasterConnect
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "SoundBlasterConnect" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SoundBlasterConnect" /f >nul 2>&1
+
+:: RealPlayer
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "RealPlayer" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
+reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "RealPlayer" /f >nul 2>&1
+
 
 echo. - Enabling Hardware-Accelerated GPU Scheduling
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v HwSchMode /t REG_DWORD /d 2 /f > NUL 2>&1
@@ -546,13 +695,9 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUs
 
 echo. - Browser background optimizations
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
+rereg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "HighEfficiencyModeEnabled" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
-reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "HighEfficiencyModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "BatterySaverModeAvailability" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave\Recommended" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -719,14 +864,14 @@ for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "SelectiveSuspendOn" /t REG_DWORD /d "0" /f > NUL 2>&1
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "D3ColdSupported" /t REG_DWORD /d "0" /f > NUL 2>&1
 )
-timeout /t 2 /nobreak > NUL
+
 echo. - Enable GPU MSI Mode
 for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
 reg query "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" >nul 2>&1 && (
 reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d "1" /f > NUL 2>&1
 )
-timeout /t 1 /nobreak > NUL
-goto:continue
+C:\Windows\System32\TIMEOUT.exe /t 1 /nobreak > nul 2> nul
+goto :continue
 :skipUSBPowerSavings
 
 :continue
@@ -750,10 +895,6 @@ reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > N
 :: echo. - Usb Overclock with secure boot enabled
 :: reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
-echo. - Background Apps
-Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul 2>&1
-Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul 2>&1
-Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul 2>&1
 
 echo. - Disable Hibernation
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -763,14 +904,17 @@ schtasks /change /tn "\microsoft\windows\power efficiency diagnostics\analyzesys
 wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul 2>&1
-timeout /t 1 /nobreak > NUL
+
+
 echo. - Adjust processor scheduling to allocate processor resources to programs
 echo. - 2A Hex/42 Dec = Short, Fixed, High foreground boost.
-Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x18" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
-Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul && reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
+Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x18" >nul 
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
+Reg query "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" 2>nul | find "0x26" >nul 
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d "42" /f > NUL 2>&1
+timeout /t 5 /nobreak > NUL
 
-
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -783,14 +927,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                 %ESC%[33mDo you want to Enable Timer Resolution ?%ESC%[0m
+echo.                 [96mDo you want to Enable Timer Resolution ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
 set /p input=%BS%══════════^> 
 if /I "%input%"=="1" goto :TimerR
 if /I "%input%"=="2" goto :CloudSync
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
@@ -805,7 +949,7 @@ goto :CloudSync
 rem ========================================================================================================================================
 
 :CloudSync
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -818,14 +962,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                      %ESC%[33mDo you want to Disable Cloud Sync ?%ESC%[0m
+echo.                      [96mDo you want to Disable Cloud Sync ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
 set /p input=%BS%══════════^> 
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
@@ -852,7 +996,7 @@ goto :Telemetry
 rem ========================================================================================================================================
 
 :Telemetry
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -865,14 +1009,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                      %ESC%[33mDo you want to Disable Telemetry ?%ESC%[0m
+echo.                      [96mDo you want to Disable Telemetry ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
 set /p input=%BS%══════════^> 
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
@@ -888,7 +1032,7 @@ goto :Privacy
 rem ========================================================================================================================================
 
 :Privacy
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -901,14 +1045,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                      %ESC%[33mDo you want to Disable Privacy ?%ESC%[0m
+echo.                      [96mDo you want to Disable Privacy ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
@@ -925,7 +1069,7 @@ cls
 rem ========================================================================================================================================
 
 :RemoveEdge
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -938,7 +1082,7 @@ echo.
 echo.
 echo.
 echo.
-echo.                        %ESC%[33mDo you want to Remove Edge ?%ESC%[0m
+echo.                        [96mDo you want to Remove Edge ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
@@ -946,7 +1090,7 @@ echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :runRemoveEdge
 if /I "%input%"=="2" goto :OneDrive
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.- Invalid input. Please enter [1] or [2].
 echo:       ______________________________________________________________
@@ -974,7 +1118,7 @@ cls
 rem ========================================================================================================================================
 
 :OneDrive
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -987,13 +1131,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                       %ESC%[33mDo you want to Remove OneDrive? %ESC%[0m
+echo.                       [96mDo you want to Remove OneDrive? %ESC%[0m
 echo.
 echo.                                 [1] Yes [2] No
 echo.
 set /p input=%BS%              ══════════^> 
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :DeblootWindows
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo.
@@ -1032,7 +1177,7 @@ if exist "%~dp0\AuroraModules\OneDrive.ps1" (
 goto :DeblootWindows
 
 :DeblootWindows
-mode con cols=76 lines=33
+mode con cols=76 lines=28
 CLS
 echo.
 echo.
@@ -1045,13 +1190,13 @@ echo.
 echo.
 echo.
 echo.
-echo.                     %ESC%[33mDo you want to Debloat Windows? %ESC%[0m
+echo.                     [96mDo you want to Debloat Windows? %ESC%[0m
 echo.
 echo.                                 [1] Yes [2] No
 echo.
 set /p input=%BS%              ══════════^> 
 if /I "%input%"=="1" goto :RunDebloot
-if /I "%input%"=="2" goto :Main
+if /I "%input%"=="2" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo.
@@ -1070,7 +1215,7 @@ if exist "%~dp0\AuroraModules\Components.ps1" (
     timeout /t 2 /nobreak > NUL
 )
 
-goto :Main
+goto :MainMenu
 
 rem ========================================================================================================================================
 
@@ -1088,14 +1233,14 @@ echo.
 echo.
 echo.
 echo.
-echo.                    %ESC%[33mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
+echo.                    [96mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
 echo.
 echo.                           [1] NVIDIA Or [2] AMD
 echo.
 set /p input=%BS%      ══════════^> 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="3" goto :MainMenu
 
 echo.
 echo.    Invalid input. Please enter [1] or [2].
@@ -1113,28 +1258,30 @@ CLS
 mode con cols=76 lines=33
 start /wait cmd /c "%~dp0\AuroraModules\NvidiaProfileInspector.cmd"
 timeout /t 3 /nobreak > NUL
-echo.
-echo.
-echo.
-echo:       ______________________________________________________________
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.               %ESC%[33mResizable Bar OFF (1) or Resizable Bar ON (2) ?%ESC%[0m
-echo.
-echo.
-echo.
-echo.
-echo. 
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:
+echo:             [96m Do you want to Modify your NVIDIA Control Panel[0m     
+echo:            ___________________________________________________ 
+echo:                                                               
+echo:                       [1] [93mNVIDIA Settings ( Aurora )[0m
+echo:                       [2] [93mNVIDIA Settings ( Default ) [0m
+echo:               _____________________________________________   
+echo:                                                               
+echo:                       [3] [91mBack to Main Menu[0m
+echo:            ___________________________________________________
+echo:
 set /p input=%BS% ══════════^> 
 
-if /I "%input%"=="1" goto :AuroraOFF
-if /I "%input%"=="2" goto :AuroraON
-if /I "%input%"=="3" goto :Main
+if /I "%input%"=="1" goto :AuroraON
+if /I "%input%"=="2" goto :AuroraOFF
+if /I "%input%"=="3" goto :MainMenu
 echo.
 echo. Invalid input. Please enter [1] or [2].
 
@@ -1157,7 +1304,7 @@ echo.
 echo - Resizable BAR has been disabled successfully.
 timeout /t 3 /nobreak > NUL
 
-goto :Main
+goto :MainMenu
 
 :AuroraON
 timeout /t 3 /nobreak > NUL
@@ -1173,7 +1320,7 @@ echo.
 echo - Resizable BAR has been enabled successfully.
 timeout /t 3 /nobreak > NUL
 
-goto :Main
+goto :MainMenu
 cls
 
 
@@ -1189,7 +1336,7 @@ echo A system restart is recommended for all changes to take effect.
 echo.
 timeout /t 3 /nobreak > NUL
 
-goto :Main
+goto :MainMenu
 cls
 
 rem ========================================================================================================================================
@@ -1211,7 +1358,7 @@ if exist "%~dp0\AuroraModules\Power.ps1" (
 )
 
 cls
-goto :Main
+goto :MainMenu
 
 
 rem ========================================================================================================================================
@@ -1253,7 +1400,7 @@ echo.
 echo.
 choice /c:12 /n > NUL 2>&1
 if "%errorlevel%"=="1" goto :NetworkTweaks1
-if "%errorlevel%"=="2" goto :Main
+if "%errorlevel%"=="2" goto :MainMenu
 
 :NetworkTweaks1
 timeout /t 3 /nobreak > NUL
@@ -1270,7 +1417,7 @@ if exist "%~dp0\AuroraModules\NetworkBufferBloatFixer.ps1" (
     echo - Error: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.
     timeout /t 2 /nobreak > NUL
 )
-goto :Main
+goto :MainMenu
 
 
 
@@ -1294,7 +1441,7 @@ echo.                    Press [2] to return to main menu
 echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :ConfirmServices
-if /I "%input%"=="2" goto :Main
+if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
 timeout /t 2 /nobreak > NUL
 goto :ManualServices
@@ -1313,20 +1460,20 @@ echo.                    Press [2] to return to main menu
 echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :StartServiceChanges
-if /I "%input%"=="2" goto :Main
+if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
 timeout /t 2 /nobreak > NUL
 goto :ConfirmServices
 set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
 :StartServiceChanges
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 
 echo !ESC![32mServices configured successfully!ESC![0m
 timeout /t 5 /nobreak > NUL
@@ -1350,10 +1497,10 @@ echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" (
     :: Disable Bluetooth services
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\bthserv" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\bthserv" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 ) else if /I "%input%"=="2" (
     goto :SkipBluetooth
 ) else (
@@ -1371,10 +1518,10 @@ echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" (
     :: Disable printing services
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintWorkflowUserSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintWorkflowUserSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 ) else if /I "%input%"=="2" (
     goto :SkipPrinting
 ) else (
@@ -1386,30 +1533,29 @@ if /I "%input%"=="1" (
 :SkipPrinting
 
 :: Disable other unnecessary services
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\shpamsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\RmSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\shpamsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RmSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 
 :: Disable rarely used Windows services
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\tzautoupdate" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\WalletService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\Ndu" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-%AuroraAsAdmin% --NoLogo -P -TI reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\tzautoupdate" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WalletService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Ndu" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
 
 
 
@@ -1417,7 +1563,7 @@ echo.
 echo.                     Services disabled successfully.
 echo.
 timeout /t 2 /nobreak > NUL
-goto :Main
+goto :MainMenu
 
 
 rem ========================================================================================================================================
@@ -1436,9 +1582,13 @@ reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Pers
 
 echo - Dark Mode enabled successfully.
 
-C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe & start %windir%\explorer.exe >nul 2>&1
-timeout /t 2 /nobreak > NUL
-goto :Main
+C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe
+ 
+timeout /t 3 /nobreak > NUL
+
+start %windir%\explorer.exe >nul 2>&1
+
+goto :MainMenu
 
 rem ========================================================================================================================================
 
@@ -1456,7 +1606,7 @@ if exist "%~dp0\AuroraModules\RepairWindows.cmd" (
 )
 
 timeout /t 2 /nobreak > NUL
-goto :Main
+goto :MainMenu
 
 rem ========================================================================================================================================
 
@@ -1469,7 +1619,7 @@ echo - Join Our Discord Community
 
 start "" "https://discord.gg/fVYtpuYuZ6"
 timeout /t 7 /nobreak > NUL
-goto :Main
+goto :MainMenu
 
 
 :relaunch
@@ -1499,7 +1649,7 @@ if /I "%input%"=="2" (
     echo.
     echo - Restarting Aurora...
     timeout /t 2 /nobreak > NUL
-    goto :Main
+    goto :MainMenu
 ) else (
     echo.
     echo - Invalid input. Please enter [1] or [2].
@@ -1651,5 +1801,7 @@ echo.
 goto :end
 
 :end
+C:\Windows\System32\TASKKILL.exe /f /im powershell.exe > nul 2> nul
+C:\Windows\System32\TASKKILL.exe /f /im cmd.exe > nul 2> nul
 exit /b
 

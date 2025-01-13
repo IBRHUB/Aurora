@@ -115,3 +115,44 @@ Reg.exe add "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /t REG_DW
 
 endlocal
 exit /b 0
+
+
+:: AMD GPU Registry Default Settings Restore Script
+
+:: AMD Control Panel settings
+:: Reg.exe delete "HKCU\Software\AMD\CN" /f >nul 2>&1
+:: Reg.exe delete "HKCU\Software\AMD\CN\OverlayNotification" /f >nul 2>&1
+:: Reg.exe delete "HKCU\Software\AMD\CN\VirtualSuperResolution" /f >nul 2>&1
+
+:: AMD DVR settings
+:: Reg.exe delete "HKCU\Software\AMD\DVR" /f >nul 2>&1
+
+:: AMD ACE settings
+:: Reg.exe delete "HKCU\Software\ATI\ACE\Settings\ADL\AppProfiles" /f >nul 2>&1
+:: Reg.exe delete "HKLM\Software\AMD\Install" /v "AUEP" /f >nul 2>&1
+:: Reg.exe delete "HKLM\Software\AUEP" /f >nul 2>&1
+
+:: GPU driver settings
+:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "NotifySubscription" /f >nul 2>&1
+:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "IsComponentControl" /f >nul 2>&1
+:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /f >nul 2>&1
+
+:: UMD settings
+:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD" /f >nul 2>&1
+
+:: DXVA settings
+:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA" /f >nul 2>&1
+
+:: Additional performance settings
+:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDMACopy" /f >nul 2>&1
+:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableBlockWrite" /f >nul 2>&1
+:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "PP_ThermalAutoThrottlingEnable" /f >nul 2>&1
+:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDrmdmaPowerGating" /f >nul 2>&1
+
+:: Service configurations
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdwddmg" /v "ChillEnabled" /t REG_DWORD /d "1" /f >nul 2>&1
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\AMD Crash Defender Service" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\AMD External Events Utility" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendr" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1

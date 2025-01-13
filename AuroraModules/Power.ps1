@@ -38,6 +38,12 @@ param (
     [switch]$Silent
 )
 
+# Check if running as Administrator, restart if not
+if (!$Silent -and !([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
+    Start-Process PowerShell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
+
 if (!$Silent) {
     $isLaptop = (Get-CimInstance -Class Win32_ComputerSystem -Property PCSystemType).PCSystemType -eq 2
     if ($isLaptop) {
@@ -50,8 +56,10 @@ WARNING: You are on a laptop, disabling power saving will cause faster battery d
     }
 
     Write-Host @"
-This script will disable many power saving features in Windows for reduced latency and increased performance.
-Ensure that you have adequate cooling.`n
+This script optimizes Windows power settings to reduce latency and enhance performance.
+It includes creating a custom power scheme, disabling unnecessary power-saving features,
+
+Make sure to have sufficient cooling in place, as these optimizations may increase power usage and heat output.`n
 "@ -ForegroundColor Cyan
     Pause
 }
