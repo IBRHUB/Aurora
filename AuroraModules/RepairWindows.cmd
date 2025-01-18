@@ -47,24 +47,24 @@ echo]
 echo %ESC%[36m╔════════════════════════════════════════╗
 echo ║ Checking Windows Component Store...    ║
 echo ╚════════════════════════════════════════╝%ESC%[0m
-::dism.exe /online /cleanup-image /scanhealth
-::dism.exe /online /cleanup-image /restorehealth
+dism.exe /online /cleanup-image /scanhealth
+dism.exe /online /cleanup-image /restorehealth
 
 echo]
 echo %ESC%[36m╔════════════════════════════════════════╗
 echo ║ Scanning and Repairing System Files... ║
 echo ╚════════════════════════════════════════╝%ESC%[0m
-::sfc.exe /scannow
+sfc.exe /scannow
 echo]
 echo %ESC%[36m╔════════════════════════════════════════╗
 echo ║ Checking CBS Logs for Issues...        ║
 echo ╚════════════════════════════════════════╝%ESC%[0m
-::findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log >nul 2>&1
-::if %errorlevel% neq 0 (
-::    echo %ESC%[32mNo integrity violations detected.%ESC%[0m
-::) else (
-::   echo %ESC%[33mSome issues were found and repaired.%ESC%[0m
-::)
+findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log >nul 2>&1
+if %errorlevel% neq 0 (
+   echo %ESC%[32mNo integrity violations detected.%ESC%[0m
+) else (
+   echo %ESC%[33mSome issues were found and repaired.%ESC%[0m
+)
 
 
 echo]
