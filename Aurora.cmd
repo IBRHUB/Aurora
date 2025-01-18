@@ -147,31 +147,7 @@ if errorlevel 1 (
 )
 
 
-:: The URL you want to download from
-set "DOWNLOAD_URL=https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Disclaimer.md"
-
-:: Output file path in %TEMP%
-set "OUTFILE=%TEMP%\Disclaimer.txt"
-
-:: Use curl to download. 
-:: -L follows redirects. 
-:: --fail (optional) makes curl return an error code if the HTTP status is >= 400.
-"C:\Windows\System32\curl.exe" -L --fail -o "%OUTFILE%" "%DOWNLOAD_URL%"  >nul 2>&1
-if errorlevel 1 (
-    echo Download failed or returned an error code.
-    exit /b 1
-)
-
-:: Check if the file was actually created
-if not exist "%OUTFILE%" (
-    echo Disclaimer.txt not found after download!
-    exit /b 1
-)
-
-:: Open the file in Notepad
-start notepad "%OUTFILE%"
-
-
+start https://aurorawbesite.pages.dev/ar/disclaimer/
 :: set ANSI escape characters
 cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
@@ -370,18 +346,15 @@ chcp 65001 >NUL
 CLS
 mode con cols=95 lines=40
 echo.
-echo		      [38;5;141m  ▄█  ▀█████████▄     ▄████████    ▄█    █▄    ███    █▄  ▀█████████▄  
-echo		      [38;5;111m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;81m ███▌   ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;51m ███▌  ▄███▄▄▄██▀   ▄███▄▄▄▄██▀  ▄███▄▄▄▄███▄▄ ███    ███  ▄███▄▄▄██▀  
-echo		      [38;5;78m ███▌ ▀▀███▀▀▀██▄  ▀▀███▀▀▀▀▀   ▀▀███▀▀▀▀███▀  ███    ███ ▀▀███▀▀▀██▄  
-echo		      [38;5;123m ███    ███    ██▄ ▀███████████   ███    ███   ███    ███   ███    ██▄ 
-echo		      [38;5;158m ███    ███    ███   ███    ███   ███    ███   ███    ███   ███    ███ 
-echo		      [38;5;225m █▀   ▄█████████▀    ███    ███   ███    █▀    ████████▀  ▄█████████▀  
-echo		      [38;5;81m                     ███    ███                                       
+echo.
+echo.
+echo.
 echo.
 echo.
 echo                             [1;4;94mA[1;96mU[1;92mR[1;93mO[1;92mR[1;90mA[1;37m[0m ✓[1;3;37m%bullet% Lighting Up Your PC's Performance[0m   
+echo.
+echo.
+echo.
 echo.
 echo                       ═══════════════════════════════════════════════════════
 echo.                                                                            
@@ -396,7 +369,7 @@ echo                         [38;5;36m[6]%bullet% [1;37mDark Mode[37m        
 echo.                                                                                   
 echo                       ═══════════════════════════════════════════════════════
 echo.
-echo                         [38;5;36m[9]%bullet% [1;4;3;34mWebsite[0m             [38;5;36m[10]%bullet% [1;4;3;34mTroubleshooting![0m             
+echo                         [38;5;36m[9]%bullet% [1;4;3;34mIBRHUB.COM[0m          [38;5;36m[10]%bullet% [1;4;3;34mDocumentation![0m             
 echo.
 echo                       ═══════════════════════════════════════════════════════
 echo.
@@ -416,8 +389,8 @@ if "%input%"=="5" goto :ManualServices
 if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
-if "%input%"=="9" (start https://ibrpride.com/aurora/p1380752167 & goto :MainMenu)
-if "%input%"=="10" (start https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting.md & goto :MainMenu)
+if "%input%"=="9" (start https://ibrpride.com/ & goto :MainMenu)
+if "%input%"=="10" (start https://aurorawbesite.pages.dev/ & goto :MainMenu)
 
 if "%input%"=="0" goto :AuroraExit
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
@@ -479,7 +452,9 @@ Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAp
 
 echo. - Disabling startup applications
 reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "C:\StartupBackup.reg" /y  >nul 2>&1 
+reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" "C:\StartupApprovedBackup.reg" /y  >nul 2>&1 
 attrib +h "C:\StartupBackup.reg" >nul 2>&1
+attrib +h "C:\StartupApprovedBackup.reg" >nul 2>&1
 
 :: Discord
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Discord" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
@@ -884,12 +859,12 @@ bcdedit /set bootmenupolicy standard > NUL 2>&1
 bcdedit /set quietboot yes > NUL 2>&1
 
 echo. - Quick Shutdown Settings
-reg add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
-reg add "HKLM\System\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "3000" /f > NUL 2>&1
+reg add "HKLM\System\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "3000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f > NUL 2>&1
 
 echo. - Additional Performance Optimizations
-reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "1000" /f > NUL 2>&1
+reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > NUL 2>&1
 
 :: echo. - Usb Overclock with secure boot enabled
