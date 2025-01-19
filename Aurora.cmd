@@ -147,7 +147,7 @@ if errorlevel 1 (
 )
 
 
-start https://aurorawbesite.pages.dev/ar/disclaimer/
+start https://docs.ibrhub.net/ar/disclaimer
 :: set ANSI escape characters
 cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
@@ -390,7 +390,7 @@ if "%input%"=="6" goto :DarkMode
 if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
 if "%input%"=="9" (start https://ibrpride.com/ & goto :MainMenu)
-if "%input%"=="10" (start https://aurorawbesite.pages.dev/ & goto :MainMenu)
+if "%input%"=="10" (start https://docs.ibrhub.net & goto :MainMenu)
 
 if "%input%"=="0" goto :AuroraExit
 echo [91mInvalid input. Please select a number between 1 and 8.[0m
