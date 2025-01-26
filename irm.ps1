@@ -1,13 +1,9 @@
 <#
 .SYNOPSIS
-    Script to run the latest Aurora version for Windows system optimization.
+    Script to run the latest Aurora version 
 
 .DESCRIPTION
-    Downloads and runs Aurora tool which:
-    - Enhances system privacy
-    - Optimizes performance
-    - Improves security
-    - Customizes user interface
+    Downloads and runs Aurora tool 
     
 .NOTES
     Requirements:
@@ -23,10 +19,28 @@
     https://github.com/IBRHUB/Aurora
 #>
 
-## powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-WebRequest "https://github.com/IBRHUB/Aurora/releases/download/0.4/Aurora.cmd" -OutFile "$env:temp\Aurora.cmd"; Start-process $env:temp\Aurora.cmd
 
-# Set console background color to black
-$Host.UI.RawUI.BackgroundColor = "Black"
+function Set-ConsoleBackground {
+    param (
+        [string]$BackgroundColor = "Black",
+        [string]$ProgressBackgroundColor = "Black",
+        [string]$ProgressForegroundColor = "White"
+    )
+    
+    try {
+        $Host.UI.RawUI.BackgroundColor = $BackgroundColor
+        $Host.PrivateData.ProgressBackgroundColor = $ProgressBackgroundColor
+        $Host.PrivateData.ProgressForegroundColor = $ProgressForegroundColor
+        Clear-Host
+
+        Write-Host "Console background and progress colors updated successfully." -ForegroundColor Green
+    } catch {
+        Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+    }
+}
+
+Set-ConsoleBackground
+
 Clear-Host
 
 # 1) Check for any 3rd-party Antivirus and System Type
@@ -155,9 +169,9 @@ if (-not $downloadSuccess) {
     Check3rdAV
     Write-Host "Failed to download Aurora from all sources!" -ForegroundColor Red
     Write-Host "Please try one of these alternatives:" -ForegroundColor Yellow
-    Write-Host "1. Visit https://github.com/IBRHUB/Aurora/releases and download manually" -ForegroundColor Cyan
+    Write-Host "1. Visit https://github.com/IBRHUB/Aurora/releases/download/0.7/Aurora.cmd and download manually" -ForegroundColor Cyan
     Write-Host "2. Check your internet connection and try again" -ForegroundColor Cyan
-    Write-Host "3. Help - https://github.com/IBRHUB/Aurora/troubleshoot.md" -ForegroundColor Cyan
+    Write-Host "3. Help - https://docs.ibrhub.net/ar/troubleshooting/" -ForegroundColor Cyan
     Write-Host "4. Try using a VPN or different network connection" -ForegroundColor Cyan
     Write-Host "5. Check if your firewall is blocking the connection" -ForegroundColor Cyan
     pause
@@ -198,7 +212,7 @@ Write-Host "`n"
 # 5) Purpose: Executes Aurora and cleans up temporary files
 Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
-    Start-Process -FilePath $AuroraPath -Wait
+    & $AuroraPath
     Write-Host "Aurora completed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error running Aurora: $($_.Exception.Message)" -ForegroundColor Red

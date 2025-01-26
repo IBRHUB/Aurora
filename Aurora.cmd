@@ -111,6 +111,15 @@ fltmc > nul 2>&1 || (
 :: Enable delayed expansion for the registry operations
 setlocal EnableDelayedExpansion
 
+
+:: Background: Black (0), Text: White (F)
+set BackgroundColor=0
+set TextColor=F
+color %BackgroundColor%%TextColor%
+
+
+
+
 :: Check PowerShell version and set execution policy accordingly
 powershell -Command "$PSVersionTable.PSVersion.Major" > "%TEMP%\psver.txt"
 set /p PS_VER=<"%TEMP%\psver.txt"
