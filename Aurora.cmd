@@ -2,95 +2,13 @@
 :: ============================================================
 ::                            Aurora
 :: ============================================================
-::
-:: DESCRIPTION:
-::   This script serves as the main entry point for Aurora system
-::   configuration. It performs essential setup tasks including:
-::   - Checking and requesting administrator privileges 
-::   - Configuring PowerShell execution policies
-::   - Setting up registry permissions
-::   - Enabling required system features
-::   - Managing Windows privacy and telemetry settings
-::   - Customizing system behavior and appearance
-::   - Optimizing system performance
-::
-:: REQUIREMENTS:
-::   - Windows 10/11
-::   - Administrator privileges
-::   - PowerShell 5.1 or higher
-::
-:: FEATURES:
-::   - Privacy Enhancement
-::     * Disables telemetry and data collection
-::     * Configures privacy-focused Windows settings
-::     * Manages app permissions and tracking
-::     * Controls diagnostic data sharing
-::     * Limits Microsoft account integration
-::     * Restricts background app access
-::
-::   - System Optimization
-::     * Removes unnecessary Windows components
-::     * Configures system for better performance
-::     * Disables unneeded services
-::     * Optimizes system resources
-::     * Manages startup programs
-::     * Tunes system scheduling
-::
-::   - Security Hardening
-::     * Applies security best practices
-::     * Configures Windows Defender settings
-::     * Manages Windows Update behavior
-::     * Hardens system policies
-::     * Controls network access
-::     * Enhances authentication settings
-::
-::   - User Experience
-::     * Customizes Windows interface
-::     * Configures default applications
-::     * Optimizes system responsiveness
-::     * Improves boot performance
-::     * Enhances desktop experience
-::     * Streamlines notifications
-::
-:: COMPONENTS:
-::   - Registry Management
-::     * Modifies system registry settings
-::     * Applies privacy configurations
-::     * Updates security policies
-::
-::   - Service Configuration
-::     * Manages Windows services
-::     * Optimizes service startup
-::     * Controls background processes
-::
-::   - Application Control
-::     * Manages installed applications
-::     * Controls app permissions
-::     * Configures default programs
-::
-:: NOTES:
-::   - Script must be run with elevated privileges
-::   - Makes registry modifications for PowerShell execution
-::   - Compatible with both 32-bit and 64-bit Windows
-::   - Handles both legacy PowerShell and PowerShell 7+
-::   - Creates system restore point before changes
-::   - Can be reverted through Windows Settings
-::   - Logs all major operations
-::   - Provides error handling and recovery
-::
-:: WARNING:
-::   This script makes significant system changes.
-::   A system restore point is created before modifications.
-::   Review all changes before running.
-::   Some changes require system restart.
-::   Backup important data before proceeding.
-::
 :: AUTHOR:
 ::   IBRHUB
 ::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
 ::
 :: VERSION:
-::   1.0.0
+::   1.0.0 beta
 ::
 :: LICENSE:
 ::   MIT License
@@ -224,17 +142,17 @@ if /I "%choice%"=="1" (
 )
 
 :bypass
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 goto :MainMenu
 
 
 :endAurora
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 exit /b
 
 
 :StartAurora
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 cls
 
 
@@ -298,7 +216,7 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
         )
     )
 )
-
+cls
 echo Download files for Aurora
 
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
@@ -322,8 +240,6 @@ curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubuserconte
 curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraManualServices.cmd" > NUL 2>&1
 
-echo All modules downloaded successfully!
-cls
 
 :: Ensure the destination directory exists in the current script location
 if not exist "%currentDir%" mkdir "%currentDir%"
