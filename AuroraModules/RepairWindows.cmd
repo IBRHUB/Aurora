@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title Windows Components Repair @IBRHUB
+title Windows Components Repair 
 cd /d "%~dp0"
 
 if "%~1" == "/silent" goto main
@@ -34,7 +34,6 @@ echo   %bullet% Check Windows component store integrity
 echo   %bullet% Restore corrupted system components
 echo   %bullet% Scan and repair system files
 echo   %bullet% Verify repairs in CBS logs
-echo   %bullet% Check and repair Windows tweaks
 echo]
 echo   Press any key to begin the repair process...
 pause >nul
