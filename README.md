@@ -51,12 +51,12 @@ Before using Aurora:
 Run the following command in PowerShell (Admin):
 
 ```powershell
-irm "https://ibrpride.com/Aurora" | iex
+irm "https://aurora.ibrhub.net" | iex
 ```
 Run the following command in Cmd (Admin):
 
 ```cmd
-powershell -Command "irm 'https://ibrpride.com/Aurora' | iex"
+powershell -Command "irm 'https://aurora.ibrhub.net' | iex"
 ```
 
 If you encounter any errors or the above command doesn't work, try this alternative command:
@@ -67,9 +67,9 @@ powershell Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.Service
 ```
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg" alt="Saudi Flag" width="20" height="20">
-  &nbsp;<a href="https://github.com/IBRHUB/Aurora/blob/main/README.ar.md">Aurora in Arabic</a>
+  &nbsp;<a href="https://docs.ibrhub.net/">Aurora in Arabic</a>
   &nbsp;&bull;&nbsp;
-  <a href="https://github.com/IBRHUB/Aurora/blob/main/Troubleshooting">Troubleshooting</a>
+  <a href="https://docs.ibrhub.net/ar/troubleshooting/">Troubleshooting</a>
   &nbsp;&bull;&nbsp;
   <a href="https://github.com/IBRHUB/Aurora/blob/main/LICENSE">LICENSE</a>
 </p>
