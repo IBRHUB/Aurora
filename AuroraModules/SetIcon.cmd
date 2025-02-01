@@ -1,4 +1,16 @@
 @echo off
+
+:: Ensure admin privileges
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Administrator privileges are required.
+    PowerShell Start-Process -Verb RunAs -FilePath '%0' 2>nul || (
+        echo Right-click on the script and select "Run as administrator".
+        pause & exit 1
+    )
+    exit 0
+)
+
 setlocal EnableDelayedExpansion
 
 :: Set variables
