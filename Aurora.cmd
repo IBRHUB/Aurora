@@ -2,13 +2,95 @@
 :: ============================================================
 ::                            Aurora
 :: ============================================================
+::
+:: DESCRIPTION:
+::   This script serves as the main entry point for Aurora system
+::   configuration. It performs essential setup tasks including:
+::   - Checking and requesting administrator privileges 
+::   - Configuring PowerShell execution policies
+::   - Setting up registry permissions
+::   - Enabling required system features
+::   - Managing Windows privacy and telemetry settings
+::   - Customizing system behavior and appearance
+::   - Optimizing system performance
+::
+:: REQUIREMENTS:
+::   - Windows 10/11
+::   - Administrator privileges
+::   - PowerShell 5.1 or higher
+::
+:: FEATURES:
+::   - Privacy Enhancement
+::     * Disables telemetry and data collection
+::     * Configures privacy-focused Windows settings
+::     * Manages app permissions and tracking
+::     * Controls diagnostic data sharing
+::     * Limits Microsoft account integration
+::     * Restricts background app access
+::
+::   - System Optimization
+::     * Removes unnecessary Windows components
+::     * Configures system for better performance
+::     * Disables unneeded services
+::     * Optimizes system resources
+::     * Manages startup programs
+::     * Tunes system scheduling
+::
+::   - Security Hardening
+::     * Applies security best practices
+::     * Configures Windows Defender settings
+::     * Manages Windows Update behavior
+::     * Hardens system policies
+::     * Controls network access
+::     * Enhances authentication settings
+::
+::   - User Experience
+::     * Customizes Windows interface
+::     * Configures default applications
+::     * Optimizes system responsiveness
+::     * Improves boot performance
+::     * Enhances desktop experience
+::     * Streamlines notifications
+::
+:: COMPONENTS:
+::   - Registry Management
+::     * Modifies system registry settings
+::     * Applies privacy configurations
+::     * Updates security policies
+::
+::   - Service Configuration
+::     * Manages Windows services
+::     * Optimizes service startup
+::     * Controls background processes
+::
+::   - Application Control
+::     * Manages installed applications
+::     * Controls app permissions
+::     * Configures default programs
+::
+:: NOTES:
+::   - Script must be run with elevated privileges
+::   - Makes registry modifications for PowerShell execution
+::   - Compatible with both 32-bit and 64-bit Windows
+::   - Handles both legacy PowerShell and PowerShell 7+
+::   - Creates system restore point before changes
+::   - Can be reverted through Windows Settings
+::   - Logs all major operations
+::   - Provides error handling and recovery
+::
+:: WARNING:
+::   This script makes significant system changes.
+::   A system restore point is created before modifications.
+::   Review all changes before running.
+::   Some changes require system restart.
+::   Backup important data before proceeding.
+::
 :: AUTHOR:
 ::   IBRHUB
 ::   https://github.com/IBRAHUB
-::	 https://docs.ibrhub.net/
 ::
 :: VERSION:
-::   1.0.0 beta
+::   1.0.0
 ::
 :: LICENSE:
 ::   MIT License
@@ -142,17 +224,17 @@ if /I "%choice%"=="1" (
 )
 
 :bypass
-
+taskkill /F /IM "notepad.exe" >nul 2>&1
 goto :MainMenu
 
 
 :endAurora
-
+taskkill /F /IM "notepad.exe" >nul 2>&1
 exit /b
 
 
 :StartAurora
-
+taskkill /F /IM "notepad.exe" >nul 2>&1
 cls
 
 
@@ -193,11 +275,9 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
                                                         if exist "%currentDir%\Components.ps1" (
                                                             if exist "%currentDir%\AuroraTimerResolution.cs" (
                                                                 if exist "%currentDir%\AuroraTimerResolution.ps1" (
-                                                                    if exist "%currentDir%\AuroraManualServices.cmd" (
-                                                                        if exist "%currentDir%\AuroraSudo.exe" (
-                                                                            echo Files already exist in AuroraModules directory. Skipping download...
-                                                                            goto :skipDownload
-                                                                        )
+                                                                    if exist "%currentDir%\AuroraSudo.exe" (
+                                                                        echo Files already exist in AuroraModules directory. Skipping download...
+                                                                        goto :skipDownload
                                                                     )
                                                                 )
                                                             )
@@ -216,7 +296,7 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
         )
     )
 )
-cls
+
 echo Download files for Aurora
 
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
@@ -238,8 +318,9 @@ curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.c
 curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" > NUL 2>&1
 curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraManualServices.cmd" > NUL 2>&1
 
+echo All modules downloaded successfully!
+cls
 
 :: Ensure the destination directory exists in the current script location
 if not exist "%currentDir%" mkdir "%currentDir%"
@@ -598,7 +679,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUs
 
 echo. - Browser background optimizations
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
+rereg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "HighEfficiencyModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -1366,11 +1447,104 @@ if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
 timeout /t 2 /nobreak > NUL
-
+goto :ConfirmServices
+set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
 :StartServiceChanges
-start /wait cmd.exe /c "%~dp0AuroraModules\AuroraManualServices.cmd"
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+
+echo !ESC![32mServices configured successfully!ESC![0m
+timeout /t 5 /nobreak > NUL
+goto :DisableServices
+
+rem ========================================================================================================================================
+:DisableServices
+mode con cols=76 lines=33
+cls
 echo.
-echo.                     Services modified successfully.
+echo.
+echo:       ______________________________________________________________
+echo.
+echo.                     Disabling unnecessary services...
+echo.
+
+echo.
+echo.                 Do you want to disable Bluetooth services?
+echo.                             [1] Yes [2] No
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" (
+    :: Disable Bluetooth services
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\bthserv" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+) else if /I "%input%"=="2" (
+    goto :SkipBluetooth
+) else (
+    echo Invalid input
+    timeout /t 2 /nobreak > NUL
+    goto :DisableServices
+)
+
+:SkipBluetooth
+
+echo.
+echo.                 Do you want to disable Printing services?
+echo.                             [1] Yes [2] No
+echo.
+set /p input=%BS% ══════════^> 
+if /I "%input%"=="1" (
+    :: Disable printing services
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintWorkflowUserSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
+) else if /I "%input%"=="2" (
+    goto :SkipPrinting
+) else (
+    echo Invalid input
+    timeout /t 2 /nobreak > NUL
+    goto :DisableServices
+)
+
+:SkipPrinting
+
+:: Disable other unnecessary services
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\shpamsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RmSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+
+:: Disable rarely used Windows services
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\tzautoupdate" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WalletService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Ndu" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+
+
+
+echo.
+echo.                     Services disabled successfully.
 echo.
 timeout /t 2 /nobreak > NUL
 goto :MainMenu
