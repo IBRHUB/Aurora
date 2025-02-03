@@ -257,6 +257,7 @@ set currentDir=%~dp0AuroraModules
 :: Ensure the target directory exists
 if not exist "%targetDir%" mkdir "%targetDir%"
 
+<<<<<<< HEAD
 :: Check if all required files exist in the current directory
 if exist "%currentDir%\LockConsoleSize.ps1" (
     if exist "%currentDir%\OneDrive.ps1" (
@@ -297,6 +298,36 @@ if exist "%currentDir%\LockConsoleSize.ps1" (
     )
 )
 
+=======
+set "allFilesExist=1"
+
+if not exist "%currentDir%\LockConsoleSize.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\OneDrive.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\Power.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\RestorePoint.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\SetConsoleOpacity.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\NvidiaProfileInspector.cmd" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraAMD.bat" set "allFilesExist=0"
+if not exist "%currentDir%\NetworkBufferBloatFixer.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\Cloud.bat" set "allFilesExist=0"
+if not exist "%currentDir%\Telemetry.bat" set "allFilesExist=0"
+if not exist "%currentDir%\Privacy.bat" set "allFilesExist=0"
+if not exist "%currentDir%\RepairWindows.cmd" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraAvatar.ico" set "allFilesExist=0"
+if not exist "%currentDir%\RemoveEdge.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\Components.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraTimerResolution.cs" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraTimerResolution.ps1" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraManualServices.cmd" set "allFilesExist=0"
+if not exist "%currentDir%\AuroraSudo.exe" set "allFilesExist=0"
+
+if "%allFilesExist%"=="1" (
+    echo Files already exist in AuroraModules directory. Skipping download...
+    goto :skipDownload
+)
+
+cls
+>>>>>>> d65d2600ecb5255d32c2bf94376c586fb18c30db
 echo Download files for Aurora
 
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
@@ -1423,7 +1454,7 @@ echo.
 echo.                    Press [1] if you want to continue
 echo.                    Press [2] to return to main menu
 echo.
-set /p input=%BS% ══════════^> 
+set /p input="══════════^> " 
 if /I "%input%"=="1" goto :ConfirmServices
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
@@ -1442,13 +1473,17 @@ echo.
 echo.                    Press [1] to confirm and proceed
 echo.                    Press [2] to return to main menu
 echo.
-set /p input=%BS% ══════════^> 
+set /p input="══════════^> " 
 if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
 timeout /t 2 /nobreak > NUL
 goto :ConfirmServices
+<<<<<<< HEAD
 set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
+=======
+
+>>>>>>> d65d2600ecb5255d32c2bf94376c586fb18c30db
 :StartServiceChanges
 %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
 %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
@@ -1548,7 +1583,6 @@ echo.                     Services disabled successfully.
 echo.
 timeout /t 2 /nobreak > NUL
 goto :MainMenu
-
 
 rem ========================================================================================================================================
 :DarkMode
