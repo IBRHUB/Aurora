@@ -2,95 +2,13 @@
 :: ============================================================
 ::                            Aurora
 :: ============================================================
-::
-:: DESCRIPTION:
-::   This script serves as the main entry point for Aurora system
-::   configuration. It performs essential setup tasks including:
-::   - Checking and requesting administrator privileges 
-::   - Configuring PowerShell execution policies
-::   - Setting up registry permissions
-::   - Enabling required system features
-::   - Managing Windows privacy and telemetry settings
-::   - Customizing system behavior and appearance
-::   - Optimizing system performance
-::
-:: REQUIREMENTS:
-::   - Windows 10/11
-::   - Administrator privileges
-::   - PowerShell 5.1 or higher
-::
-:: FEATURES:
-::   - Privacy Enhancement
-::     * Disables telemetry and data collection
-::     * Configures privacy-focused Windows settings
-::     * Manages app permissions and tracking
-::     * Controls diagnostic data sharing
-::     * Limits Microsoft account integration
-::     * Restricts background app access
-::
-::   - System Optimization
-::     * Removes unnecessary Windows components
-::     * Configures system for better performance
-::     * Disables unneeded services
-::     * Optimizes system resources
-::     * Manages startup programs
-::     * Tunes system scheduling
-::
-::   - Security Hardening
-::     * Applies security best practices
-::     * Configures Windows Defender settings
-::     * Manages Windows Update behavior
-::     * Hardens system policies
-::     * Controls network access
-::     * Enhances authentication settings
-::
-::   - User Experience
-::     * Customizes Windows interface
-::     * Configures default applications
-::     * Optimizes system responsiveness
-::     * Improves boot performance
-::     * Enhances desktop experience
-::     * Streamlines notifications
-::
-:: COMPONENTS:
-::   - Registry Management
-::     * Modifies system registry settings
-::     * Applies privacy configurations
-::     * Updates security policies
-::
-::   - Service Configuration
-::     * Manages Windows services
-::     * Optimizes service startup
-::     * Controls background processes
-::
-::   - Application Control
-::     * Manages installed applications
-::     * Controls app permissions
-::     * Configures default programs
-::
-:: NOTES:
-::   - Script must be run with elevated privileges
-::   - Makes registry modifications for PowerShell execution
-::   - Compatible with both 32-bit and 64-bit Windows
-::   - Handles both legacy PowerShell and PowerShell 7+
-::   - Creates system restore point before changes
-::   - Can be reverted through Windows Settings
-::   - Logs all major operations
-::   - Provides error handling and recovery
-::
-:: WARNING:
-::   This script makes significant system changes.
-::   A system restore point is created before modifications.
-::   Review all changes before running.
-::   Some changes require system restart.
-::   Backup important data before proceeding.
-::
 :: AUTHOR:
 ::   IBRHUB
 ::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
 ::
 :: VERSION:
-::   1.0.0
+::   1.0.0 beta
 ::
 :: LICENSE:
 ::   MIT License
@@ -171,7 +89,7 @@ if errorlevel 1 (
 )
 
 
-start https://docs.ibrhub.net/ar/disclaimer
+:: start https://docs.ibrhub.net/ar/disclaimer
 :: set ANSI escape characters
 cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
@@ -205,6 +123,7 @@ echo.
 echo. 
 echo. 
 echo. 
+
 timeout /t 1 /nobreak > NUL
 
 :: Prompt user for input
@@ -232,17 +151,17 @@ if /I "%choice%"=="1" (
 )
 
 :bypass
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 goto :MainMenu
 
 
 :endAurora
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 exit /b
 
 
 :StartAurora
-taskkill /F /IM "notepad.exe" >nul 2>&1
+
 cls
 
 
@@ -253,7 +172,6 @@ set "currentDir=%~dp0AuroraModules"
 
 if not exist "%targetDir%" mkdir "%targetDir%"
 
-<<<<<<< HEAD
 ::  If required files already exist then skip download 
 if exist "%currentDir%\LockConsoleSize.ps1" if exist "%currentDir%\OneDrive.ps1" if exist "%currentDir%\Power.ps1" if exist "%currentDir%\RestorePoint.ps1" if exist "%currentDir%\SetConsoleOpacity.ps1" if exist "%currentDir%\NvidiaProfileInspector.cmd" if exist "%currentDir%\AuroraAMD.bat" if exist "%currentDir%\NetworkBufferBloatFixer.ps1" if exist "%currentDir%\Cloud.bat" if exist "%currentDir%\Telemetry.bat" if exist "%currentDir%\Privacy.bat" if exist "%currentDir%\RepairWindows.cmd" if exist "%currentDir%\AuroraAvatar.ico" if exist "%currentDir%\RemoveEdge.ps1" if exist "%currentDir%\Components.ps1" if exist "%currentDir%\AuroraTimerResolution.cs" if exist "%currentDir%\AuroraTimerResolution.ps1" if exist "%currentDir%\AuroraManualServices.cmd" if exist "%currentDir%\AuroraSudo.exe" (
     echo Required files already exist. Skipping download...
@@ -263,124 +181,44 @@ if exist "%currentDir%\LockConsoleSize.ps1" if exist "%currentDir%\OneDrive.ps1"
 cls
 echo Downloading required Aurora modules...
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+echo [                             0%                             ] && cls
 curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" >nul 2>&1
+echo [==                           3.5%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" >nul 2>&1
+echo [====                         7.0%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+echo [=====                       10.5%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+echo [========                    18.0%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" >nul 2>&1
+echo [==========                  21.5%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RemoveEdge.ps1" >nul 2>&1
+echo [==============              27.0%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\Components.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Components.ps1" >nul 2>&1
+echo [==================          30.5%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.cs" >nul 2>&1
+echo [====================        34.0%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.ps1" >nul 2>&1
+echo [=========================== 47.0%                           ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraSudo.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraSudo.exe" >nul 2>&1
+echo [=============================59.5%======                    ] && cls
 curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" >nul 2>&1
+echo [=============================69.0%============              ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" >nul 2>&1
+echo [=============================75.0 %=============            ] && cls
 curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" >nul 2>&1
+echo [=============================79.5%%===============          ] && cls
 curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Telemetry.bat" >nul 2>&1
+echo [=============================85.0%%===================      ] && cls
 curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" >nul 2>&1
+echo [=============================90.5%%=====================    ] && cls
 curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" >nul 2>&1
+echo [=============================93.5%%=====================    ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" >nul 2>&1
+echo [=============================99.5%%======================== ] && cls
 curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
+echo [=============================100.0%%========================]
 
-=======
-<<<<<<< HEAD
-:: Check if all required files exist in the current directory
-if exist "%currentDir%\LockConsoleSize.ps1" (
-    if exist "%currentDir%\OneDrive.ps1" (
-        if exist "%currentDir%\Power.ps1" (
-            if exist "%currentDir%\RestorePoint.ps1" (
-                if exist "%currentDir%\SetConsoleOpacity.ps1" (
-                    if exist "%currentDir%\NvidiaProfileInspector.cmd" (
-                        if exist "%currentDir%\AuroraAMD.bat" (
-                            if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
-                                if exist "%currentDir%\Cloud.bat" (
-                                    if exist "%currentDir%\Telemetry.bat" (
-                                        if exist "%currentDir%\Privacy.bat" (
-                                             if exist "%currentDir%\RepairWindows.cmd" (
-                                                if exist "%currentDir%\AuroraAvatar.ico" (
-                                                    if exist "%currentDir%\RemoveEdge.ps1" (
-                                                        if exist "%currentDir%\Components.ps1" (
-                                                            if exist "%currentDir%\AuroraTimerResolution.cs" (
-                                                                if exist "%currentDir%\AuroraTimerResolution.ps1" (
-                                                                    if exist "%currentDir%\AuroraSudo.exe" (
-                                                                        echo Files already exist in AuroraModules directory. Skipping download...
-                                                                        goto :skipDownload
-                                                                    )
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                                )
-                                             )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    )
-)
-
-=======
-set "allFilesExist=1"
-
-if not exist "%currentDir%\LockConsoleSize.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\OneDrive.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\Power.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\RestorePoint.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\SetConsoleOpacity.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\NvidiaProfileInspector.cmd" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraAMD.bat" set "allFilesExist=0"
-if not exist "%currentDir%\NetworkBufferBloatFixer.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\Cloud.bat" set "allFilesExist=0"
-if not exist "%currentDir%\Telemetry.bat" set "allFilesExist=0"
-if not exist "%currentDir%\Privacy.bat" set "allFilesExist=0"
-if not exist "%currentDir%\RepairWindows.cmd" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraAvatar.ico" set "allFilesExist=0"
-if not exist "%currentDir%\RemoveEdge.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\Components.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraTimerResolution.cs" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraTimerResolution.ps1" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraManualServices.cmd" set "allFilesExist=0"
-if not exist "%currentDir%\AuroraSudo.exe" set "allFilesExist=0"
-
-if "%allFilesExist%"=="1" (
-    echo Files already exist in AuroraModules directory. Skipping download...
-    goto :skipDownload
-)
-
-cls
->>>>>>> d65d2600ecb5255d32c2bf94376c586fb18c30db
-echo Download files for Aurora
-
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RemoveEdge.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Components.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Components.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.cs" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.ps1" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraSudo.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraSudo.exe" > NUL 2>&1
-
-curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Telemetry.bat" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" > NUL 2>&1
-curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" > NUL 2>&1
-
-echo All modules downloaded successfully!
-cls
-
-:: Ensure the destination directory exists in the current script location
->>>>>>> 39e4f1d5e7bf44b6e5b5b41f457a7f95b9812a8f
 if not exist "%currentDir%" mkdir "%currentDir%"
 move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 
@@ -393,7 +231,7 @@ powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 
 :: Set console size and appearance
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
+:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1"
 
@@ -404,51 +242,66 @@ powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1
 :: powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 cls
 rem ========================================================================================================================================
+:: ANSI Escape Code Definition
+for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+  set "ESC=%%b"
+)
+
+:: Enable ANSI Support (Windows 10+)
+REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1 > nul 2>&1
+
+title AURORA Optimizer v1.0
+color 0f
 
 
-color f
+
+
+
+
 :MainMenu
 chcp 65001 >NUL
 CLS
-mode con cols=95 lines=40
+mode con cols=98 lines=45
 echo.
 echo.
 echo.
 echo.
 echo.
 echo.
-echo                             %ESC%[1;4;94mA%ESC%[1;96mU%ESC%[1;92mR%ESC%[1;93mO%ESC%[1;92mR%ESC%[1;90mA%ESC%[1;37m%ESC%[0m ✓%ESC%[1;3;37m%bullet% Lighting Up Your PC's Performance%ESC%[0m   
 echo.
 echo.
+echo                        %ESC%[1;38;5;33m╔══════════════════════════════════════════════════════╗
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗  %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗ %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║ %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║ %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║ %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ %ESC%[1;38;5;33m║
+echo                        %ESC%[1;38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo                             %ESC%[1;3;38;5;195m✦ Optimize - Secure - Enhance - Personalize ✦%ESC%[0m
+echo.
+echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m1%ESC%[0m ■ %ESC%[1;37mWindows Tweaks          %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m5%ESC%[0m ■ %ESC%[1;37mDisable Services        %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m2%ESC%[0m ■ %ESC%[1;37mGPU Optimization        %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m6%ESC%[0m ■ %ESC%[1;37mDark Mode Toggle        %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m3%ESC%[0m ■ %ESC%[1;37mNetwork Configuration   %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m7%ESC%[0m ■ %ESC%[1;37mSystem Repair           %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m4%ESC%[0m ■ %ESC%[1;37mPower Plans             %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m8%ESC%[0m ■ %ESC%[1;34mDiscord Community       %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m├──────────────────────────────┼──────────────────────────────┤%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m9%ESC%[0m ■ %ESC%[1;34mIBRHUB Portal           %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m10%ESC%[0m ■ %ESC%[1;34mDocumentation          %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m╰──────────────────────────────┴──────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                       ═══════════════════════════════════════════════════════
-echo.                                                                            
-echo                         %ESC%[38;5;36m[1]%bullet% %ESC%[1;37mWindows Tweaks%ESC%[37m       %ESC%[38;5;36m[3]%bullet% %ESC%[1;37mNetwork Tweaks%ESC%[37m     %ESC%[38;5;105m
-echo.                                                                            
-echo                         %ESC%[38;5;36m[2]%bullet% %ESC%[1;37mGPU Tweaks%ESC%[37m           %ESC%[38;5;36m[4]%bullet% %ESC%[1;37mPower Plan%ESC%[37m         %ESC%[38;5;36m
-echo.                                                                            
-echo                       ═══════════════════════════════════════════════════════                                                                                                                                                    
-echo                         %ESC%[38;5;36m[5]%bullet% %ESC%[1;37mDisable Services%ESC%[37m     %ESC%[38;5;36m[7]%bullet% %ESC%[1;37mRepair Windows%ESC%[37m     %ESC%[38;5;105m
-echo.                                                                            
-echo                         %ESC%[38;5;36m[6]%bullet% %ESC%[1;37mDark Mode%ESC%[37m            %ESC%[38;5;36m[8]%bullet% %ESC%[1;4;3;34mDiscord%ESC%[0m            %ESC%[38;5;36m
-echo.                                                                                   
-echo                       ═══════════════════════════════════════════════════════
+echo                                           %ESC%[38;5;196m[ 0 ]%ESC%[0m %ESC%[1;3;38;5;196mExit AURORA %ESC%[0m
 echo.
-echo                         %ESC%[38;5;36m[9]%bullet% %ESC%[1;4;3;34mIBRHUB.COM%ESC%[0m          %ESC%[38;5;36m[10]%bullet% %ESC%[1;4;3;34mDocumentation!%ESC%[0m             
 echo.
-echo                       ═══════════════════════════════════════════════════════
-echo.
-echo.                                                                             
-echo                                               %ESC%[91m[0]%ESC%[0m%bullet% %ESC%[1;4;3;91mExit%ESC%[0m  %ESC%[37m                       
-echo.                                                                                                            
-set /p input=%BS% %ESC%[38;5;36m                      ══════════^> %ESC%[38;5;36 m%ESC%[0m
+set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
 
 if not defined input goto :MainMenu
 if "%input%"=="" goto :MainMenu
 set "input=%input:"=%"
+
 if "%input%"=="1" goto :WinTweaks
-if "%input%"=="2" goto :GPUTweaks  
+if "%input%"=="2" goto :GPUTweaks
 if "%input%"=="3" goto :NetworkTweaks
 if "%input%"=="4" goto :Power-Plan
 if "%input%"=="5" goto :ManualServices
@@ -457,15 +310,32 @@ if "%input%"=="7" goto :RepairWindows
 if "%input%"=="8" goto :Discord
 if "%input%"=="9" (start https://ibrpride.com/ & goto :MainMenu)
 if "%input%"=="10" (start https://docs.ibrhub.net & goto :MainMenu)
-
 if "%input%"=="0" goto :AuroraExit
-echo %ESC%[91mInvalid input. Please select a number between 1 and 8.%ESC%[0m
-C:\Windows\System32\TIMEOUT.exe /t 1 /nobreak > nul 2> nul
+
+echo %ESC%[91mInvalid input. Please select a number between 0 and 10.%ESC%[0m
+timeout /t 1 /nobreak > nul
 goto :MainMenu
+
+:AuroraExit
+CLS
+echo %ESC%[1;92mThank you for using AURORA Optimizer!%ESC%[0m
+timeout /t 2 /nobreak > nul
+exit
 
 :WinTweaks
 mode con cols=76 lines=35
+
+:: Standard Header for All Sections
+:SectionHeader
+mode con cols=98 lines=45
+
 cls
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+
 :: - Setting UAC - never notify
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -781,7 +651,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -816,7 +690,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -863,7 +741,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -881,7 +763,11 @@ if /I "%input%"=="2" goto :Privacy
 if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Telemetry
@@ -899,7 +785,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -936,7 +826,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -985,7 +879,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -1044,7 +942,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -1087,7 +989,11 @@ CLS
 echo.
 echo.
 echo.
-echo:       ______________________________________________________________
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo.
 echo.
 echo.
@@ -1123,7 +1029,11 @@ timeout /t 3 /nobreak > NUL
 echo:
 echo:
 echo:
-echo:
+echo.
+echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
+echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
+echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
 echo:
 echo:
 echo:
@@ -1230,39 +1140,17 @@ rem ============================================================================
 mode con cols=76 lines=33
 cls
 echo.
+echo    %ESC%[1;38;5;45m╔══════════════════════════════════════════════════════╗
+echo    %ESC%[1;38;5;45m║%ESC%[97m               NETWORK OPTIMIZATION SETTINGS          %ESC%[1;38;5;45m║
+echo    %ESC%[1;38;5;45m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
+echo    %ESC%[93m1.%ESC%[0m Apply Gaming Network Profile
+echo    %ESC%[93m2.%ESC%[0m Return to Main Menu
 echo.
-echo:           ______________________________________________________
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                                  %ESC%[4mWarning:
-echo.
-echo.                      %ESC%[31mThese network tweaks may improve 
-echo.                     or worsen your internet performance
-echo.
-echo.                        [1] Network Tweaks [2] menu
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo:           ______________________________________________________
-echo.
-echo.
-echo.
-choice /c:12 /n > NUL 2>&1
-if "%errorlevel%"=="1" goto :NetworkTweaks1
-if "%errorlevel%"=="2" goto :MainMenu
+set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
+
+if /I "%input%"=="1" goto  :NetworkTweaks1
+if /I "%input%"=="2" goto  :MainMenu
 
 :NetworkTweaks1
 timeout /t 3 /nobreak > NUL
@@ -1290,152 +1178,42 @@ mode con cols=76 lines=33
 cls
 echo.
 echo.
-echo:       ______________________________________________________________
 echo.
 echo.
-echo.                                %ESC%[4mWarning:
-echo.
-echo.          %ESC%[31mThese changes may cause issues with Windows functionality
-echo.          %ESC%[31mOnly proceed if you understand the potential risks
-echo.
-echo.                    Press [1] if you want to continue
-echo.                    Press [2] to return to main menu
-echo.
-set /p input="══════════^> " 
-if /I "%input%"=="1" goto :ConfirmServices
-if /I "%input%"=="2" goto :MainMenu
-echo Invalid input
-timeout /t 2 /nobreak > NUL
-goto :ManualServices
-
-:ConfirmServices
-cls
 echo.
 echo.
-echo:       ______________________________________________________________
 echo.
-echo.                        Are you absolutely sure?
-echo.                     This cannot be easily undone
 echo.
-echo.                    Press [1] to confirm and proceed
-echo.                    Press [2] to return to main menu
+echo            %ESC%[1;38;5;196m╔══════════════════════════════════════════════════════╗
+echo            %ESC%[1;38;5;196m║%ESC%[93m                    W A R N I N G !                    %ESC%[1;38;5;196m║
+echo            %ESC%[1;38;5;196m║                                                      ║%ESC%[0m 
+echo            %ESC%[1;38;5;196m║%ESC%[91m  These changes may cause system instability          %ESC%[1;38;5;196m║
+echo            %ESC%[1;38;5;196m║%ESC%[91m  Only proceed if you understand the consequences     %ESC%[1;38;5;196m║
+echo            %ESC%[1;38;5;196m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
-set /p input="══════════^> " 
+echo.
+echo.
+echo                         %ESC%[93m[1]%ESC%[0m Continue    %ESC%[93m[2]%ESC%[0m Main Menu    
+echo.
+set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
 if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
 timeout /t 2 /nobreak > NUL
-goto :ConfirmServices
-<<<<<<< HEAD
-set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
-=======
 
->>>>>>> d65d2600ecb5255d32c2bf94376c586fb18c30db
 :StartServiceChanges
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\EventLog" /v "Start" /t REG_DWORD /d "2" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SysMain" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Themes" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WSearch" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\NVDisplay.ContainerLocalSystem" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\TabletInputService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CDPUserSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-
-echo !ESC![32mServices configured successfully!ESC![0m
-timeout /t 5 /nobreak > NUL
-goto :DisableServices
-
-rem ========================================================================================================================================
-:DisableServices
-mode con cols=76 lines=33
-cls
+start /wait cmd.exe /c "%~dp0AuroraModules\AuroraManualServices.cmd"
 echo.
-echo.
-echo:       ______________________________________________________________
-echo.
-echo.                     Disabling unnecessary services...
-echo.
-
-echo.
-echo.                 Do you want to disable Bluetooth services?
-echo.                             [1] Yes [2] No
-echo.
-set /p input=%BS% ══════════^> 
-if /I "%input%"=="1" (
-    :: Disable Bluetooth services
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BTAGService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BthAvctpSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\bthserv" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\BluetoothUserService" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-) else if /I "%input%"=="2" (
-    goto :SkipBluetooth
-) else (
-    echo Invalid input
-    timeout /t 2 /nobreak > NUL
-    goto :DisableServices
-)
-
-:SkipBluetooth
-
-echo.
-echo.                 Do you want to disable Printing services?
-echo.                             [1] Yes [2] No
-echo.
-set /p input=%BS% ══════════^> 
-if /I "%input%"=="1" (
-    :: Disable printing services
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Fax" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Spooler" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintWorkflowUserSvc" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-    %AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PrintNotify" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
-) else if /I "%input%"=="2" (
-    goto :SkipPrinting
-) else (
-    echo Invalid input
-    timeout /t 2 /nobreak > NUL
-    goto :DisableServices
-)
-
-:SkipPrinting
-
-:: Disable other unnecessary services
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\shpamsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteRegistry" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\defragsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RmSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\wisvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-
-:: Disable rarely used Windows services
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SEMgrSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\AxInstSV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\tzautoupdate" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\CscService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\PhoneSvc" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\RemoteAccess" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\upnphost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\UevAgentService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\WalletService" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\Ndu" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\fdPHost" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\FDResPub" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\lmhosts" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-%AuroraAsAdmin% --TrustedInstaller --Privileged --NoLogo reg add "HKLM\SYSTEM\CurrentControlSet\Services\SSDPSRV" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-
-
-
-echo.
-echo.                     Services disabled successfully.
+echo    %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :MainMenu
+
 
 rem ========================================================================================================================================
 :DarkMode
 mode con cols=76 lines=33
 cls
-echo - Enabling Dark Mode...
 
 :: Enable dark mode for system
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
@@ -1444,10 +1222,13 @@ reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Per
 :: Enable dark mode for current user
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1 
 reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+echo.
+echo.
+echo.
+echo.
+echo %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
 
-echo - Dark Mode enabled successfully.
-
-C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe
+C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe >nul 2>&1
  
 timeout /t 3 /nobreak > NUL
 
@@ -1465,9 +1246,9 @@ echo.
 
 if exist "%currentDir%\RepairWindows.cmd" (
     start "" /wait "%currentDir%\RepairWindows.cmd"
-    echo - Launched Windows repair utility
+    echo    %ESC%[93m⌛%ESC%[0m %ESC%[97mProcessing... Please wait%ESC%[0m
 ) else (
-    echo - Error: RepairWindows.cmd script not found in AuroraModules folder.
+    echo    %ESC%[91m✗%ESC%[0m %ESC%[97mFailed to execute operation!%ESC%[0m
 )
 
 timeout /t 2 /nobreak > NUL
