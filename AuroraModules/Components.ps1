@@ -1,7 +1,5 @@
-﻿# -----------------------------------------------------------
-# Check if the script is running with Administrator privileges
-# -----------------------------------------------------------
-if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+﻿# Check if the script is running with Administrator privileges
+if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "Please run this script as Administrator." -ForegroundColor Yellow
     Start-Process powershell.exe -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -File "{0}"' -f `
@@ -9,6 +7,8 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     exit
 }
 
+# (Optional) Define $SILENT if you want to run in silent mode.
+if (-not $SILENT) { $SILENT = $false }
 
 $Host.UI.RawUI.BackgroundColor = "Black"
 
@@ -50,11 +50,11 @@ try {
     Write-Host "An error occurred: $_" -ForegroundColor Red
 }
 
-Set-ConsoleBackground
+# The following call was causing an error because Set-ConsoleBackground is undefined.
+# It has been removed (or you could define it if needed).
+# Set-ConsoleBackground
+
 Clear-Host
-
-
-
 
 function Disable-SystemSounds {
     if ($SILENT) {
@@ -78,7 +78,7 @@ function Disable-SystemSounds {
 
     foreach ($keyPath in $schemeKeys) {
         Get-ChildItem -Path $keyPath -ErrorAction SilentlyContinue | ForEach-Object {
-            Set-ItemProperty -Path "$($_.PSPath)\Current" -Name "(Default)" -Value "" -Type String -Force -ErrorAction SilentlyContinue
+            Set-ItemProperty -Path "$($_.PSPath)\Current" -Name "(Default)" -Value "" -Force -ErrorAction SilentlyContinue
         }
     }
 
@@ -122,7 +122,7 @@ function Enable-EdgeUninstallation {
         # Read and modify JSON
         $params = @{
             LiteralPath = $jsonPath
-            Encoding = 'Utf8'
+            Encoding    = 'Utf8'
         }
         
         $jsonContent = Get-Content @params | ConvertFrom-Json
@@ -233,10 +233,8 @@ function Remove-WindowsFeatures {
         'Recall'
     )
 
-    $installed = Get-WindowsOptionalFeature -Online | Where-Object -Property 'State' -NotIn -Value @(
-        'Disabled'
-        'DisabledWithPayloadRemoved'
-    )
+    # Note: If you experience issues with the -NotIn syntax, you can use a script block instead.
+    $installed = Get-WindowsOptionalFeature -Online | Where-Object { $_.State -notin @('Disabled','DisabledWithPayloadRemoved') }
     
     $total = $selectors.Count
     $current = 0
@@ -287,10 +285,7 @@ function Remove-WindowsCapabilities {
         'Media.WindowsMediaPlayer'
     )
 
-    $installed = Get-WindowsCapability -Online | Where-Object -Property 'State' -NotIn -Value @(
-        'NotPresent'
-        'Removed'
-    )
+    $installed = Get-WindowsCapability -Online | Where-Object { $_.State -notin @('NotPresent','Removed') }
     
     $total = $selectors.Count
     $current = 0
@@ -352,9 +347,8 @@ Add-Type -TypeDefinition '
 
 function Set-WallpaperColor {
     param(
-        [string]
-        $HtmlColor
-    );
+        [string] $HtmlColor
+    )
 
     if ($SILENT) {
         Write-Progress -Activity "Setting Wallpaper Color" -Status "In Progress..." -PercentComplete 0
@@ -362,9 +356,12 @@ function Set-WallpaperColor {
     }
     $color = [System.Drawing.ColorTranslator]::FromHtml($HtmlColor);
     [WallpaperSetter]::SetDesktopBackground($color);
-    Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Type 'DWord' -Value 1 -Force;
-    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Type 'String' -Value '' -Force;
-    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Colors' -Name 'Background' -Type 'String' -Value "$($color.R) $($color.G) $($color.B)" -Force;
+
+    # Removed the invalid -Type parameter from Set-ItemProperty calls.
+    Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Value 1 -Force;
+    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Value '' -Force;
+    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Colors' -Name 'Background' -Value "$($color.R) $($color.G) $($color.B)" -Force;
+    
     if ($SILENT) {
         Write-Progress -Activity "Setting Wallpaper Color" -Status "Complete" -PercentComplete 100
     }
@@ -372,17 +369,17 @@ function Set-WallpaperColor {
 
 function Set-WallpaperImage {
     param(
-        [string]
-        $LiteralPath
-    );
+        [string] $LiteralPath
+    )
 
     if ($SILENT) {
         Write-Progress -Activity "Setting Wallpaper Image" -Status "In Progress..." -PercentComplete 0
         $ProgressPreference = 'SilentlyContinue'
     }
     [WallpaperSetter]::SetDesktopImage($LiteralPath);
-    Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Type 'DWord' -Value 0 -Force;
-    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Type 'String' -Value $LiteralPath -Force;
+    Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Value 0 -Force;
+    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Value $LiteralPath -Force;
+    
     if ($SILENT) {
         Write-Progress -Activity "Setting Wallpaper Image" -Status "Complete" -PercentComplete 100
     }
@@ -392,9 +389,7 @@ function Set-WallpaperImage {
 function Show-Menu {
     if (-not $SILENT) {
         Clear-Host
-		Write-Host "`n"
-		Write-Host "`n"
-		Write-Host "`n"
+        Write-Host "`n`n`n"
         Write-Host "    ╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
         Write-Host "    ║                                                            ║" -ForegroundColor Cyan
         Write-Host "    ║  1: Disable System Sounds                                  ║" -ForegroundColor White
