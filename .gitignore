@@ -3,3 +3,9 @@ AuroraModules/RemoveEdge.ps1
 Troubleshooting.md
 Aurora.cmd
 *.cmd
+Aurora.cmd
+AuroraModules/Telemetry.bat
+Aurora.cmd
+AuroraModules/SetIcon.cmd
+AuroraModules/Privacy.bat
+AuroraModules/Cloud.bat

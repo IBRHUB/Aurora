@@ -1,7 +1,7 @@
 #Requires -RunAsAdministrator
 <#
 .SYNOPSIS
-  IBRPRIDE.COM - Network Buffer Bloat Fixer (Improved v3)
+  https://docs.ibrhub.net - Network Buffer Bloat Fixer 
 .DESCRIPTION
   A PowerShell script that helps optimize network performance by reducing buffer bloat.
   Buffer bloat occurs when network buffers get too full, causing increased latency.
@@ -17,7 +17,7 @@
   Author:  IBRHUB
   Requirements: Must be run with Administrator privileges
   Disclaimer: Use at your own risk. May affect your network/system settings.
-  Support: Visit IBRPRIDE.COM for documentation and updates
+  Support: Visit https://docs.ibrhub.net/ for documentation and updates
 #>
 
 # -----------------------------------------------------------
@@ -36,7 +36,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 # -----------------------------------------------------------
 function Show-Banner {
     param (
-        [string]$Title = "IBRPRIDE.COM - Network Buffer Bloat Fixer",
+        [string]$Title = "ibrhub.net - Network Buffer Bloat Fixer",
         [string]$Version = "v3.0"
     )
     Write-Host ""
@@ -50,7 +50,7 @@ function Show-Banner {
 # Function: Set-ConsoleBackground
 # -----------------------------------------------------------
 function Set-ConsoleBackground {
-    $Host.UI.RawUI.WindowTitle = "QoS Network Buffer Bloat Fixer | @IBRHUB v3.0"
+    $Host.UI.RawUI.WindowTitle = "QoS Network Buffer Bloat Fixer | @IBRHUB"
     $Host.UI.RawUI.BackgroundColor = "Black"
     $Host.PrivateData.ProgressBackgroundColor = "Black"
     $Host.PrivateData.ProgressForegroundColor = "White"
@@ -148,7 +148,7 @@ function Write-Menu {
 
     function Get-Menu ($script:inputEntries) {
         Clear-Host
-        Show-Banner -Title "IBRPRIDE.COM - Network Buffer Bloat Fixer" -Version "v3.0"
+        Show-Banner -Title "QoS Network Buffer Bloat Fixer | @IBRHUB" -Version "v1.0"
 
         if ($Title -ne $null) {
             $script:menuTitle = "$Title"
@@ -784,7 +784,7 @@ Set-ConsoleBackground
 Clear-Host
 
 # Show banner once (optional) before menu:
-Show-Banner -Title "IBRPRIDE.COM - Network Buffer Bloat Fixer" -Version "v3.0"
+Show-Banner -Title "QoS Network Buffer Bloat Fixer | @IBRHUB" -Version "v1.0"
 
 # Main menu entries (Exit has empty string -> triggers "Command" case)
 $menuEntries = @{
