@@ -26,6 +26,9 @@ fltmc > nul 2>&1 || (
 	)
 	exit /b
 )
+
+reg add "HKCU\Console" /v VirtualTerminalLevel /t REG_DWORD /d 1 /f >nul 2>&1
+
 :: Enable delayed expansion for the registry operations
 setlocal EnableDelayedExpansion
 
@@ -250,7 +253,6 @@ cls
 
 :skipDownload
 :: Enable ANSI Escape Sequences
-reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
 
@@ -304,7 +306,7 @@ echo.
 echo.                                                                             
 echo                                               [91m[0][0m%bullet% [1;4;3;91mExit[0m  [37m                       
 echo.                                                                                                            
-set /p input=%BS% [38;5;36m                      ══════════^> [38;5;36 m[0m
+set /p input= [38;5;36m                      ══════════^> [38;5;36 m[0m
 
 if not defined input goto :MainMenu
 if "%input%"=="" goto :MainMenu
@@ -598,7 +600,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUs
 
 echo. - Browser background optimizations
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
-rereg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "HighEfficiencyModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -619,7 +621,6 @@ reg add "HKLM\SOFTWARE\Policies\Mozilla\Firefox" /v "DisableAppUpdate" /t REG_DW
 
 echo. - Explorer Optimizations
 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /t REG_DWORD /d 1 /f > NUL 2>&1
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Mouse" /v "MouseHoverTime" /t REG_SZ /d "0" /f > NUL 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ListviewShadow" /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -834,7 +835,7 @@ echo.                 [96mDo you want to Enable Timer Resolution ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
-set /p input=%BS%══════════^> 
+set /p input=══════════^> 
 if /I "%input%"=="1" goto :TimerR
 if /I "%input%"=="2" goto :CloudSync
 if /I "%input%"=="3" goto :MainMenu
@@ -869,7 +870,7 @@ echo.                      [96mDo you want to Disable Cloud Sync ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
-set /p input=%BS%══════════^> 
+set /p input=══════════^> 
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
 if /I "%input%"=="3" goto :MainMenu
@@ -916,7 +917,7 @@ echo.                      [96mDo you want to Disable Telemetry ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
-set /p input=%BS%══════════^> 
+set /p input=══════════^> 
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
 if /I "%input%"=="3" goto :MainMenu
@@ -952,7 +953,7 @@ echo.                      [96mDo you want to Disable Privacy ?%ESC%[0m
 echo.
 echo.                             [1] Yes Or [2] No
 echo.
-set /p input=%BS% ══════════^> 
+set /p input= ══════════^> 
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
 if /I "%input%"=="3" goto :MainMenu
@@ -990,7 +991,7 @@ echo.
 echo.                             [1] Yes Or [2] No
 echo.
 echo.
-set /p input=%BS% ══════════^> 
+set /p input= ══════════^> 
 if /I "%input%"=="1" goto :runRemoveEdge
 if /I "%input%"=="2" goto :OneDrive
 if /I "%input%"=="3" goto :MainMenu
@@ -1038,7 +1039,7 @@ echo.                       [96mDo you want to Remove OneDrive? %ESC%[0m
 echo.
 echo.                                 [1] Yes [2] No
 echo.
-set /p input=%BS%              ══════════^> 
+set /p input=              ══════════^> 
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :DeblootWindows
 if /I "%input%"=="3" goto :MainMenu
@@ -1097,7 +1098,7 @@ echo.                     [96mDo you want to Debloat Windows? %ESC%[0m
 echo.
 echo.                                 [1] Yes [2] No
 echo.
-set /p input=%BS%              ══════════^> 
+set /p input=              ══════════^> 
 if /I "%input%"=="1" goto :RunDebloot
 if /I "%input%"=="2" goto :MainMenu
 echo.
@@ -1140,7 +1141,7 @@ echo.                    [96mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[0m
 echo.
 echo.                           [1] NVIDIA Or [2] AMD
 echo.
-set /p input=%BS%      ══════════^> 
+set /p input=      ══════════^> 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
 if /I "%input%"=="3" goto :MainMenu
@@ -1180,7 +1181,7 @@ echo:
 echo:                       [3] [91mBack to Main Menu[0m
 echo:            ___________________________________________________
 echo:
-set /p input=%BS% ══════════^> 
+set /p input= ══════════^> 
 
 if /I "%input%"=="1" goto :AuroraON
 if /I "%input%"=="2" goto :AuroraOFF
@@ -1342,7 +1343,7 @@ echo.
 echo.                    Press [1] if you want to continue
 echo.                    Press [2] to return to main menu
 echo.
-set /p input=%BS% ══════════^> 
+set /p input= ══════════^> 
 if /I "%input%"=="1" goto :ConfirmServices
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
@@ -1361,7 +1362,7 @@ echo.
 echo.                    Press [1] to confirm and proceed
 echo.                    Press [2] to return to main menu
 echo.
-set /p input=%BS% ══════════^> 
+set /p input= ══════════^> 
 if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :MainMenu
 echo Invalid input
@@ -1448,7 +1449,7 @@ echo.
 echo:       ______________________________________________________________
 echo.
 echo.
-set /p input=%BS%══════════^> 
+set /p input=══════════^> 
 
 if /I "%input%"=="2" (
     echo.
