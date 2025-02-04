@@ -34,6 +34,32 @@ if errorlevel 1 (
     exit /b
 )
 
+:: Check if curl is available (Windows 10+ normally includes curl) 
+where curl >nul 2>&1
+if errorlevel 1 (
+    echo Error: curl is required but not found.
+    echo Please install curl or run this script on a supported version of Windows.
+    pause
+    exit /b
+)
+
+::  Set directories for Aurora modules 
+set "targetDir=%temp%\AuroraModules"
+set "currentDir=%~dp0AuroraModules"
+if not exist "%targetDir%" mkdir "%targetDir%"
+if not exist "%currentDir%" mkdir "%currentDir%"
+move "%targetDir%\*" "%currentDir%\" >nul 2>&1
+powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
+
+curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+
+:: Set console size and appearance
+:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1"
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1"
+
 :: Enable delayed expansion for the registry operations
 setlocal EnableDelayedExpansion
 
@@ -44,14 +70,7 @@ color 0F
 :: Define BS (backspace) variable if not defined
 if not defined BS set "BS="
 
-:: Check if curl is available (Windows 10+ normally includes curl) 
-where curl >nul 2>&1
-if errorlevel 1 (
-    echo Error: curl is required but not found.
-    echo Please install curl or run this script on a supported version of Windows.
-    pause
-    exit /b
-)
+
 
 :: Check PowerShell version and set execution policy accordingly
 powershell -Command "$PSVersionTable.PSVersion.Major" > "%TEMP%\psver.txt"
@@ -95,7 +114,7 @@ cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
 set "right=%ESC%[<x>C"
 set "bullet= %ESC%[34m-%ESC%[0m"
-
+chcp 65001 >NUL
 
 cls
 goto :DISCLAIMER
@@ -103,51 +122,43 @@ goto :DISCLAIMER
 
 :DISCLAIMER
 cls
-mode con cols=78 lines=30
+mode con cols=61 lines=27
 color 0f
-
 echo.
-echo.%ESC%[31m                                DISCLAIMER%ESC%[0m
+echo    %ESC%[1;3;38;5;195m✦  Disclaimer  -  Version 0.1 beta  ✦%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo    %ESC%[38;5;33m║%ESC%[93m  This software makes system modifications that may   %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[93m  affect system stability. By continuing, you agree   %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[93m  to our terms of service and privacy policy.         %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[0m                                                      %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[96m  Full disclaimer:                                    %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[94m  https://docs.ibrhub.net/ar/disclaimer               %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m  ► 1. %ESC%[97mI agree to the terms and conditions            %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[91m  ► 2. %ESC%[97mI do not agree (exit program)                  %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo.  If the page does not open in the browser, you can read the disclaimer at:
-echo.
-echo.                    %ESC%[1;4;3;7mhttps://docs.ibrhub.net/ar/disclaimer%ESC%[0m
-echo.
-echo.
-echo.               1%bullet% %ESC%[32m I have read and agree to the terms%ESC%[0m
-echo.
-echo.               2%bullet% %ESC%[31m I do not agree
-echo.
-echo. 
-echo. 
-echo. 
-
-timeout /t 1 /nobreak > NUL
 
 :: Prompt user for input
-set /p choice=%right:<x>=2%%ESC%[1m%ESC%[33m                      Choose your option (1/2): %ESC%[0m
+set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
 
 :: Handle user's choice
 if /I "%choice%"=="1" (
-    echo Thank you for agreeing to the terms. The process will continue.
-    timeout /t 2 /nobreak > NUL
+    echo %ESC%[92m✓%ESC%[0m Agreement confirmed. Initializing Aurora...
+    timeout /t 1 /nobreak > NUL
     goto :StartAurora
+) else if /I "%choice%"=="2" (
+    echo %ESC%[91m✗%ESC%[0m Agreement declined. Exiting program...
+    timeout /t 1 /nobreak > NUL
+    goto :endAurora
 ) else (
-    if /I "%choice%"=="2" (
-        echo The process has been canceled because you did not agree to the terms.
-        timeout /t 2 /nobreak > NUL
-        goto :endAurora
-    ) else (
-        if /I "%choice%"=="x" (
-            goto :bypass
-        ) else (
-            echo Invalid input. Please enter either 1, 2
-            timeout /t 2 /nobreak > NUL
-            goto :DISCLAIMER
-        )
-    )
+    echo %ESC%[91mInvalid selection!%ESC%[0m Please choose 1 or 2
+    timeout /t 1 /nobreak > NUL
+    goto :DISCLAIMER
 )
 
 :bypass
@@ -165,75 +176,163 @@ exit /b
 cls
 
 
+:: Check if all required files exist
+:CheckFiles
+setlocal enabledelayedexpansion
+set "allFilesExist=true"
 
-::  Set directories for Aurora modules 
-set "targetDir=%temp%\AuroraModules"
-set "currentDir=%~dp0AuroraModules"
+:: List of required files
+set "requiredFiles[0]=LockConsoleSize.ps1"
+set "requiredFiles[1]=OneDrive.ps1"
+set "requiredFiles[2]=Power.ps1"
+set "requiredFiles[3]=RestorePoint.ps1"
+set "requiredFiles[4]=SetConsoleOpacity.ps1"
+set "requiredFiles[5]=NvidiaProfileInspector.cmd"
+set "requiredFiles[6]=AuroraAMD.bat"
+set "requiredFiles[7]=NetworkBufferBloatFixer.ps1"
+set "requiredFiles[8]=Cloud.bat"
+set "requiredFiles[9]=Telemetry.bat"
+set "requiredFiles[10]=Privacy.bat"
+set "requiredFiles[11]=RepairWindows.cmd"
+set "requiredFiles[12]=AuroraAvatar.ico"
+set "requiredFiles[13]=RemoveEdge.ps1"
+set "requiredFiles[14]=Components.ps1"
+set "requiredFiles[15]=AuroraTimerResolution.cs"
+set "requiredFiles[16]=AuroraTimerResolution.ps1"
+set "requiredFiles[17]=AuroraManualServices.cmd"
+set "requiredFiles[18]=AuroraSudo.exe"
 
-if not exist "%targetDir%" mkdir "%targetDir%"
-
-::  If required files already exist then skip download 
-if exist "%currentDir%\LockConsoleSize.ps1" if exist "%currentDir%\OneDrive.ps1" if exist "%currentDir%\Power.ps1" if exist "%currentDir%\RestorePoint.ps1" if exist "%currentDir%\SetConsoleOpacity.ps1" if exist "%currentDir%\NvidiaProfileInspector.cmd" if exist "%currentDir%\AuroraAMD.bat" if exist "%currentDir%\NetworkBufferBloatFixer.ps1" if exist "%currentDir%\Cloud.bat" if exist "%currentDir%\Telemetry.bat" if exist "%currentDir%\Privacy.bat" if exist "%currentDir%\RepairWindows.cmd" if exist "%currentDir%\AuroraAvatar.ico" if exist "%currentDir%\RemoveEdge.ps1" if exist "%currentDir%\Components.ps1" if exist "%currentDir%\AuroraTimerResolution.cs" if exist "%currentDir%\AuroraTimerResolution.ps1" if exist "%currentDir%\AuroraManualServices.cmd" if exist "%currentDir%\AuroraSudo.exe" (
-    echo Required files already exist. Skipping download...
-    goto :skipDownload
+:: Check each file
+for /L %%i in (0,1,18) do (
+    if not exist "%currentDir%\!requiredFiles[%%i]!" (
+        set "allFilesExist=false"
+        goto :checkResult
+    )
 )
 
-cls
-echo Downloading required Aurora modules...
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
-echo [                             0%                             ] && cls
-curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/OneDrive.ps1" >nul 2>&1
-echo [==                           3.5%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Power.ps1" >nul 2>&1
-echo [====                         7.0%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
-echo [=====                       10.5%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
-echo [========                    18.0%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NetworkBufferBloatFixer.ps1" >nul 2>&1
-echo [==========                  21.5%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RemoveEdge.ps1" >nul 2>&1
-echo [==============              27.0%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\Components.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Components.ps1" >nul 2>&1
-echo [==================          30.5%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.cs" >nul 2>&1
-echo [====================        34.0%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraTimerResolution.ps1" >nul 2>&1
-echo [=========================== 47.0%                           ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraSudo.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraSudo.exe" >nul 2>&1
-echo [=============================59.5%======                    ] && cls
-curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/NvidiaProfileInspector.cmd" >nul 2>&1
-echo [=============================69.0%============              ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraAMD.bat" >nul 2>&1
-echo [=============================75.0 %=============            ] && cls
-curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Cloud.bat" >nul 2>&1
-echo [=============================79.5%%===============          ] && cls
-curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Telemetry.bat" >nul 2>&1
-echo [=============================85.0%%===================      ] && cls
-curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/Privacy.bat" >nul 2>&1
-echo [=============================90.5%%=====================    ] && cls
-curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/RepairWindows.cmd" >nul 2>&1
-echo [=============================93.5%%=====================    ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/Docs/Assets/AuroraAvatar.ico" >nul 2>&1
-echo [=============================99.5%%======================== ] && cls
-curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/refs/heads/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
-echo [=============================100.0%%========================]
+:checkResult
+if "!allFilesExist!"=="true" (
+    echo   %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo   %ESC%[38;5;33m║%ESC%[92m Required files already exist. Skipping download...   %ESC%[38;5;33m║
+    echo   %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 3 /nobreak > NUL
+    goto :skipDownload
+) else (
+    goto :DownloadModules
+)
+endlocal
 
-if not exist "%currentDir%" mkdir "%currentDir%"
-move "%targetDir%\*" "%currentDir%\" >nul 2>&1
+:DownloadModules
+cls
+mode con cols=98 lines=35
+echo    %ESC%[1;3;38;5;195m✦  Downloading Aurora Modules  -  v1.0.0 beta  ✦%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo    %ESC%[38;5;33m║%ESC%[97m           Initializing Download Queue                  %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+
+call :UpdateProgress 0 "LockConsoleSize.ps1"
+curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+
+call :UpdateProgress 3.5 "OneDrive.ps1"
+curl -g -k -L -# -o "%targetDir%\OneDrive.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/OneDrive.ps1" >nul 2>&1
+
+call :UpdateProgress 7.0 "Power.ps1"
+curl -g -k -L -# -o "%targetDir%\Power.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Power.ps1" >nul 2>&1
+
+call :UpdateProgress 10.5 "RestorePoint.ps1"
+curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+
+call :UpdateProgress 18.0 "SetConsoleOpacity.ps1"
+curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+
+call :UpdateProgress 21.5 "NetworkBufferBloatFixer.ps1"
+curl -g -k -L -# -o "%targetDir%\NetworkBufferBloatFixer.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/NetworkBufferBloatFixer.ps1" >nul 2>&1
+
+call :UpdateProgress 27.0 "RemoveEdge.ps1"
+curl -g -k -L -# -o "%targetDir%\RemoveEdge.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RemoveEdge.ps1" >nul 2>&1
+
+call :UpdateProgress 30.5 "Components.ps1"
+curl -g -k -L -# -o "%targetDir%\Components.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Components.ps1" >nul 2>&1
+
+call :UpdateProgress 34.0 "AuroraTimerResolution.cs"
+curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.cs" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraTimerResolution.cs" >nul 2>&1
+
+call :UpdateProgress 47.0 "AuroraTimerResolution.ps1"
+curl -g -k -L -# -o "%targetDir%\AuroraTimerResolution.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraTimerResolution.ps1" >nul 2>&1
+
+call :UpdateProgress 59.5 "AuroraSudo.exe"
+curl -g -k -L -# -o "%targetDir%\AuroraSudo.exe" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraSudo.exe" >nul 2>&1
+
+call :UpdateProgress 69.0 "NvidiaProfileInspector.cmd"
+curl -g -k -L -# -o "%targetDir%\NvidiaProfileInspector.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/NvidiaProfileInspector.cmd" >nul 2>&1
+
+call :UpdateProgress 75.0 "AuroraAMD.bat"
+curl -g -k -L -# -o "%targetDir%\AuroraAMD.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraAMD.bat" >nul 2>&1
+
+call :UpdateProgress 79.5 "Cloud.bat"
+curl -g -k -L -# -o "%targetDir%\Cloud.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Cloud.bat" >nul 2>&1
+
+call :UpdateProgress 85.0 "Telemetry.bat"
+curl -g -k -L -# -o "%targetDir%\Telemetry.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Telemetry.bat" >nul 2>&1
+
+call :UpdateProgress 90.5 "Privacy.bat"
+curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Privacy.bat" >nul 2>&1
+
+call :UpdateProgress 93.5 "RepairWindows.cmd"
+curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RepairWindows.cmd" >nul 2>&1
+
+call :UpdateProgress 99.5 "AuroraAvatar.ico"
+curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/Docs/Assets/AuroraAvatar.ico" >nul 2>&1
+
+call :UpdateProgress 100.0 "AuroraManualServices.cmd"
+curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
+
+echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo    %ESC%[38;5;33m║%ESC%[92m ✓  All modules downloaded successfully! %ESC%[92m(100%%)%ESC%[38;5;33m ║
+echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+timeout /t 5 /nobreak > NUL
+goto :skipDownload
+
+:UpdateProgress
+setlocal enabledelayedexpansion
+
+set "percentage=%~1"
+set "filename=%~2"
+
+:: Progress bar calculation
+set /a "blocks=percentage / 2"
+set "progressBar=%ESC%[92m"
+for /l %%i in (1,1,%blocks%) do set "progressBar=!progressBar!█"
+set "progressBar=%progressBar%%ESC%[90m"
+for /l %%i in (%blocks%,1,49) do set "progressBar=!progressBar!─"
+set "progressBar=%progressBar%%ESC%[0m"
+
+:: Clear previous lines (3 lines up)
+echo    %ESC%[2K    :: Clear line
+echo    %ESC%[2K    :: Clear line
+echo    %ESC%[2K    :: Clear line
+echo    %ESC%[3A    
+CLS
+:: Update display
+echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo    %ESC%[38;5;33m║%ESC%[97m Downloading:%ESC%[96m %filename% %ESC%[0m
+echo    %ESC%[38;5;33m║%ESC%[0m [%progressBar%] %ESC%[93m%percentage%%%%ESC%[0m
+echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+
+:: Small delay instead of pause
+timeout /t 1 /nobreak >nul
+endlocal
+goto :eof
 
 :skipDownload
+if not exist "%currentDir%" mkdir "%currentDir%"
+move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 cls
+
 
 :: Enable ANSI Escape Sequences
 reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
-powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
-
-
-:: Set console size and appearance
-:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1"
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1"
 
 :: Disabled modules:
 :: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\resizeConsole.ps1"
@@ -250,20 +349,12 @@ for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1)
 :: Enable ANSI Support (Windows 10+)
 REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1 > nul 2>&1
 
-title AURORA Optimizer v1.0
 color 0f
-
-
-
-
-
 
 :MainMenu
 chcp 65001 >NUL
 CLS
-mode con cols=98 lines=45
-echo.
-echo.
+mode con cols=98 lines=40
 echo.
 echo.
 echo.
@@ -331,9 +422,10 @@ mode con cols=98 lines=45
 
 cls
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 
 :: - Setting UAC - never notify
@@ -341,7 +433,7 @@ echo.
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo. - Setting Edge policies
+echo.%ESC%[38;5;33m  - Setting Edge policies
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -652,9 +744,10 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
@@ -691,9 +784,10 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
@@ -742,9 +836,10 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
@@ -764,10 +859,6 @@ if /I "%input%"=="3" goto :MainMenu
 echo.
 echo.    Invalid input. Please enter [1] or [2].
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
-echo.
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Telemetry
@@ -786,9 +877,9 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
@@ -825,23 +916,23 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo.
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║      %ESC%[97mDo you want to Remove Edge?%ESC%[38;5;147m     ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
+echo                    %ESC%[38;5;153m│    %ESC%[97m1. Yes%ESC%[38;5;153m   │    │   %ESC%[97m2. No%ESC%[38;5;153m    │
+echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                        Do you want to Remove Edge ?
-echo.
-echo.                             [1] Yes Or [2] No
-echo.
+echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
 echo.
 set /p input=%BS% ══════════^> 
 if /I "%input%"=="1" goto :runRemoveEdge
@@ -880,21 +971,23 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║     %ESC%[97mDo you want to Remove OneDrive? %ESC%[38;5;147m     ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
+echo.
+echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
+echo                    %ESC%[38;5;153m│    %ESC%[97m1. Yes%ESC%[38;5;153m   │    │   %ESC%[97m2. No%ESC%[38;5;153m    │
+echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.
-echo.                       Do you want to Remove OneDrive? 
-echo.
-echo.                                 [1] Yes [2] No
-echo.
+echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
 set /p input=%BS%              ══════════^> 
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :DeblootWindows
@@ -943,10 +1036,9 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
-echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
@@ -956,8 +1048,12 @@ echo.
 echo.
 echo.                     Do you want to Debloat Windows? 
 echo.
-echo.                                 [1] Yes [2] No
+echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
+echo                    %ESC%[38;5;153m│  %ESC%[97m1. Yes%ESC%[38;5;153m    │    │  %ESC%[97m2. No%ESC%[38;5;153m    │
+echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
 echo.
+echo.
+echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
 set /p input=%BS%              ══════════^> 
 if /I "%input%"=="1" goto :RunDebloot
 if /I "%input%"=="2" goto :MainMenu
@@ -990,21 +1086,22 @@ echo.
 echo.
 echo.
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo.
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║ %ESC%[97mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[1;38;5;147m  ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
+echo.
+echo                     %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
+echo                     %ESC%[38;5;153m│  %ESC%[97m1. NVIDIA%ESC%[38;5;153m  │    │  %ESC%[97m2. AMD%ESC%[38;5;153m    │
+echo                     %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                    Do You Have NVIDIA (1) or AMD (2) ?
-echo.
-echo.                           [1] NVIDIA Or [2] AMD
-echo.
+echo                     %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
 set /p input=%BS%      ══════════^> 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
@@ -1026,40 +1123,43 @@ CLS
 mode con cols=76 lines=33
 start /wait cmd /c "%currentDir%\NvidiaProfileInspector.cmd"
 timeout /t 3 /nobreak > NUL
-echo:
-echo:
-echo:
+:NVIDIATweaks1
+cls
 echo.
-echo                      %ESC%[1;38;5;159m  ╔══════════════════════════════════════════════════════╗
-echo                      %ESC%[1;38;5;159m  ║%ESC%[1;38;5;159m                      A U R O R A                   %ESC%[1;38;5;159m  ║
-echo                      %ESC%[1;38;5;159m  ╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
-echo:
-echo:
-echo:
-echo:
-echo:
-echo:              Do you want to Modify your NVIDIA Control Panel     
-echo:            ___________________________________________________ 
-echo:                                                               
-echo:                       [1] NVIDIA Settings ( Aurora )
-echo:                       [2] NVIDIA Settings ( Default ) 
-echo:               _____________________________________________   
-echo:                                                               
-echo:                       [3] Back to Main Menu
-echo:            ___________________________________________________
-echo:
-set /p input=%BS% ══════════^> 
-
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo.
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║   %ESC%[97mNVIDIA Control Panel Settings%ESC%[38;5;147m      ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
+echo.
+echo.
+echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
+echo                      %ESC%[38;5;153m│  %ESC%[97m1. NVIDIA Settings (Aurora)%ESC%[38;5;153m    │
+echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
+echo.
+echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
+echo                      %ESC%[38;5;153m│  %ESC%[97m2. NVIDIA Settings (Default)%ESC%[38;5;153m   │
+echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
+echo.
+echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
+echo                      %ESC%[38;5;153m│  %ESC%[97m3. Back to Main Menu%ESC%[38;5;153m           │
+echo                      %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
+echo.
+echo                        %ESC%[38;5;147m[ Please enter your choice ]%ESC%[0m
+echo.
+set /p input=%ESC%[38;5;147m    ══════════^>%ESC%[0m 
 if /I "%input%"=="1" goto :AuroraON
 if /I "%input%"=="2" goto :AuroraOFF
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo. Invalid input. Please enter [1] or [2].
-
-echo.
+echo    %ESC%[91mInvalid input. Please enter [1], [2], or [3].%ESC%[0m
 timeout /t 2 /nobreak > NUL
-goto :NVIDIATweaks
+goto :NVIDIATweaks1
 
 :AuroraOFF
 timeout /t 3 /nobreak > NUL
@@ -1140,6 +1240,11 @@ rem ============================================================================
 mode con cols=76 lines=33
 cls
 echo.
+echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo.
 echo    %ESC%[1;38;5;45m╔══════════════════════════════════════════════════════╗
 echo    %ESC%[1;38;5;45m║%ESC%[97m               NETWORK OPTIMIZATION SETTINGS          %ESC%[1;38;5;45m║
 echo    %ESC%[1;38;5;45m╚══════════════════════════════════════════════════════╝%ESC%[0m
@@ -1179,7 +1284,9 @@ cls
 echo.
 echo.
 echo.
-echo.
+echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo.

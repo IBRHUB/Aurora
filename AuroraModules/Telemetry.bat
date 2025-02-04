@@ -23,15 +23,6 @@
 :: ============================================================
 
 :: Ensure admin privileges
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Administrator privileges are required.
-    PowerShell Start-Process -Verb RunAs -FilePath '%0' 2>nul || (
-        echo Right-click on the script and select "Run as administrator".
-        pause & exit 1
-    )
-    exit 0
-)
 
 set AuroraAsAdmin=%~dp0\AuroraSudo.exe
 setx DOTNET_CLI_TELEMETRY_OPTOUT 1 > NUL 2>&1
