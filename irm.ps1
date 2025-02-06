@@ -187,32 +187,23 @@ if (-not (Test-Path $AuroraPath) -or (Get-Item $AuroraPath).Length -eq 0) {
 }
 Write-Host "`n"
 Clear-Host
-
+cmd /c "chcp 65001 >NUL"
 Write-Host @"
-                         @@@%    %@@-    @@@   @@@@@@@@+    -@@@@@@@+   -@@@@@@@@-     @@@@                             
-                        @@@@@=  .@@@@   -@@@- =@@@   .@@@  @@@=   .@@@  @@@@   @@@@   *@@@@@                            
-                       #@@@@@@  +@@@@   +@.@+ #@ @@@@@@@@ @@%@@@@@@@@@@ @@@@@@@@@@@   @@@@@@%                           
-                      .@@@@@ @@ +@@@@   +@ @+ #@*@@@@@@@@ @@@@.   .@@@@ @@@@@@@@@@@  @@ @@@@@.                          
-                      @@*@@@@@@@-@@@@   @@ @= #@=@  @@@@% @@@@.    @@@@ @@ @ +@@@@@ @@@@@@@ @@                          
+                        ╔══════════════════════════════════════════════════════╗
+                        ║   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗  ║
+                        ║  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗ ║
+                        ║  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║ ║
+                        ║  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║ ║
+                        ║  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║ ║
+                        ║  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ ║
+                        ╚══════════════════════════════════════════════════════╝
 "@ -ForegroundColor Cyan
-Write-Host @"
-                     @@=@@ @@@@@-@@+@@@@@@@@  *@#@@@@@@@* +@ @@@@@@@=@@ @@@@@@@@@@-%@@@@% @@@@@                         
-                     @@@@   @@@@@*@@# -- @@+ -+@%@+=-# @@*=.= -##*..@@  @@@@ .@@@@*@@@@@  =@@@@                         
-"@ -ForegroundColor Magenta
-Write-Host @"
-                     @@@*    @@@=  @@@@@@@ =*#*+ *@@@# .%@@#  #@@@@@-    @@*   @@@-*@@@    @@@@                         
-"@ -ForegroundColor Yellow
-Write-Host @"
-                                          ...        .=*%@@@@@@@@@%*=--                                                 
-                                 .-==+*%@@@@@@@@@@@@@@@@@@@@@@@@@@@#**+=--.                                             
-                                 .=+#%@@@@@@@@@@@@@@@%*-                                                                
-"@ -ForegroundColor DarkCyan
 Write-Host "`n"
 
 # 5) Purpose: Executes Aurora and cleans up temporary files
 Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
-    Start-Process "conhost.exe" -ArgumentList "cmd /c $AuroraPath" -Wait -Verb RunAs
+    Start-Process "conhost.exe" -ArgumentList "cmd /c $AuroraPath" -Wait
     Write-Host "Aurora completed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error running Aurora: $($_.Exception.Message)" -ForegroundColor Red

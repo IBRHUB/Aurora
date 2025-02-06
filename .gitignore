@@ -15,3 +15,6 @@ AuroraModules/Cloud.bat
 AuroraModules/Privacy.bat
 AuroraModules/SetIcon.cmd
 AuroraModules/Telemetry.bat
+irm.ps1
+irm.ps1
+AuroraModules/RepairWindows.cmd

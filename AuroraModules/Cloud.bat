@@ -14,23 +14,8 @@
 ::   - Accessibility Settings Sync
 ::   - Messaging Sync
 ::
-:: NOTES:
-::   - Requires administrative privileges to modify registry settings
-::   - Changes take effect immediately but may require restart
-::   - All operations are performed silently (> NUL 2>&1)
-::
 :: ============================================================================
 
-:: Ensure admin privileges
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Administrator privileges are required.
-    PowerShell Start-Process -Verb RunAs -FilePath '%0' 2>nul || (
-        echo Right-click on the script and select "Run as administrator".
-        pause & exit 1
-    )
-    exit 0
-)
 
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /v "ScoobeSystemSettingEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableSettingSync" /t REG_DWORD /d 2 /f > NUL 2>&1

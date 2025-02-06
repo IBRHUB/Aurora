@@ -12,30 +12,46 @@
 ::   - GPU performance and power settings  
 ::   - Graphics quality and rendering options
 ::   - Driver update and auto-configuration features
-::
-:: AUTHOR: imribiy
-:: LAST UPDATED: 24.08.2023
-:: SOURCE: https://github.com/imribiy/amd-gpu-tweaks
-::
-:: NOTES:
-::   - Requires administrative privileges to modify registry
-::   - Changes take effect immediately but may require restart
-::   - All operations are performed silently (> nul 2>&1)
 :: ============================================================================
+:: set ANSI escape characters
+cd /d "%~dp0"
+for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
+set "right=%ESC%[<x>C"
+set "bullet= %ESC%[34m-%ESC%[0m"
+chcp 65001 >NUL
 
-:: Ensure admin privileges
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Administrator privileges are required.
-    PowerShell Start-Process -Verb RunAs -FilePath '%0' 2>nul || (
-        echo Right-click on the script and select "Run as administrator".
-        pause & exit 1
-    )
-    exit 0
+
+:: Get user choice for AMD registry modifications
+echo.
+echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[92m  ► 1. %ESC%[97mApply AMD GPU optimizations                    %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[91m  ► 2. %ESC%[97mRevert AMD GPU optimizations                   %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+
+set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+if "%choice%"=="1" (
+    echo.
+    echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[92m  ✓ Applying AMD GPU optimizations...                  %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 1 /nobreak > NUL
+) else if "%choice%"=="2" (
+    echo.
+    echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[91m  ✗ Reverting AMD GPU optimizations...                %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 1 /nobreak > NUL
+    exit /b
+) else (
+    echo.
+    echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 1 /nobreak > NUL
+    exit /b
 )
-
-:: Initialize environment
-setlocal EnableExtensions DisableDelayedExpansion
 
 
 :: Registry modifications
@@ -120,39 +136,39 @@ exit /b 0
 :: AMD GPU Registry Default Settings Restore Script
 
 :: AMD Control Panel settings
-:: Reg.exe delete "HKCU\Software\AMD\CN" /f >nul 2>&1
-:: Reg.exe delete "HKCU\Software\AMD\CN\OverlayNotification" /f >nul 2>&1
-:: Reg.exe delete "HKCU\Software\AMD\CN\VirtualSuperResolution" /f >nul 2>&1
+Reg.exe delete "HKCU\Software\AMD\CN" /f >nul 2>&1
+Reg.exe delete "HKCU\Software\AMD\CN\OverlayNotification" /f >nul 2>&1
+Reg.exe delete "HKCU\Software\AMD\CN\VirtualSuperResolution" /f >nul 2>&1
 
 :: AMD DVR settings
-:: Reg.exe delete "HKCU\Software\AMD\DVR" /f >nul 2>&1
+Reg.exe delete "HKCU\Software\AMD\DVR" /f >nul 2>&1
 
 :: AMD ACE settings
-:: Reg.exe delete "HKCU\Software\ATI\ACE\Settings\ADL\AppProfiles" /f >nul 2>&1
-:: Reg.exe delete "HKLM\Software\AMD\Install" /v "AUEP" /f >nul 2>&1
-:: Reg.exe delete "HKLM\Software\AUEP" /f >nul 2>&1
+Reg.exe delete "HKCU\Software\ATI\ACE\Settings\ADL\AppProfiles" /f >nul 2>&1
+Reg.exe delete "HKLM\Software\AMD\Install" /v "AUEP" /f >nul 2>&1
+Reg.exe delete "HKLM\Software\AUEP" /f >nul 2>&1
 
 :: GPU driver settings
-:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "NotifySubscription" /f >nul 2>&1
-:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "IsComponentControl" /f >nul 2>&1
-:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "NotifySubscription" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "IsComponentControl" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /f >nul 2>&1
 
 :: UMD settings
-:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD" /f >nul 2>&1
 
 :: DXVA settings
-:: Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA" /f >nul 2>&1
+Reg.exe delete "HKLM\System \CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA" /f >nul 2>&1
 
 :: Additional performance settings
-:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDMACopy" /f >nul 2>&1
-:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableBlockWrite" /f >nul 2>&1
-:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "PP_ThermalAutoThrottlingEnable" /f >nul 2>&1
-:: Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDrmdmaPowerGating" /f >nul 2>&1
+Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDMACopy" /f >nul 2>&1
+Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableBlockWrite" /f >nul 2>&1
+Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "PP_ThermalAutoThrottlingEnable" /f >nul 2>&1
+Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDrmdmaPowerGating" /f >nul 2>&1
 
 :: Service configurations
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdwddmg" /v "ChillEnabled" /t REG_DWORD /d "1" /f >nul 2>&1
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\AMD Crash Defender Service" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\AMD External Events Utility" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendr" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
-:: Reg.exe add "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /t REG_DWORD /d "3" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdwddmg" /v "ChillEnabled" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\AMD Crash Defender Service" /v "Start" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\AMD External Events Utility" /v "Start" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdfendr" /v "Start" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /f >nul 2>&1

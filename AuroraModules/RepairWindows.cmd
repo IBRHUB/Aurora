@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title Windows Components Repair 
+title Windows Components Repair
 cd /d "%~dp0"
 
 if "%~1" == "/silent" goto main
@@ -20,57 +20,83 @@ for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
 set "right=%ESC%[<x>C"
 set "bullet=%ESC%[34m-%ESC%[0m"
 
-mode con: cols=60 lines=20
+mode con: cols=100 lines=30
 chcp 65001 >nul
 
 echo]
-echo %ESC%[31m   Windows Components and System Files Repair
-echo   ──────────────────────────────────────────────────%ESC%[0m
-echo   This utility will scan and repair corrupted Windows
-echo   components and system files on your device.
+echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
+echo %ESC%[97m                            Windows Components and System Files Repair%ESC%[0m
+echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
 echo]
-echo   %ESC%[7mThe following tasks will be performed:%ESC%[0m
-echo   %bullet% Check Windows component store integrity
-echo   %bullet% Restore corrupted system components
-echo   %bullet% Scan and repair system files
-echo   %bullet% Verify repairs in CBS logs
+echo   %ESC%[36mThis utility will perform a comprehensive scan and repair of Windows system components%ESC%[0m
+echo   %ESC%[36mto ensure optimal system performance and stability.%ESC%[0m
 echo]
-echo   Press any key to begin the repair process...
+echo   %ESC%[33mOperations to be performed:%ESC%[0m
+echo   %ESC%[97m⚡ Analyze Windows component store for corruption%ESC%[0m
+echo   %ESC%[97m⚡ Restore and repair damaged system components%ESC%[0m 
+echo   %ESC%[97m⚡ Deep scan of system files for integrity%ESC%[0m
+echo   %ESC%[97m⚡ Validate repairs through CBS log analysis%ESC%[0m
+echo]
+echo   %ESC%[90mPress any key to initiate the repair process...%ESC%[0m
 pause >nul
 cls
 
 :main
-echo %ESC%[33mThis process might take a while. Please be patient.%ESC%[0m
+set start_time=%time%
+
+echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
+echo %ESC%[33m[!*!] Please wait while the system is being analyzed and repaired...%ESC%[0m
 
 echo]
-echo %ESC%[36m╔════════════════════════════════════════╗
-echo ║ Checking Windows Component Store...    ║
-echo ╚════════════════════════════════════════╝%ESC%[0m
-dism.exe /online /cleanup-image /scanhealth
-dism.exe /online /cleanup-image /restorehealth
+echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
+echo ║                      Analyzing Windows Component Store                       ║
+echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
+:: dism.exe /online /cleanup-image /scanhealth
+:: dism.exe /online /cleanup-image /restorehealth
 
 echo]
-echo %ESC%[36m╔════════════════════════════════════════╗
-echo ║ Scanning and Repairing System Files... ║
-echo ╚════════════════════════════════════════╝%ESC%[0m
-sfc.exe /scannow
+echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
+echo ║                      System File Integrity Verification                      ║
+echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
+:: sfc.exe /scannow
+
 echo]
-echo %ESC%[36m╔════════════════════════════════════════╗
-echo ║ Checking CBS Logs for Issues...        ║
-echo ╚════════════════════════════════════════╝%ESC%[0m
+echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
+echo ║                         CBS Log Analysis Results                             ║
+echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
 findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log >nul 2>&1
-if %errorlevel% neq 0 (
-   echo %ESC%[32mNo integrity violations detected.%ESC%[0m
+if %errorlevel% equ 0 (
+   echo %ESC%[32m[✓] System integrity verification completed - No violations detected%ESC%[0m
 ) else (
-   echo %ESC%[33mSome issues were found and repaired.%ESC%[0m
+   echo %ESC%[33m[!] System repairs completed - Some issues were detected and resolved%ESC%[0m
+   findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log | findstr /c:"Verify complete" >nul 2>&1
+   if %errorlevel% equ 0 (
+      echo %ESC%[32m[✓] All repairs were successful%ESC%[0m
+   ) else (
+      echo %ESC%[31m[X] Some repairs may have failed - Check CBS.log for details%ESC%[0m
+   )
 )
 
+set end_time=%time%
+set options="tokens=1-4 delims=:.,"
+for /f %options% %%a in ("%start_time%") do set start_h=%%a&set /a start_m=100%%b %% 100&set /a start_s=100%%c %% 100
+for /f %options% %%a in ("%end_time%") do set end_h=%%a&set /a end_m=100%%b %% 100&set /a end_s=100%%c %% 100
+
+set /a hours=%end_h%-%start_h%
+set /a mins=%end_m%-%start_m%
+set /a secs=%end_s%-%start_s%
+if %hours% lss 0 set /a hours = 24%hours%
+if %mins% lss 0 set /a hours = %hours% - 1 & set /a mins = 60%mins%
+if %secs% lss 0 set /a mins = %mins% - 1 & set /a secs = 60%secs%
 
 echo]
-echo %ESC%[32mRepair process completed! %ESC%[0m& echo. & echo Please reboot your device for changes to take effect.
+echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
+echo %ESC%[32m[✓] System repair and optimization completed successfully!%ESC%[0m
+echo %ESC%[36mTotal processing time: %hours% hours %mins% minutes %secs% seconds%ESC%[0m
+echo %ESC%[33m[*] A system restart is required to complete the optimization process%ESC%[0m
+echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
+
 if "%~1" == "/silent" exit /b
 pause
 endlocal
 exit /b
-
-

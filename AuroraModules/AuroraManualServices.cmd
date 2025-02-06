@@ -3,7 +3,7 @@
 powershell -nop Get-Content """%~f0""" -Raw ^| iex & exit
 : end batch / begin PowerShell #>
 
- Clear-Host
+Clear-Host
 
 # Function to set console window size and properties
 function Set-ConsoleProperties {
@@ -95,7 +95,6 @@ sleep 1
 
 Write-Host ""
 
-
 # Configure Network Services
 Write-Host " [4] Configuring network services..." -ForegroundColor red
 Set-ServiceStart -ServiceName "CscService"
@@ -108,7 +107,6 @@ sleep 1
 
 Write-Host ""
 
-
 # Configure Additional Services
 Write-Host " [5] Finalizing Additional Services..." -ForegroundColor red
 Set-ServiceStart -ServiceName "Ndu"
@@ -116,5 +114,4 @@ Set-ServiceStart -ServiceName "fdPHost"
 Set-ServiceStart -ServiceName "FDResPub"
 Set-ServiceStart -ServiceName "lmhosts"
 Set-ServiceStart -ServiceName "SSDPSRV"
-
 
