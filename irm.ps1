@@ -212,7 +212,7 @@ Write-Host "`n"
 # 5) Purpose: Executes Aurora and cleans up temporary files
 Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
-    & $AuroraPath
+    Start-Process "conhost.exe" -ArgumentList "cmd /c $AuroraPath" -Wait -Verb RunAs
     Write-Host "Aurora completed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error running Aurora: $($_.Exception.Message)" -ForegroundColor Red
@@ -221,4 +221,3 @@ try {
 
 Remove-Item $AuroraPath -ErrorAction SilentlyContinue
 Write-Host "Thank you! Don't forget to rate us on our Discord server." -ForegroundColor Green
-
