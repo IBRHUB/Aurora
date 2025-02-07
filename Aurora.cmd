@@ -12,7 +12,7 @@
 ::
 :: LICENSE:
 ::   MIT License
-::   Copyright (c) 2024 IBRAHUB
+::   Copyright (c) 2024 2025 IBRAHUB
 ::
 :: ============================================================
 
@@ -54,8 +54,9 @@ powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
 curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+timeout /t 3 /nobreak >NUL
 
-:: Set console size and appearance
+
 :: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1"
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1"
@@ -69,8 +70,6 @@ color 0F
 
 :: Define BS (backspace) variable if not defined
 if not defined BS set "BS="
-
-
 
 :: Check PowerShell version and set execution policy accordingly
 powershell -Command "$PSVersionTable.PSVersion.Major" > "%TEMP%\psver.txt"
@@ -125,7 +124,11 @@ cls
 mode con cols=61 lines=27
 color 0f
 echo.
-echo    %ESC%[1;3;38;5;195m✦  Disclaimer  -  Version 0.1 beta  ✦%ESC%[0m
+echo                  %ESC%[1;38;5;159m╭──────────────────────────╮
+echo                  %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
+echo                  %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo.
+echo     %ESC%[1;3;38;5;195m✦  Disclaimer %ESC%[0m     
 echo.
 echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
 echo    %ESC%[38;5;33m║%ESC%[93m  This software makes system modifications that may   %ESC%[38;5;33m║
@@ -138,7 +141,10 @@ echo    %ESC%[38;5;33m╚══════════════════�
 echo.
 echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
 echo    %ESC%[38;5;33m│%ESC%[92m  ► 1. %ESC%[97mI agree to the terms and conditions            %ESC%[38;5;33m│%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[91m  ► 2. %ESC%[97mI do not agree (exit program)                  %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[91m  ► 2. %ESC%[97mI do not agree %ESC%[1;38;5;214m[%ESC%[93mExit Aurora%ESC%[1;38;5;214m]                   %ESC%[38;5;33m│%ESC%[0m
 echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
@@ -148,31 +154,36 @@ set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m 
 
 :: Handle user's choice
 if /I "%choice%"=="1" (
-    echo %ESC%[92m✓%ESC%[0m Agreement confirmed. Initializing Aurora...
+    echo.
+    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo    %ESC%[38;5;33m║%ESC%[92m  ✓ Agreement confirmed. Initializing Aurora...       %ESC%[38;5;33m║%ESC%[0m
+    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
     goto :StartAurora
 ) else if /I "%choice%"=="2" (
-    echo %ESC%[91m✗%ESC%[0m Agreement declined. Exiting program...
+    echo.
+    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo    %ESC%[38;5;33m║%ESC%[91m  ✗ Agreement declined. Exiting program...           %ESC%[38;5;33m║%ESC%[0m
+    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
     goto :endAurora
+) else if /I "%choice%"=="X" (
+    goto :MainMenu
 ) else (
-    echo %ESC%[91mInvalid selection!%ESC%[0m Please choose 1 or 2
-    timeout /t 1 /nobreak > NUL
+    echo.
+    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo    %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
+    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 3 /nobreak > NUL
     goto :DISCLAIMER
 )
 
-:bypass
-
-goto :MainMenu
-
 
 :endAurora
-
 exit /b
 
 
 :StartAurora
-
 cls
 
 
@@ -337,10 +348,11 @@ reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&
 :: Disabled modules:
 :: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\resizeConsole.ps1"
 
-:: Disable process mitigations
+:: Disable process mitigations (Disabled by default) 
 :: powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 cls
 rem ========================================================================================================================================
+
 :: ANSI Escape Code Definition
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
   set "ESC=%%b"
@@ -358,34 +370,39 @@ mode con cols=98 lines=40
 echo.
 echo.
 echo.
+echo                         %ESC%[1;38;5;33m╔══════════════════════════════════════════════════════╗
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗  %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗ %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║ %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║ %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║ %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ %ESC%[1;38;5;33m║
+echo                         %ESC%[1;38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
-echo.
-echo.
-echo                        %ESC%[1;38;5;33m╔══════════════════════════════════════════════════════╗
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗  %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗ %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║ %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║ %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║ %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m║%ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ %ESC%[1;38;5;33m║
-echo                        %ESC%[1;38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-echo.
-echo                             %ESC%[1;3;38;5;195m✦ Optimize - Secure - Enhance - Personalize ✦%ESC%[0m
 echo.
 echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
 echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m1%ESC%[0m ■ %ESC%[1;37mWindows Tweaks          %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m5%ESC%[0m ■ %ESC%[1;37mDisable Services        %ESC%[38;5;33m│%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
 echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m2%ESC%[0m ■ %ESC%[1;37mGPU Optimization        %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m6%ESC%[0m ■ %ESC%[1;37mDark Mode Toggle        %ESC%[38;5;33m│%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
 echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m3%ESC%[0m ■ %ESC%[1;37mNetwork Configuration   %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m7%ESC%[0m ■ %ESC%[1;37mSystem Repair           %ESC%[38;5;33m│%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
 echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m4%ESC%[0m ■ %ESC%[1;37mPower Plans             %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m8%ESC%[0m ■ %ESC%[1;34mDiscord Community       %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m├──────────────────────────────┼──────────────────────────────┤%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m9%ESC%[0m ■ %ESC%[1;34mIBRHUB Portal           %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m10%ESC%[0m ■ %ESC%[1;34mDocumentation          %ESC%[38;5;33m│%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
 echo                      %ESC%[38;5;33m╰──────────────────────────────┴──────────────────────────────╯%ESC%[0m
 echo.
+echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m9%ESC%[0m ■ %ESC%[1;34mIBRHUB Portal           %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m10%ESC%[0m ■ %ESC%[1;34mDocumentation Aurora   %ESC%[38;5;33m│%ESC%[0m
+echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
+echo                      %ESC%[38;5;33m╰──────────────────────────────┴──────────────────────────────╯%ESC%[0m
 echo.
-echo                                           %ESC%[38;5;196m[ 0 ]%ESC%[0m %ESC%[1;3;38;5;196mExit AURORA %ESC%[0m
+echo                                          %ESC%[38;5;196m╭────────────────────╮%ESC%[0m
+echo                                          %ESC%[38;5;196m│%ESC%[0m %ESC%[38;5;196m[ 0 ]%ESC%[0m %ESC%[1;3;38;5;196mExit AURORA%ESC%[0m  %ESC%[38;5;196m│%ESC%[0m
+echo                                          %ESC%[38;5;196m╰────────────────────╯%ESC%[0m
 echo.
-echo.
-set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
+set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m %ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
 
 if not defined input goto :MainMenu
 if "%input%"=="" goto :MainMenu
@@ -414,57 +431,66 @@ timeout /t 2 /nobreak > nul
 exit
 
 :WinTweaks
-mode con cols=76 lines=35
 
-:: Standard Header for All Sections
-:SectionHeader
-mode con cols=98 lines=45
+mode con cols=76 lines=28
 
 cls
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
+echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m│  %ESC%[97m🔧 System Optimization Settings%ESC%[38;5;147m    │
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
+
 
 :: - Setting UAC - never notify
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
-
-echo.%ESC%[38;5;33m  - Setting Edge policies
+echo.%ESC%[38;5;33m ⚡ Optimizing Edge and Chrome Settings...%ESC%[0m
+:: Disable startup boost for Edge
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable hardware acceleration for Edge
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable background mode for Edge
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable Edge elevation service
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService" /v Start /t REG_DWORD /d 4 /f > NUL 2>&1
+:: Disable Edge update service
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdate" /v Start /t REG_DWORD /d 4 /f > NUL 2>&1
+:: Disable Edge update service (machine)
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdatem" /v Start /t REG_DWORD /d 4 /f > NUL 2>&1
 
-echo. - Setting Chrome policies
+:: Disable startup boost for Chrome
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
-:: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HardwareAccelerationModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable background mode for Chrome
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Enable high efficiency mode for Chrome
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HighEfficiencyModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-:: echo. - Enabling old NVIDIA sharpening
-:: reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v EnableGR535 /t REG_DWORD /d 0 /f > NUL 2>&1
-
-echo. - Disabling NVIDIA Telemetry
+echo.%ESC%[38;5;33m 🎮 Configuring Game Settings...%ESC%[0m
+:: Remove NVIDIA backend from startup
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v NvBackend /f > NUL 2>&1
+:: Disable NVIDIA telemetry opt-in
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v OptInOrOutPreference /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable various NVIDIA telemetry features
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID66610 /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID64640 /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v EnableRID44231 /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo. - Disable Hardware Accel Steam
+:: Disable GPU acceleration for Steam web views
 reg add "HKCU\SOFTWARE\Valve\Steam" /v "GPUAccelWebViewsV2" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable H264 hardware acceleration for Steam
 reg add "HKCU\SOFTWARE\Valve\Steam" /v "H264HWAccel" /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo. - Graphics settings: Disabling MPO
+:: Disable Multiple Plane Overlay
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Dwm" /v OverlayTestMode /t REG_DWORD /d 5 /f > NUL 2>&1
 
-echo. - Setting game scheduling (performance)
+:: Configure game scheduling for optimal performance
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Affinity /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Background Only" /t REG_SZ /d False /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Clock Rate" /t REG_DWORD /d 10000 /f > NUL 2>&1
@@ -473,110 +499,149 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProf
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d High /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "SFIO Priority" /t REG_SZ /d High /f > NUL 2>&1
 
-echo. - Disabling Background Apps
+echo.%ESC%[38;5;33m 🚫 Disabling Background Apps...%ESC%[0m
+:: Disable background apps globally
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul 2>&1
+:: Prevent apps from running in background via policy
 Reg add "HKLM\Software\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsRunInBackground" /t REG_DWORD /d "2" /f >nul 2>&1
+:: Disable background app global toggle
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /t REG_DWORD /d "0" /f >nul 2>&1
+:: Backup current startup configuration
 
-echo. - Disabling startup applications
-reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "C:\StartupBackup.reg" /y  >nul 2>&1 
-reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" "C:\StartupApprovedBackup.reg" /y  >nul 2>&1 
-attrib +h "C:\StartupBackup.reg" >nul 2>&1
-attrib +h "C:\StartupApprovedBackup.reg" >nul 2>&1
+if not exist "C:\StartupBackup.reg" (
+    reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "C:\StartupBackup.reg" /y >nul 2>&1
+    attrib +h "C:\StartupBackup.reg" >nul 2>&1
+)
+if not exist "C:\StartupApprovedBackup.reg" (
+    reg.exe export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" "C:\StartupApprovedBackup.reg" /y >nul 2>&1
+    attrib +h "C:\StartupApprovedBackup.reg" >nul 2>&1
+)
 
 ::  Disable startup for common apps in a loop 
 for %%A in (Discord Synapse3 Spotify EpicGamesLauncher RiotClient Steam GoogleDrive OneDrive DropboxUpdate CCleaner iTunesHelper AdobeCreativeCloud AdobeGCClient EADesktop UbisoftConnect UbisoftGameLauncher BattleNet TeamViewer AnyDesk LogitechGHub CorsairService RazerCentralService MSIAfterburner NVIDIAGeForceExperience AMDRyzenMaster Overwolf SteelSeriesEngine ASUSArmouryCrate ROGGameFirst ROGRangeboost iCUE "Wallpaper Engine" "GOG Galaxy" "Microsoft Teams" Slack Zoom Skype WhatsApp Telegram OpenRGB SignalRGB "Java Update Scheduler" "QuickTime Task" SoundBlasterConnect RealPlayer) do (
     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "%%A" /t REG_BINARY /d "030000000000000000000000" /f >nul 2>&1
     reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "%%A" /f >nul 2>&1
 )
-
-echo. - Enabling Hardware-Accelerated GPU Scheduling
+:: Enable Hardware-Accelerated GPU Scheduling
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v HwSchMode /t REG_DWORD /d 2 /f > NUL 2>&1
 
-echo. - Enabling Game Mode
+:: Enable Windows Game Mode
 reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AllowAutoGameMode /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AutoGameModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-echo. - Adjusting for best performance of programs
+:: Set system to prioritize programs over background services
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f > NUL 2>&1
 
-echo. - Reducing Menu Delay
+echo.%ESC%[38;5;33m 🔄 Optimizing System Services...%ESC%[0m
+:: Set menu show delay to 0
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d "0" /f > NUL 2>&1
 
-echo. - Increase taskbar transparency
+:: Enable OLED taskbar transparency
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "UseOLEDTaskbarTransparency" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Force transparency effect mode
 reg add "HKLM\SOFTWARE\Microsoft\Windows\Dwm" /v "ForceEffectMode" /t REG_DWORD /d 2 /f > NUL 2>&1
 
-echo. - Disable showing recent and mostly used item
+:: Hide recently added apps
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideRecentlyAddedApps" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg Delete "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "HideRecentlyAddedApps" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "HideRecentlyAddedApps" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable showing frequent items
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowFrequent" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable showing recent items
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Hide most used apps
 reg Delete "HKCU\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUsedApps" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUsedApps" /t REG_DWORD /d 2 /f > NUL 2>&1
+:: Disable recent docs history
 reg Delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoStartMenuMFUprogramsList" /f > NUL 2>&1
 reg Delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable taskbar search
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarSh" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "ShowOrHideMostUsedApps" /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo. - Browser background optimizations
+:: Disable Edge startup boost and enable battery saver
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 rereg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable Chrome startup boost and enable battery saver
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "StartupBoostEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Configure Brave browser settings
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "HighEfficiencyModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave" /v "BatterySaverModeAvailability" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave\Recommended" /v "BackgroundModeEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
 reg add "HKLM\Software\Policies\BraveSoftware\Brave\Recommended" /v "BatterySaverModeAvailability" /t REG_DWORD /d 1 /f > NUL 2>&1
 
-echo. - Disables updates for Firefox, Edge and Chrome
+:: Disable Edge update services
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\MicrosoftEdgeElevationService" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdate" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\edgeupdatem" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
+:: Remove Edge update tasks
 reg Delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\MicrosoftEdgeUpdateTaskMachineCore" /f > NUL 2>&1
 reg Delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\MicrosoftEdgeUpdateTaskMachineUA" /f > NUL 2>&1
+:: Disable Chrome update services
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\GoogleChromeElevationService" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\gupdate" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\gupdatem" /v "Start" /t REG_DWORD /d 4 /f > NUL 2>&1
+:: Disable Firefox updates
 reg add "HKLM\SOFTWARE\Policies\Mozilla\Firefox" /v "DisableAppUpdate" /t REG_DWORD /d 1 /f > NUL 2>&1
 
-echo. - Explorer Optimizations
+:: Enable auto restart of Explorer
 reg add "HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon" /v "AutoRestartShell" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Enable long paths
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Reduce menu show delay
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "0" /f > NUL 2>&1
+:: Reduce mouse hover time
 reg add "HKCU\Control Panel\Mouse" /v "MouseHoverTime" /t REG_SZ /d "0" /f > NUL 2>&1
+:: Disable listview shadow
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ListviewShadow" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable network crawling
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "NoNetCrawling" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable balloon tips
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "EnableBalloonTips" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Disable low disk space checks
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoLowDiskSpaceChecks" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Configure link resolution settings
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "LinkResolveIgnoreLinkInfo" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveSearch" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoResolveTrack" /t REG_DWORD /d 1 /f > NUL 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable window shaking
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "DisallowShaking" /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Show file extensions
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "HideFileExt" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Enable auto complete
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete" /v "Append Completion" /t REG_SZ /d "yes" /f > NUL 2>&1
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoComplete" /v "AutoSuggest" /t REG_SZ /d "yes" /f > NUL 2>&1
+:: Set TDR delay
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "TdrDelay" /t REG_DWORD /d 10 /f > NUL 2>&1
+:: Disable window animation
 reg add "HKCU\Control Panel\Desktop\WindowMetrics" /v "MinAnimate" /t REG_SZ /d "0" /f > NUL 2>&1
+:: Disable auto debug
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug" /v "Auto" /t REG_SZ /d "0" /f > NUL 2>&1
+:: Disable secure desktop prompt
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "PromptOnSecureDesktop" /t REG_DWORD /d 0 /f > NUL 2>&1
+:: Set folder type to not specified
 reg add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /v "FolderType" /t REG_SZ /d "NotSpecified" /f > NUL 2>&1
+:: Disable link tracking
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "link" /t REG_BINARY /d "0" /f >nul 2>&1
+:: Hide recommended section
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Start" /v "HideRecommendedSection" /t REG_DWORD /d "1" /f > NUL 2>&1
+:: Set as education environment
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\current\device\Education" /v "IsEducationEnvironment" /t REG_DWORD /d "1" /f > NUL 2>&1
+:: Hide recommended section (policy)
 reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "HideRecommendedSection" /t REG_DWORD /d "1" /f > NUL 2>&1
 
 :: Allow for paths over 260 characters
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v "LongPathsEnabled" /t REG_DWORD /d "1" /f >nul 2>&1
 
-echo. - Optimizing Windows Scheduled Tasks
+:: Disable maintenance
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" /v MaintenanceDisabled /t REG_DWORD /d 1 /f > NUL 2>&1
+:: Disable diagnostics
 reg add "HKLM\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" /v EnabledExecution /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo. - Disable specific scheduled tasks
+echo.%ESC%[38;5;33m 📅 Disabling Scheduled Tasks...%ESC%[0m
 set "tasksToDisable="
 set tasksToDisable=^
  "\Microsoft\Windows\Application Experience\StartupAppTask"^
@@ -635,7 +700,7 @@ for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
 )
 
-echo. - Visual Effects
+echo.%ESC%[38;5;33m 🖥️ Optimizing Visual Effects...%ESC%[0m
 :: Enable font smoothing
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
 
@@ -673,14 +738,13 @@ reg add "HKCU\SOFTWARE\Microsoft\Windows\DWM" /v "AlwaysHibernateThumbnails" /t 
 :: Check if WMIC is available
 wmic /? >nul 2>&1
 if %errorlevel% equ 0 (
-    echo. - WMIC is already available on this system.
     goto :USBPowerSavings
 ) else (
-    echo. - WMIC is not available. Attempting to install...
     goto :skipUSBPowerSavings
 )
 
 :USBPowerSavings
+echo.%ESC%[38;5;33m 🔌 Configuring USB Settings...%ESC%[0m
 echo. - Disable USB Power Savings
 for /f "tokens=*" %%a in ('Reg query "HKLM\System\CurrentControlSet\Enum" /s /f "StorPort" 2^>nul ^| findstr "StorPort"') do reg add "%%a" /v "EnableIdlePowerManagement" /t REG_DWORD /d "0" /f > NUL 2>&1
 for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
@@ -693,17 +757,17 @@ for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
     reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters" /v "D3ColdSupported" /t REG_DWORD /d "0" /f > NUL 2>&1
 )
 
-echo. - Enable GPU MSI Mode
+
 for /f %%a in ('wmic path Win32_VideoController get PNPDeviceID ^| find "PCI\VEN_"') do ^
 reg query "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" >nul 2>&1 && (
 reg add "HKLM\System\CurrentControlSet\Enum\%%a\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d "1" /f > NUL 2>&1
 )
-C:\Windows\System32\TIMEOUT.exe /t 1 /nobreak > nul 2> nul
+
 goto :continue
 :skipUSBPowerSavings
 
 :continue
-echo. - Quick Boot 
+echo.%ESC%[38;5;33m 🎯 Finalizing Performance Settings...%ESC%[0m
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DelayedDesktopSwitchTimeout" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_SZ /d "0" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "RunStartupScriptSync" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -711,12 +775,10 @@ bcdedit /set bootuxdisabled on > NUL 2>&1
 bcdedit /set bootmenupolicy standard > NUL 2>&1
 bcdedit /set quietboot yes > NUL 2>&1
 
-echo. - Quick Shutdown Settings
 reg add "HKCU\Control Panel\Desktop" /v "WaitToKillAppTimeout" /t REG_SZ /d "3000" /f > NUL 2>&1
 reg add "HKLM\System\CurrentControlSet\Control" /v "WaitToKillServiceTimeout" /t REG_SZ /d "3000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f > NUL 2>&1
 
-echo. - Additional Performance Optimizations
 reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > NUL 2>&1
 
@@ -724,50 +786,51 @@ reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > N
 :: reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
 
-echo. - Disable Hibernation
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
 
-echo. - Disable Sleep Study
 schtasks /change /tn "\microsoft\windows\power efficiency diagnostics\analyzesystem" /disable >nul 2>&1
 wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul 2>&1
 
-
-echo. - Adjust processor scheduling for foreground boost
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 42 /f >nul 2>&1
-timeout /t 5 /nobreak > NUL
+echo.
+echo    %ESC%[92m✓%ESC%[0m %ESC%[97mSystem optimizations have been successfully applied!%ESC%[0m
+timeout /t 10 /nobreak > NUL
 
 mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-echo.
-echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│     %ESC%[97mTimer Resolution Settings%ESC%[38;5;147m       │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to enable enhanced  %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mtimer resolution for better system %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mperformance?%ESC%[38;5;147m                       │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
-echo.                 Do you want to Enable Timer Resolution ?
 echo.
-echo.                             [1] Yes Or [2] No
-echo.
-set /p input=%BS%══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :TimerR
 if /I "%input%"=="2" goto :CloudSync
 if /I "%input%"=="3" goto :MainMenu
+
 echo.
-echo.    Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
-echo.
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
+
 timeout /t 2 /nobreak > NUL
 
 :TimerR
@@ -782,31 +845,34 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-echo.
-echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│      %ESC%[97mCloud Sync Settings%ESC%[38;5;147m            │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to disable cloud    %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97msync features for improved system  %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mprivacy and performance?%ESC%[38;5;147m           │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
-echo.                      Do you want to Disable Cloud Sync ?
 echo.
-echo.                             [1] Yes Or [2] No
-echo.
-set /p input=%BS%══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo.    Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :CloudSync
@@ -834,31 +900,34 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-echo.
-echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│           %ESC%[97mTelemetry%ESC%[38;5;147m                 │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to disable telemetry%ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mfeatures to improve system privacy %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mand performance?%ESC%[38;5;147m                   │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
-echo.                      Do you want to Disable Telemetry ?
 echo.
-echo.                             [1] Yes Or [2] No
-echo.
-set /p input=%BS%══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo.    Invalid input. Please enter [1] or [2].
-echo.
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Telemetry
@@ -875,30 +944,33 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│           %ESC%[97mPrivacy Settings%ESC%[38;5;147m          │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│ %ESC%[97mWould you like to enable privacy    %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│ %ESC%[97msettings to improve system security?%ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
+echo.
+echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.
-echo.
-echo.                      Do you want to Disable Privacy ?
-echo.
-echo.                             [1] Yes Or [2] No
-echo.
-set /p input=%BS% ══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo.    Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :Privacy
@@ -916,31 +988,33 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║      %ESC%[97mDo you want to Remove Edge?%ESC%[38;5;147m     ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
-echo                    %ESC%[38;5;153m│    %ESC%[97m1. Yes%ESC%[38;5;153m   │    │   %ESC%[97m2. No%ESC%[38;5;153m    │
-echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│      %ESC%[97mEdge Browser         %ESC%[38;5;147m          │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove Microsoft %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mEdge browser from your system?%ESC%[38;5;147m     │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
-echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
-set /p input=%BS% ══════════^> 
+echo.
+echo.
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
 if /I "%input%"=="1" goto :runRemoveEdge
 if /I "%input%"=="2" goto :OneDrive
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo.- Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :RemoveEdge
@@ -969,31 +1043,34 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│               %ESC%[97mOneDrive          %ESC%[38;5;147m    │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove OneDrive  %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mfrom your system?%ESC%[38;5;147m                  │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║     %ESC%[97mDo you want to Remove OneDrive? %ESC%[38;5;147m     ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
-echo.
-echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
-echo                    %ESC%[38;5;153m│    %ESC%[97m1. Yes%ESC%[38;5;153m   │    │   %ESC%[97m2. No%ESC%[38;5;153m    │
-echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
 echo.
-echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
-set /p input=%BS%              ══════════^> 
+echo.
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :DeblootWindows
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo.    Invalid input. Please enter [1] or [2].
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :OneDrive
@@ -1034,31 +1111,32 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│          %ESC%[97mWindows Debloat         %ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove bloatware %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mand optimize Windows performance? %ESC%[38;5;147m │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
 echo.
-echo.
-echo.
-echo.
-echo.                     Do you want to Debloat Windows? 
-echo.
-echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
-echo                    %ESC%[38;5;153m│  %ESC%[97m1. Yes%ESC%[38;5;153m    │    │  %ESC%[97m2. No%ESC%[38;5;153m    │
-echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
-set /p input=%BS%              ══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :RunDebloot
 if /I "%input%"=="2" goto :MainMenu
 echo.
-echo.    Invalid input. Please enter [1] or [2].
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo.    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :DeblootWindows
@@ -1080,36 +1158,38 @@ goto :MainMenu
 rem ========================================================================================================================================
 
 :GPUTweaks
-mode con cols=76 lines=33
+mode con cols=76 lines=27
 CLS
 echo.
 echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║ %ESC%[97mDo You Have NVIDIA (1) or AMD (2) ?%ESC%[1;38;5;147m  ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
-echo.
-echo                     %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
-echo                     %ESC%[38;5;153m│  %ESC%[97m1. NVIDIA%ESC%[38;5;153m  │    │  %ESC%[97m2. AMD%ESC%[38;5;153m    │
-echo                     %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│         %ESC%[97mGPU Settings%ESC%[38;5;147m                │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mPlease select your graphics card   %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mmanufacturer to continue:%ESC%[38;5;147m          │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
-echo                     %ESC%[38;5;147m[ Please type your choice and press Enter ]%ESC%[0m
-set /p input=%BS%      ══════════^> 
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. NVIDIA%ESC%[38;5;153m   │  │   %ESC%[91m► 2. AMD%ESC%[38;5;153m      │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
+echo.
+echo.
+echo.
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
 if /I "%input%"=="3" goto :MainMenu
 
 echo.
-echo.    Invalid input. Please enter [1] or [2].
-echo:       ______________________________________________________________
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
 goto :GPUTweaks
@@ -1122,44 +1202,51 @@ rem ============================================================================
 CLS
 mode con cols=76 lines=33
 start /wait cmd /c "%currentDir%\NvidiaProfileInspector.cmd"
-timeout /t 3 /nobreak > NUL
+timeout /t 1 /nobreak > NUL
 :NVIDIATweaks1
 cls
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│        %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m       │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║   %ESC%[97mNVIDIA Control Panel Settings%ESC%[38;5;147m      ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
 echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│         %ESC%[97mNVIDIA Settings%ESC%[38;5;147m             │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mPlease select your preferred      %ESC%[38;5;147m │
+echo                    %ESC%[38;5;147m│  %ESC%[92mNVIDIA%ESC%[97m control panel settings:%ESC%[38;5;147m     │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
 echo.
 echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│  %ESC%[97m1. NVIDIA Settings (Aurora)%ESC%[38;5;153m    │
+echo                      %ESC%[38;5;153m│ %ESC%[92m ► 1. %ESC%[97mNVIDIA Settings %ESC%[93mAurora%ESC%%ESC%[38;5;153m    │
 echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
 echo.
 echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│  %ESC%[97m2. NVIDIA Settings (Default)%ESC%[38;5;153m   │
+echo                      %ESC%[38;5;153m│ %ESC%[97m ► 2. NVIDIA Settings (Default)%ESC%[38;5;153m │
 echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
 echo.
 echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│  %ESC%[97m3. Back to Main Menu%ESC%[38;5;153m           │
+echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mBack to Main Menu%ESC%[38;5;153m         │
 echo                      %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
 echo.
-echo                        %ESC%[38;5;147m[ Please enter your choice ]%ESC%[0m
 echo.
-set /p input=%ESC%[38;5;147m    ══════════^>%ESC%[0m 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
+
+
 if /I "%input%"=="1" goto :AuroraON
 if /I "%input%"=="2" goto :AuroraOFF
 if /I "%input%"=="3" goto :MainMenu
 echo.
-echo    %ESC%[91mInvalid input. Please enter [1], [2], or [3].%ESC%[0m
-timeout /t 2 /nobreak > NUL
-goto :NVIDIATweaks1
+if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
+    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo        %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
+    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 3 /nobreak > NUL
+    goto :NVIDIATweaks1
+)
+
 
 :AuroraOFF
 timeout /t 3 /nobreak > NUL
@@ -1237,27 +1324,47 @@ rem ============================================================================
 
 
 :NetworkTweaks
-mode con cols=76 lines=33
+mode con cols=76 lines=29
 cls
 echo.
 echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
-echo    %ESC%[1;38;5;45m╔══════════════════════════════════════════════════════╗
-echo    %ESC%[1;38;5;45m║%ESC%[97m               NETWORK OPTIMIZATION SETTINGS          %ESC%[1;38;5;45m║
-echo    %ESC%[1;38;5;45m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m│  %ESC%[97m🌐 Network Optimization Settings%ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
-echo    %ESC%[93m1.%ESC%[0m Apply Gaming Network Profile
-echo    %ESC%[93m2.%ESC%[0m Return to Main Menu
+echo                     %ESC%[38;5;33m╭───────────────────────────────────╮%ESC%[0m
+echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 1. %ESC%[97mApply Network Optimization %ESC%[38;5;33m│%ESC%[0m
+echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
 echo.
-set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
+echo                     %ESC%[38;5;33m╭───────────────────────────────────╮%ESC%[0m
+echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 2. %ESC%[97mReturn to Main Menu        %ESC%[38;5;33m│%ESC%[0m
+echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
+echo.
+echo.
+set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [1-2]:%ESC%[0m "
 
 if /I "%input%"=="1" goto  :NetworkTweaks1
 if /I "%input%"=="2" goto  :MainMenu
 
 :NetworkTweaks1
+if not defined input goto :NetworkTweaks
+if "%input%"=="" goto :NetworkTweaks
+set "input=%input:"=%"
+echo.
+if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
+    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo        %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
+    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 3 /nobreak > NUL
+    goto :NetworkTweaks
+)
+
 timeout /t 3 /nobreak > NUL
 if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\NetworkBufferBloatFixer.ps1"
@@ -1283,12 +1390,9 @@ mode con cols=76 lines=33
 cls
 echo.
 echo.
-echo.
-echo                           %ESC%[1;38;5;159m╭──────────────────────────╮
-echo                           %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
-echo                           %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
-echo.
-echo.
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo            %ESC%[1;38;5;196m╔══════════════════════════════════════════════════════╗
@@ -1299,13 +1403,12 @@ echo            %ESC%[1;38;5;196m║%ESC%[91m  Only proceed if you understand th
 echo            %ESC%[1;38;5;196m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
 echo.
-echo.
 echo                         %ESC%[93m[1]%ESC%[0m Continue    %ESC%[93m[2]%ESC%[0m Main Menu    
 echo.
 set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
 if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :MainMenu
-echo Invalid input
+echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 timeout /t 2 /nobreak > NUL
 
 :StartServiceChanges
@@ -1380,18 +1483,25 @@ cls
 mode con cols=76 lines=33
 echo.
 echo.
-echo:       ______________________________________________________________
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
-echo                    Do you want to restart Aurora or exit?
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║  %ESC%[97mDo you want to restart Aurora or exit?%ESC%[38;5;147m ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
 echo.
-echo                           [1] Restart Aurora
-echo                           [2] Exit
 echo.
-echo:       ______________________________________________________________
+echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
+echo                    %ESC%[38;5;153m│%ESC%[97m 1. Restart%ESC%[38;5;153m │    │ %ESC%[97m2. Exit%ESC%[38;5;153m  │
+echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
 echo.
 echo.
-set /p input=%BS%══════════^> 
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
 
 if /I "%input%"=="2" (
     echo.
@@ -1490,20 +1600,23 @@ mode con: cols=75 lines=28
 echo:
 echo:
 echo:
+echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
+echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
+echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
 echo:
 echo:
+echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║     %ESC%[97m[1] Temp and Prefetch%ESC%[38;5;147m         ║
+echo                    %ESC%[38;5;147m║     %ESC%[97m[2] Event Viewer%ESC%[38;5;147m              ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m║     %ESC%[97m[0] Exit%ESC%[38;5;147m                      ║
+echo                    %ESC%[38;5;147m║                                      ║
+echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
 echo:
-echo:                                Auto Cleaner     
-echo:            ___________________________________________________ 
-echo:                                                               
-echo:                   	[1]  Temp and Prefetch  
-echo:                  	[2]  Event Viewer 
-echo:
-echo:                                                               
-echo:                            	 [0] Exit
-echo:            ___________________________________________________
-echo:
-set /p choice=                            "Enter your choice: "
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
+
 if "%choice%"=="1" (
     goto TempPrefetch
 ) else if "%choice%"=="2" (

@@ -24,10 +24,22 @@ Title Aurora NVIDIA Profile Inspector
 ::
 :: ============================================================
 
+:: Check if files already exist
+if exist "%~dp0AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" (
+    if exist "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip" (
+        if exist "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraON.nip" (
+            echo Files already exist. Skipping download...
+            
+            exit /b
+        )
+    )
+)
 
+:: Download and extract NVIDIA Profile Inspector
 curl -g -k -L -# -o "%temp%\nvidiaProfileInspector.zip" "https://github.com/Orbmu2k/nvidiaProfileInspector/releases/latest/download/nvidiaProfileInspector.zip" > NUL 2>&1
 powershell -NoProfile Expand-Archive '%temp%\nvidiaProfileInspector.zip' -DestinationPath '%~dp0AuroraNvidia\NvidiaProfileInspector\' -Force
 
+:: Download Aurora profile configurations
 curl -g -k -L -# -o "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraOFF.nip" > NUL 2>&1
 curl -g -k -L -# -o "%~dp0AuroraNvidia\NvidiaProfileInspector\AuroraON.nip" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraON.nip" > NUL 2>&1
 exit /b
