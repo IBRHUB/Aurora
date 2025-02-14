@@ -103,6 +103,32 @@ if (-not (Test-Administrator)) {
     Log-Message "Script is running with Administrator privileges." "INFO"
 }
 
+# Function to check for an existing restore point with the same description within the last N hours
+function Check-RecentRestorePoint {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Description,
+        [Parameter(Mandatory=$false)]
+        [int]$HoursAgo = 48
+    )
+    try {
+        $cutoff = (Get-Date).AddHours(-$HoursAgo)
+        $restorePoints = Get-WmiObject -Class SystemRestore -Namespace "root/default" -ErrorAction Stop
+        if ($restorePoints) {
+            foreach ($rp in $restorePoints) {
+                $rpCreationTime = [Management.ManagementDateTimeConverter]::ToDateTime($rp.CreationTime)
+                if ($rpCreationTime -ge $cutoff -and $rp.Description -eq $Description) {
+                    return $true
+                }
+            }
+        }
+        return $false
+    } catch {
+        Log-Message "Error checking recent restore points: $($_.Exception.Message)" "WARN"
+        return $false
+    }
+}
+
 # Check if system protection is enabled on the specified drive
 $protection = Get-WmiObject -Class SystemRestore -Namespace "root\default" | Where-Object { $_.Drive -eq $DriveLetter }
 
@@ -112,7 +138,12 @@ if ($protection -and $protection.IsEnabled) {
     Enable-SystemProtection -Drive $DriveLetter
 }
 
-# Create the restore point
-Create-RestorePoint -Description $RestorePointName -Type "MODIFY_SETTINGS"
+# Check for recent restore point before creating a new one
+if (Check-RecentRestorePoint -Description $RestorePointName) {
+    Log-Message "Recent restore point '${RestorePointName}' already exists. Skipping creation." "INFO"
+} else {
+    # Create the restore point
+    Create-RestorePoint -Description $RestorePointName -Type "MODIFY_SETTINGS"
+}
 
 Log-Message "=== Aurora Restore Point Script Execution Completed ===" "INFO"
