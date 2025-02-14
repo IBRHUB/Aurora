@@ -4,15 +4,8 @@
 :: ============================================================================
 ::
 :: DESCRIPTION:
-::   This script disables various cloud synchronization and user profile 
-::   engagement features in Windows to enhance privacy and reduce network usage.
-::   It modifies registry settings related to:
-::   - User Profile Engagement
-::   - Windows Settings Sync
-::   - Browser Settings Sync
-::   - Credentials Sync
-::   - Accessibility Settings Sync
-::   - Messaging Sync
+::   Disables Windows cloud sync features and user profile engagement
+::   to enhance privacy and reduce network usage.
 ::
 :: ============================================================================
 

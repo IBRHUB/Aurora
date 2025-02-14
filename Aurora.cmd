@@ -51,18 +51,57 @@ if not exist "%currentDir%" mkdir "%currentDir%"
 move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
 
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
-timeout /t 3 /nobreak >NUL
+:: Check and download RestorePoint.ps1 if not exists
+if not exist "%targetDir%\RestorePoint.ps1" (
+    curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+)
+
+:: Check and download LockConsoleSize.ps1 if not exists  
+if not exist "%targetDir%\LockConsoleSize.ps1" (
+    curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+)
+
+:: Check and download SetConsoleOpacity.ps1 if not exists
+if not exist "%targetDir%\SetConsoleOpacity.ps1" (
+    curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+)
+
+:: Check and download Console.ps1 if not exists
+if not exist "%targetDir%\Console.ps1" (
+    curl -g -k -L -# -o "%targetDir%\Console.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Console.ps1" >nul 2>&1
+)
+
+timeout /t 2 /nobreak >NUL
 
 
-:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1"
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1"
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1"
+:: Execute PowerShell scripts
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Retrying RestorePoint.ps1...
+    timeout /t 2 /nobreak >nul
+    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
+)
 
-:: Enable delayed expansion for the registry operations
-setlocal EnableDelayedExpansion
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Retrying LockConsoleSize.ps1...
+    timeout /t 2 /nobreak >nul
+    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1" >nul 2>&1
+)
+
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Retrying SetConsoleOpacity.ps1...
+    timeout /t 2 /nobreak >nul
+    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1" >nul 2>&1
+)
+
+powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\Console.ps1" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Retrying Console.ps1...
+    timeout /t 2 /nobreak >nul
+    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\Console.ps1" >nul 2>&1
+)
 
 
 :: Background: Black (0), Text: White (F)
@@ -113,8 +152,27 @@ cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
 set "right=%ESC%[<x>C"
 set "bullet= %ESC%[34m-%ESC%[0m"
-chcp 65001 >NUL
+chcp 65001 >NUL 2>&1
+if errorlevel 1 (
+    chcp 65001 >NUL 2>&1
+    if errorlevel 1 (
+        chcp 65001 >NUL 2>&1
+        if errorlevel 1 (
+            powershell -Command "Start-Process -FilePath '%~f0' -Verb RunAs" >NUL 2>&1
+            exit /b
+        )
+    )
+)
 
+rem Remove the custom values
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage" /v "OEMCP" /f >NUL 2>&1
+reg delete "HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage" /v "ACP" /f >NUL 2>&1
+
+rem Restore default values (OEMCP: 437, ACP: 1252)
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage" /v "OEMCP" /t REG_SZ /d "437" /f >NUL 2>&1
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Nls\CodePage" /v "ACP" /t REG_SZ /d "1252" /f >NUL 2>&1
+
+reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
 cls
 goto :DISCLAIMER
 
@@ -128,10 +186,10 @@ echo                  %ESC%[1;38;5;159m╭────────────�
 echo                  %ESC%[1;38;5;159m│       %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m        │
 echo                  %ESC%[1;38;5;159m╰──────────────────────────╯%ESC%[0m
 echo.
-echo     %ESC%[1;3;38;5;195m✦  Disclaimer %ESC%[0m     
+echo     %ESC%[1;3;38;5;195m- Disclaimer %ESC%[0m     
 echo.
 echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-echo    %ESC%[38;5;33m║%ESC%[93m  This software makes system modifications that may   %ESC%[38;5;33m║
+echo    %ESC%[38;5;33m║%ESC%[93m  This script makes system modifications that may     %ESC%[38;5;33m║
 echo    %ESC%[38;5;33m║%ESC%[93m  affect system stability. By continuing, you agree   %ESC%[38;5;33m║
 echo    %ESC%[38;5;33m║%ESC%[93m  to our terms of service and privacy policy.         %ESC%[38;5;33m║
 echo    %ESC%[38;5;33m║%ESC%[0m                                                      %ESC%[38;5;33m║
@@ -155,25 +213,26 @@ set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m 
 :: Handle user's choice
 if /I "%choice%"=="1" (
     echo.
-    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo    %ESC%[38;5;33m║%ESC%[92m  ✓ Agreement confirmed. Initializing Aurora...       %ESC%[38;5;33m║%ESC%[0m
-    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[92m  ✓ Agreement confirmed. Initializing Aurora...       %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     timeout /t 1 /nobreak > NUL
     goto :StartAurora
 ) else if /I "%choice%"=="2" (
     echo.
-    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo    %ESC%[38;5;33m║%ESC%[91m  ✗ Agreement declined. Exiting program...           %ESC%[38;5;33m║%ESC%[0m
-    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Agreement declined. Exiting program...           %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     timeout /t 1 /nobreak > NUL
     goto :endAurora
 ) else if /I "%choice%"=="X" (
     goto :MainMenu
 ) else (
     echo.
-    echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo    %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
-    echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+	cls
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  Invalid selection! Please choose 1 or 2             %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     timeout /t 3 /nobreak > NUL
     goto :DISCLAIMER
 )
@@ -223,9 +282,9 @@ for /L %%i in (0,1,18) do (
 
 :checkResult
 if "!allFilesExist!"=="true" (
-    echo   %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo   %ESC%[38;5;33m║%ESC%[92m Required files already exist. Skipping download...   %ESC%[38;5;33m║
-    echo   %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[92m Required files already exist. Skipping download...   %ESC%[38;5;33m│
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     timeout /t 3 /nobreak > NUL
     goto :skipDownload
 ) else (
@@ -236,11 +295,11 @@ endlocal
 :DownloadModules
 cls
 mode con cols=98 lines=35
-echo    %ESC%[1;3;38;5;195m✦  Downloading Aurora Modules  -  v1.0.0 beta  ✦%ESC%[0m
+echo    %ESC%[1;3;38;5;195m- Downloading Aurora Modules%ESC%[0m
 echo.
-echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-echo    %ESC%[38;5;33m║%ESC%[97m           Initializing Download Queue                  %ESC%[38;5;33m║
-echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo    %ESC%[38;5;34m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;34m│%ESC%[97m           Starting the Module Download Process            %ESC%[38;5;34m│
+echo    %ESC%[38;5;34m╰──────────────────────────────────────────────────────╯%ESC%[0m
 
 call :UpdateProgress 0 "LockConsoleSize.ps1"
 curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
@@ -299,9 +358,9 @@ curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubuserconten
 call :UpdateProgress 100.0 "AuroraManualServices.cmd"
 curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
 
-echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-echo    %ESC%[38;5;33m║%ESC%[92m ✓  All modules downloaded successfully! %ESC%[92m(100%%)%ESC%[38;5;33m ║
-echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo    %ESC%[38;5;34m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;34m│%ESC%[92m ✓  All modules downloaded successfully! %ESC%[92m(100%%)%ESC%[38;5;34m │
+echo    %ESC%[38;5;34m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 5 /nobreak > NUL
 goto :skipDownload
 
@@ -326,10 +385,10 @@ echo    %ESC%[2K    :: Clear line
 echo    %ESC%[3A    
 CLS
 :: Update display
-echo    %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-echo    %ESC%[38;5;33m║%ESC%[97m Downloading:%ESC%[96m %filename% %ESC%[0m
-echo    %ESC%[38;5;33m║%ESC%[0m [%progressBar%] %ESC%[93m%percentage%%%%ESC%[0m
-echo    %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo    %ESC%[38;5;34m╭─────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m Downloading:%ESC%[96m %filename% %ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[0m [%progressBar%] %ESC%[93m%percentage%%%%ESC%[0m
+echo    %ESC%[38;5;34m╰─────────────────────────────────────────────────────────╯%ESC%[0m
 
 :: Small delay instead of pause
 timeout /t 1 /nobreak >nul
@@ -341,15 +400,6 @@ if not exist "%currentDir%" mkdir "%currentDir%"
 move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 cls
 
-
-:: Enable ANSI Escape Sequences
-reg add "HKCU\CONSOLE" /v "VirtualTerminalLevel" /t REG_DWORD /d "1" /F >NUL 2>&1
-
-:: Disabled modules:
-:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\resizeConsole.ps1"
-
-:: Disable process mitigations (Disabled by default) 
-:: powershell.exe "ForEach($v in (Get-Command -Name \"Set-ProcessMitigation\").Parameters[\"Disable\"].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}"  >NUL 2>&1
 cls
 rem ========================================================================================================================================
 
@@ -359,7 +409,10 @@ for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1)
 )
 
 :: Enable ANSI Support (Windows 10+)
-REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1 > nul 2>&1
+REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1 >nul 2>&1
+REG ADD HKCU\CONSOLE /f /v InsertMode /t REG_DWORD /d 1 >nul 2>&1
+REG ADD HKCU\CONSOLE /f /v QuickEdit /t REG_DWORD /d 0 >nul 2>&1
+REG ADD HKCU\CONSOLE /f /v LineSelection /t REG_DWORD /d 1 >nul 2>&1
 
 color 0f
 
@@ -369,15 +422,14 @@ CLS
 mode con cols=98 lines=40
 echo.
 echo.
-echo.
-echo                         %ESC%[1;38;5;33m╔══════════════════════════════════════════════════════╗
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗  %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗ %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║ %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║ %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║ %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m║%ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ %ESC%[1;38;5;33m║
-echo                         %ESC%[1;38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+echo                      %ESC%[1;38;5;33m┌────────────────────────────────────────────────────────────┐%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗      %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗     %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║     %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║     %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║     %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝     %ESC%[1;38;5;33m│%ESC%[0m
+echo                      %ESC%[1;38;5;33m└────────────────────────────────────────────────────────────┘%ESC%[0m
 echo.
 echo.
 echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
@@ -402,7 +454,7 @@ echo                                          %ESC%[38;5;196m╭─────�
 echo                                          %ESC%[38;5;196m│%ESC%[0m %ESC%[38;5;196m[ 0 ]%ESC%[0m %ESC%[1;3;38;5;196mExit AURORA%ESC%[0m  %ESC%[38;5;196m│%ESC%[0m
 echo                                          %ESC%[38;5;196m╰────────────────────╯%ESC%[0m
 echo.
-set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m %ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
+set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
 
 if not defined input goto :MainMenu
 if "%input%"=="" goto :MainMenu
@@ -420,18 +472,19 @@ if "%input%"=="9" (start https://ibrpride.com/ & goto :MainMenu)
 if "%input%"=="10" (start https://docs.ibrhub.net & goto :MainMenu)
 if "%input%"=="0" goto :AuroraExit
 
-echo %ESC%[91mInvalid input. Please select a number between 0 and 10.%ESC%[0m
-timeout /t 1 /nobreak > nul
+echo                      %ESC%[38;5;196m╭──────────────────────────────────────────────╮%ESC%[0m
+echo                      %ESC%[38;5;196m│%ESC%[91m Invalid input. Please select a number [0-10] %ESC%[38;5;196m│%ESC%[0m
+echo                      %ESC%[38;5;196m╰──────────────────────────────────────────────╯%ESC%[0m
+timeout /t 2 /nobreak > nul
 goto :MainMenu
 
 :AuroraExit
 CLS
-echo %ESC%[1;92mThank you for using AURORA Optimizer!%ESC%[0m
+echo %ESC%[1;92mThank you for using AURORA!%ESC%[0m
 timeout /t 2 /nobreak > nul
 exit
 
 :WinTweaks
-
 mode con cols=76 lines=28
 
 cls
@@ -451,7 +504,7 @@ echo                    %ESC%[38;5;147m╰────────────�
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
 :: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
-echo.%ESC%[38;5;33m ⚡ Optimizing Edge and Chrome Settings...%ESC%[0m
+echo.%ESC%[38;5;33m - Optimizing Edge and Chrome Settings...%ESC%[0m
 :: Disable startup boost for Edge
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
 :: Disable hardware acceleration for Edge
@@ -472,7 +525,7 @@ reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v BackgroundModeEnabled /t REG_D
 :: Enable high efficiency mode for Chrome
 reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v HighEfficiencyModeEnabled /t REG_DWORD /d 1 /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m 🎮 Configuring Game Settings...%ESC%[0m
+echo.%ESC%[38;5;33m - Configuring Game Settings...%ESC%[0m
 :: Remove NVIDIA backend from startup
 reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v NvBackend /f > NUL 2>&1
 :: Disable NVIDIA telemetry opt-in
@@ -499,7 +552,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProf
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d High /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "SFIO Priority" /t REG_SZ /d High /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m 🚫 Disabling Background Apps...%ESC%[0m
+echo.%ESC%[38;5;33m - Disabling Background Apps...%ESC%[0m
 :: Disable background apps globally
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /t REG_DWORD /d "1" /f >nul 2>&1
 :: Prevent apps from running in background via policy
@@ -532,7 +585,7 @@ reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AutoGameModeEnabled /t REG_DWORD /d
 :: Set system to prioritize programs over background services
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m 🔄 Optimizing System Services...%ESC%[0m
+echo.%ESC%[38;5;33m - Optimizing System Services...%ESC%[0m
 :: Set menu show delay to 0
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d "0" /f > NUL 2>&1
 
@@ -641,7 +694,7 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance"
 :: Disable diagnostics
 reg add "HKLM\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" /v EnabledExecution /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m 📅 Disabling Scheduled Tasks...%ESC%[0m
+echo.%ESC%[38;5;33m - Disabling Scheduled Tasks...%ESC%[0m
 set "tasksToDisable="
 set tasksToDisable=^
  "\Microsoft\Windows\Application Experience\StartupAppTask"^
@@ -700,7 +753,7 @@ for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
 )
 
-echo.%ESC%[38;5;33m 🖥️ Optimizing Visual Effects...%ESC%[0m
+echo.%ESC%[38;5;33m - Optimizing Visual Effects...%ESC%[0m
 :: Enable font smoothing
 reg add "HKCU\Control Panel\Desktop" /v "FontSmoothing" /t REG_SZ /d "2" /f > NUL 2>&1
 
@@ -744,7 +797,7 @@ if %errorlevel% equ 0 (
 )
 
 :USBPowerSavings
-echo.%ESC%[38;5;33m 🔌 Configuring USB Settings...%ESC%[0m
+echo.%ESC%[38;5;33m - Configuring USB Settings...%ESC%[0m
 echo. - Disable USB Power Savings
 for /f "tokens=*" %%a in ('Reg query "HKLM\System\CurrentControlSet\Enum" /s /f "StorPort" 2^>nul ^| findstr "StorPort"') do reg add "%%a" /v "EnableIdlePowerManagement" /t REG_DWORD /d "0" /f > NUL 2>&1
 for /f %%a in ('wmic PATH Win32_PnPEntity GET DeviceID ^| find "USB\VID_"') do (
@@ -767,7 +820,7 @@ goto :continue
 :skipUSBPowerSavings
 
 :continue
-echo.%ESC%[38;5;33m 🎯 Finalizing Performance Settings...%ESC%[0m
+echo.%ESC%[38;5;33m - Finalizing Performance Settings...%ESC%[0m
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "DelayedDesktopSwitchTimeout" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize" /v "StartupDelayInMSec" /t REG_SZ /d "0" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v "RunStartupScriptSync" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -781,9 +834,6 @@ reg add "HKCU\Control Panel\Desktop" /v "AutoEndTasks" /t REG_SZ /d "1" /f > NUL
 
 reg add "HKCU\Control Panel\Desktop" /v "HungAppTimeout" /t REG_SZ /d "2000" /f > NUL 2>&1
 reg add "HKCU\Control Panel\Desktop" /v "MenuShowDelay" /t REG_SZ /d "20" /f > NUL 2>&1
-
-:: echo. - Usb Overclock with secure boot enabled
-:: reg add "HKLM\SYSTEM\CurrentControlSet\Control\CI\Policy" /v "WHQLSettings" /t REG_DWORD /d "1" /f > NUL 2>&1
 
 
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled" /t REG_DWORD /d "0" /f > NUL 2>&1
@@ -1254,13 +1304,17 @@ set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
 %AuroraAsAdmin% --NoLogo -S -P --WorkDir="%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip"
 
 if errorlevel 1 (
-    echo - Failed to apply AuroraOFF.nip.
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply NVIDIA default settings           %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     pause
     goto :relaunch
 )
 
 echo.
-echo - Resizable BAR has been disabled successfully.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA settings restored to default successfully    %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
 goto :MainMenu
@@ -1270,13 +1324,17 @@ timeout /t 3 /nobreak > NUL
 set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
 %AuroraAsAdmin% --NoLogo -S -P --WorkDir="%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
 if errorlevel 1 (
-    echo - Failed to apply AuroraON.nip.
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply NVIDIA optimized settings          %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     pause
     goto :relaunch
 )
 
 echo.
-echo - Resizable BAR has been enabled successfully.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA optimizations applied successfully          %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
 goto :MainMenu
@@ -1334,7 +1392,7 @@ echo                    %ESC%[1;38;5;159m╰────────────
 echo.
 echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
 echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m🌐 Network Optimization Settings%ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m│  %ESC%[97m  Network Optimization Settings%ESC%[38;5;147m   │
 echo                    %ESC%[38;5;147m│                                     │
 echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
@@ -1369,14 +1427,20 @@ timeout /t 3 /nobreak > NUL
 if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\NetworkBufferBloatFixer.ps1"
     if %ERRORLEVEL% NEQ 0 (
-        echo - Error: Failed to apply network optimizations.
+        echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+        echo        %ESC%[38;5;33m║%ESC%[91m  Error: Failed to apply network optimizations.      %ESC%[38;5;33m║%ESC%[0m
+        echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
         timeout /t 2 /nobreak > NUL
     ) else (
-        echo - Network optimizations applied successfully.
+        echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+        echo        %ESC%[38;5;33m║%ESC%[92m  Network optimizations applied successfully.         %ESC%[38;5;33m║%ESC%[0m
+        echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
         timeout /t 2 /nobreak > NUL
     )
 ) else (
-    echo - Error: NetworkBufferBloatFixer.ps1 script not found in AuroraModules folder.
+    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo        %ESC%[38;5;33m║%ESC%[91m  Error: NetworkBufferBloatFixer.ps1 script not found  %ESC%[38;5;33m║%ESC%[0m
+    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 2 /nobreak > NUL
 )
 goto :MainMenu

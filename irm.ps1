@@ -210,9 +210,22 @@ Write-Host @"
 Write-Host "`n"
 
 # 5) Purpose: Executes Aurora and cleans up temporary files
+Write-Host "Preparing system for Aurora..." -ForegroundColor Yellow
+
+# Remove and restore CodePage registry values before running Aurora
+try {
+    Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage" -Name "OEMCP" -ErrorAction SilentlyContinue
+    Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage" -Name "ACP" -ErrorAction SilentlyContinue
+    
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage" -Name "OEMCP" -Value "437" -PropertyType String -Force
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Nls\CodePage" -Name "ACP" -Value "1252" -PropertyType String -Force
+} catch {
+    Write-Host "Warning: Could not update CodePage settings. Continuing anyway..." -ForegroundColor Yellow
+}
+
 Write-Host "Aurora is Running ..." -ForegroundColor Green
 try {
-    Start-Process "conhost.exe" -ArgumentList "cmd /c $AuroraPath" -Wait -Verb RunAs
+    Start-Process "conhost.exe" -ArgumentList "cmd /c $AuroraPath" -Wait -Verb RunAs 
     Write-Host "Aurora completed successfully." -ForegroundColor Green
 } catch {
     Write-Host "Error running Aurora: $($_.Exception.Message)" -ForegroundColor Red

@@ -20,7 +20,7 @@ set "right=%ESC%[<x>C"
 set "bullet= %ESC%[34m-%ESC%[0m"
 chcp 65001 >NUL
 
-
+cls
 :: Get user choice for AMD registry modifications
 echo.
 echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
@@ -44,10 +44,17 @@ if "%choice%"=="1" (
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
     exit /b
+) else if "%choice%"=="3" (
+    echo.
+    echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[91m  Exit...                                             %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+    timeout /t 1 /nobreak > NUL
+    exit /b
 ) else (
     echo.
     echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1, 2, or 3         %ESC%[38;5;33m║%ESC%[0m
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
     exit /b
