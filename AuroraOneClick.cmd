@@ -46,62 +46,54 @@ if errorlevel 1 (
 ::  Set directories for Aurora modules 
 set "targetDir=%temp%\AuroraModules"
 set "currentDir=%~dp0AuroraModules"
-if not exist "%targetDir%" mkdir "%targetDir%"
-if not exist "%currentDir%" mkdir "%currentDir%"
+if not exist "%targetDir%" mkdir "%targetDir%" >nul 2>&1
+if not exist "%currentDir%" mkdir "%currentDir%" >nul 2>&1
+
+:: Clear any existing files in target directory
+del /Q "%targetDir%\*" >nul 2>&1
+
+:: Download required files
+echo Downloading Aurora modules...
+curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+
+
+:: Verify all files were downloaded successfully
+set "allFilesExist=true"
+if not exist "%targetDir%\RestorePoint.ps1" set "allFilesExist=false"
+if not exist "%targetDir%\LockConsoleSize.ps1" set "allFilesExist=false"
+if not exist "%targetDir%\SetConsoleOpacity.ps1" set "allFilesExist=false"
+
+if "%allFilesExist%"=="false" (
+    echo Some files failed to download. Please restart the script.
+    exit /b
+)
+
+:: Move files to current directory and set window title
 move "%targetDir%\*" "%currentDir%\" >nul 2>&1
-powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'"
-
-:: Check and download RestorePoint.ps1 if not exists
-if not exist "%targetDir%\RestorePoint.ps1" (
-    curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
-)
-
-:: Check and download LockConsoleSize.ps1 if not exists  
-if not exist "%targetDir%\LockConsoleSize.ps1" (
-    curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
-)
-
-:: Check and download SetConsoleOpacity.ps1 if not exists
-if not exist "%targetDir%\SetConsoleOpacity.ps1" (
-    curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
-)
-
-:: Check and download Console.ps1 if not exists
-if not exist "%targetDir%\Console.ps1" (
-    curl -g -k -L -# -o "%targetDir%\Console.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Console.ps1" >nul 2>&1
-)
-
-timeout /t 2 /nobreak >NUL
+powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'" >nul 2>&1
 
 
 :: Execute PowerShell scripts
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Retrying RestorePoint.ps1...
-    timeout /t 2 /nobreak >nul
-    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
-)
+:: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
+:: if %errorlevel% neq 0 (
+::     echo Retrying RestorePoint.ps1...
+::     powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
+:: )
 
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1" >nul 2>&1
 if %errorlevel% neq 0 (
     echo Retrying LockConsoleSize.ps1...
-    timeout /t 2 /nobreak >nul
     powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\LockConsoleSize.ps1" >nul 2>&1
 )
 
 powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1" >nul 2>&1
 if %errorlevel% neq 0 (
     echo Retrying SetConsoleOpacity.ps1...
-    timeout /t 2 /nobreak >nul
     powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\SetConsoleOpacity.ps1" >nul 2>&1
 )
 
-powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\Console.ps1" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Retrying Console.ps1...
-    timeout /t 2 /nobreak >nul
-    powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\Console.ps1" >nul 2>&1
-)
 
 
 :: Background: Black (0), Text: White (F)
@@ -358,9 +350,9 @@ curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubuserconten
 call :UpdateProgress 100.0 "AuroraManualServices.cmd"
 curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
 
-echo    %ESC%[38;5;34m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;34m│%ESC%[92m ✓  All modules downloaded successfully! %ESC%[92m(100%%)%ESC%[38;5;34m │
-echo    %ESC%[38;5;34m╰──────────────────────────────────────────────────────╯%ESC%[0m
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m ✓  All modules downloaded successfully!        %ESC%[93m(100%%)%ESC%[38;5;33m │
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 5 /nobreak > NUL
 goto :skipDownload
 
@@ -385,13 +377,12 @@ echo    %ESC%[2K    :: Clear line
 echo    %ESC%[3A    
 CLS
 :: Update display
-echo    %ESC%[38;5;34m╭─────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m╭─────────────────────────────────────────────────────────╮%ESC%[0m
 echo    %ESC%[38;5;33m│%ESC%[97m Downloading:%ESC%[96m %filename% %ESC%[0m
 echo    %ESC%[38;5;33m│%ESC%[0m [%progressBar%] %ESC%[93m%percentage%%%%ESC%[0m
-echo    %ESC%[38;5;34m╰─────────────────────────────────────────────────────────╯%ESC%[0m
+echo    %ESC%[38;5;33m╰─────────────────────────────────────────────────────────╯%ESC%[0m
 
 :: Small delay instead of pause
-timeout /t 1 /nobreak >nul
 endlocal
 goto :eof
 
@@ -416,82 +407,12 @@ REG ADD HKCU\CONSOLE /f /v LineSelection /t REG_DWORD /d 1 >nul 2>&1
 
 color 0f
 
-:MainMenu
-chcp 65001 >NUL
-CLS
-mode con cols=98 lines=40
-echo.
-echo.
-echo                      %ESC%[1;38;5;33m┌────────────────────────────────────────────────────────────┐%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;87m   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗   █████╗      %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;159m  ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗ ██╔══██╗     %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;195m  ███████║██║   ██║██████╔╝██║   ██║██████╔╝ ███████║     %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;195m  ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗ ██╔══██║     %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;159m  ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║ ██║  ██║     %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m│  %ESC%[1;38;5;87m  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝     %ESC%[1;38;5;33m│%ESC%[0m
-echo                      %ESC%[1;38;5;33m└────────────────────────────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m1%ESC%[0m ■ %ESC%[1;37mWindows Tweaks          %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m5%ESC%[0m ■ %ESC%[1;37mDisable Services        %ESC%[38;5;33m│%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m2%ESC%[0m ■ %ESC%[1;37mGPU Optimization        %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m6%ESC%[0m ■ %ESC%[1;37mDark Mode Toggle        %ESC%[38;5;33m│%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m3%ESC%[0m ■ %ESC%[1;37mNetwork Configuration   %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m7%ESC%[0m ■ %ESC%[1;37mSystem Repair           %ESC%[38;5;33m│%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m4%ESC%[0m ■ %ESC%[1;37mPower Plans             %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m8%ESC%[0m ■ %ESC%[1;34mDiscord Community       %ESC%[38;5;33m│%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m╰──────────────────────────────┴──────────────────────────────╯%ESC%[0m
-echo.
-echo                      %ESC%[38;5;33m╭──────────────────────────────┬──────────────────────────────╮%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m9%ESC%[0m ■ %ESC%[1;34mIBRHUB Portal           %ESC%[38;5;33m│%ESC%[0m  %ESC%[38;5;87m10%ESC%[0m ■ %ESC%[1;34mDocumentation Aurora   %ESC%[38;5;33m│%ESC%[0m
-echo.                     %ESC%[38;5;33m│                              %ESC%[38;5;33m│                              %ESC%[38;5;33m│%ESC%[0m
-echo                      %ESC%[38;5;33m╰──────────────────────────────┴──────────────────────────────╯%ESC%[0m
-echo.
-echo                                          %ESC%[38;5;196m╭────────────────────╮%ESC%[0m
-echo                                          %ESC%[38;5;196m│%ESC%[0m %ESC%[38;5;196m[ 0 ]%ESC%[0m %ESC%[1;3;38;5;196mExit AURORA%ESC%[0m  %ESC%[38;5;196m│%ESC%[0m
-echo                                          %ESC%[38;5;196m╰────────────────────╯%ESC%[0m
-echo.
-set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-10]%ESC%[0m%ESC%[38;5;33m: %ESC%[0m"
-
-if not defined input goto :MainMenu
-if "%input%"=="" goto :MainMenu
-set "input=%input:"=%"
-
-if "%input%"=="1" goto :WinTweaks
-if "%input%"=="2" goto :GPUTweaks
-if "%input%"=="3" goto :NetworkTweaks
-if "%input%"=="4" goto :Power-Plan
-if "%input%"=="5" goto :ManualServices
-if "%input%"=="6" goto :DarkMode
-if "%input%"=="7" goto :RepairWindows
-if "%input%"=="8" goto :Discord
-if "%input%"=="9" (start https://ibrpride.com/ & goto :MainMenu)
-if "%input%"=="10" (start https://docs.ibrhub.net & goto :MainMenu)
-if "%input%"=="0" goto :AuroraExit
-
-echo                      %ESC%[38;5;196m╭──────────────────────────────────────────────╮%ESC%[0m
-echo                      %ESC%[38;5;196m│%ESC%[91m Invalid input. Please select a number [0-10] %ESC%[38;5;196m│%ESC%[0m
-echo                      %ESC%[38;5;196m╰──────────────────────────────────────────────╯%ESC%[0m
-timeout /t 2 /nobreak > nul
-goto :MainMenu
-
-:AuroraExit
-CLS
-echo %ESC%[1;92mThank you for using AURORA!%ESC%[0m
-timeout /t 2 /nobreak > nul
-exit
-
 :WinTweaks
 mode con cols=76 lines=28
 
 cls
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
 echo                    %ESC%[38;5;147m│                                     │
@@ -501,9 +422,10 @@ echo                    %ESC%[38;5;147m╰────────────�
 
 
 :: - Setting UAC - never notify
-:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
-:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
-:: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f > NUL 2>&1
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v ConsentPromptBehaviorAdmin /t REG_DWORD /d 0 /f > NUL 2>&1
+
 echo.%ESC%[38;5;33m - Optimizing Edge and Chrome Settings...%ESC%[0m
 :: Disable startup boost for Edge
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v StartupBoostEnabled /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -694,60 +616,23 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance"
 :: Disable diagnostics
 reg add "HKLM\SOFTWARE\Microsoft\Windows\ScheduledDiagnostics" /v EnabledExecution /t REG_DWORD /d 0 /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m - Disabling Scheduled Tasks...%ESC%[0m
+echo.%ESC%[38;5;33m - Disabling Non-Essential Scheduled Tasks...%ESC%[0m
 set "tasksToDisable="
 set tasksToDisable=^
- "\Microsoft\Windows\Application Experience\StartupAppTask"^
- "\Microsoft\Windows\Application Experience\AitAgent"^
- "\Microsoft\Windows\Application Experience\MareBackup"^
- "\Microsoft\Windows\Application Experience\PcaPatchDbTask"^
  "\Microsoft\Windows\Application Experience\ProgramDataUpdater"^
- "\Microsoft\Windows\ApplicationData\CleanupTemporaryState"^
  "\Microsoft\Windows\ApplicationData\DsSvcCleanup"^
- "\Microsoft\Windows\AppID\SmartScreenSpecific"^
- "\Microsoft\Windows\Autochk\Proxy"^
- "\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector"^
- "\Microsoft\Windows\Shell\FamilySafetyUpload"^
- "\Microsoft\Windows\Location\Notifications"^
- "\Microsoft\Windows\Location\WindowsActionDialog"^
- "\Microsoft\Windows\Shell\FamilySafetyMonitorToastTask"^
- "\Microsoft\Windows\SettingSync\BackgroundUploadTask"^
  "\Microsoft\Windows\Customer Experience Improvement Program\Uploader"^
  "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator"^
- "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask"^
- "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip"^
- "\Microsoft\Windows\Customer Experience Improvement Program\BthSQM"^
- "\Microsoft\Windows\Customer Experience Improvement Program\HypervisorFlightingTask"^
  "\Microsoft\Windows\DiskFootprint\Diagnostics"^
  "\Microsoft\Windows\Feedback\Siuf\DmClient"^
  "\Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload"^
- "\Microsoft\Windows\Maintenance\WinSAT"^
- "\Microsoft\Windows\Maps\MapsToastTask"^
  "\Microsoft\Windows\Maps\MapsUpdateTask"^
- "\Microsoft\Windows\Mobile Broadband Accounts\MNO Metadata Parser"^
  "\Microsoft\Windows\NetTrace\GatherNetworkInfo"^
- "\Microsoft\Windows\Offline Files\Background Synchronization"^
- "\Microsoft\Windows\Offline Files\Logon Synchronization"^
- "\Driver Easy Scheduled Scan"^
- "\Microsoft\Windows\Shell\FamilySafetyMonitor"^
- "\Microsoft\Windows\Shell\FamilySafetyRefresh"^
- "\Microsoft\Windows\SpacePort\SpaceAgentTask"^
- "\Microsoft\Windows\SpacePort\SpaceManagerTask"^
- "\Microsoft\Windows\Speech\SpeechModelDownloadTask"^
- "\Microsoft\Windows\User Profile Service\HiveUploadTask"^
- "\Microsoft\Windows\Wininet\CacheTask"^
- "\Microsoft\Windows\Work Folders\Work Folders Logon Synchronization"^
- "\Microsoft\Windows\Work Folders\Work Folders Maintenance Work"^
- "\Microsoft\Windows\Workplace Join\Automatic-Device-Join"^
+ "\Microsoft\Windows\Shell\FamilySafetyUpload"^
  "\Microsoft\Windows\Windows Media Sharing\UpdateLibrary"^
  "\Microsoft\Windows\SettingSync\BackupTask"^
  "\Microsoft\Windows\SettingSync\NetworkStateChangeTask"^
- "\Microsoft\Windows\Windows Filtering Platform\BfeOnServiceStartTypeChange"^
- "\Microsoft\Windows\File Classification Infrastructure\Property Definition Sync"^
- "\Microsoft\Windows\Management\Provisioning\Logon"^
- "\Microsoft\Windows\NlaSvc\WiFiTask"^
- "\Microsoft\Windows\WCM\WiFiTask"^
- "\Microsoft\Windows\Ras\MobilityManager"
+ "\Microsoft\Windows\SettingSync\BackgroundUploadTask"
 
 for %%T in (%tasksToDisable%) do (
     schtasks /change /tn "%%T" /disable > NUL 2>&1
@@ -845,15 +730,12 @@ wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >n
 
 echo.
 echo    %ESC%[92m✓%ESC%[0m %ESC%[97mSystem optimizations have been successfully applied!%ESC%[0m
-timeout /t 10 /nobreak > NUL
 
 mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -895,9 +777,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -950,9 +830,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -994,9 +872,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1038,9 +914,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1093,9 +967,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1132,7 +1004,11 @@ echo This may take a few minutes...
 echo.
 
 taskkill /F /IM "OneDrive.exe" > NUL 2>&1
-
+taskkill /f /im "OneDriveStandaloneUpdater.exe" > NUL 2>&1
+taskkill /f /im "Microsoft.SharePoint.exe" > NUL 2>&1
+taskkill /f /im "OneDriveSetup.exe" > NUL 2>&1
+taskkill /f /im "FileCoAuth.exe"> NUL 2>&1
+call ONED.bat
 rem -  Disabling OneDrive
 reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > NUL 2>&1
 reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" >NUL 2>&1
@@ -1144,7 +1020,7 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibraries
 timeout /t 1 /nobreak > NUL
 if exist "%currentDir%\OneDrive.ps1" (
     :: The OneDrive removal operation is commented out to prevent potential data loss.
-    rem start /wait powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\OneDrive.ps1"
+    start /wait powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\OneDrive.ps1"
     if %ERRORLEVEL% NEQ 0 (
         echo - Error: Failed to execute OneDrive removal script.
         timeout /t 2 /nobreak > NUL
@@ -1161,9 +1037,7 @@ mode con cols=76 lines=28
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1183,7 +1057,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 
 if /I "%input%"=="1" goto :RunDebloot
-if /I "%input%"=="2" goto :MainMenu
+if /I "%input%"=="2" goto :GPUTweaks
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo.    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -1203,7 +1077,7 @@ if exist "%currentDir%\Components.ps1" (
     timeout /t 2 /nobreak > NUL
 )
 
-goto :MainMenu
+goto :GPUTweaks
 
 rem ========================================================================================================================================
 
@@ -1212,9 +1086,7 @@ mode con cols=76 lines=27
 CLS
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1235,7 +1107,6 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
-if /I "%input%"=="3" goto :MainMenu
 
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
@@ -1257,9 +1128,7 @@ timeout /t 1 /nobreak > NUL
 cls
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
@@ -1287,7 +1156,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :AuroraON
 if /I "%input%"=="2" goto :AuroraOFF
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :Power-Plan
 echo.
 if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
     echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
@@ -1317,7 +1186,7 @@ echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA settings restored to default succ
 echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
-goto :MainMenu
+goto :Power-Plan
 
 :AuroraON
 timeout /t 3 /nobreak > NUL
@@ -1337,7 +1206,7 @@ echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA optimizations applied successfull
 echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
-goto :MainMenu
+goto :Power-Plan
 cls
 
 
@@ -1375,7 +1244,7 @@ if exist "%currentDir%\Power.ps1" (
 )
 
 cls
-goto :MainMenu
+goto :NetworkTweaks
 
 
 rem ========================================================================================================================================
@@ -1386,9 +1255,7 @@ mode con cols=76 lines=29
 cls
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
 echo                    %ESC%[38;5;147m│                                     │
@@ -1408,7 +1275,7 @@ echo.
 set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [1-2]:%ESC%[0m "
 
 if /I "%input%"=="1" goto  :NetworkTweaks1
-if /I "%input%"=="2" goto  :MainMenu
+if /I "%input%"=="2" goto  :ManualServices
 
 :NetworkTweaks1
 if not defined input goto :NetworkTweaks
@@ -1443,7 +1310,7 @@ if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
     echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 2 /nobreak > NUL
 )
-goto :MainMenu
+goto :ManualServices
 
 
 
@@ -1454,9 +1321,7 @@ mode con cols=76 lines=33
 cls
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo            %ESC%[1;38;5;196m╔══════════════════════════════════════════════════════╗
@@ -1471,7 +1336,7 @@ echo                         %ESC%[93m[1]%ESC%[0m Continue    %ESC%[93m[2]%ESC%[
 echo.
 set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
 if /I "%input%"=="1" goto :StartServiceChanges
-if /I "%input%"=="2" goto :MainMenu
+if /I "%input%"=="2" goto :DarkMode
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 timeout /t 2 /nobreak > NUL
 
@@ -1481,7 +1346,7 @@ echo.
 echo    %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
 echo.
 timeout /t 2 /nobreak > NUL
-goto :MainMenu
+goto :DarkMode
 
 
 rem ========================================================================================================================================
@@ -1508,7 +1373,7 @@ timeout /t 3 /nobreak > NUL
 
 start %windir%\explorer.exe >nul 2>&1
 
-goto :MainMenu
+goto :RepairWindows
 
 rem ========================================================================================================================================
 
@@ -1526,7 +1391,7 @@ if exist "%currentDir%\RepairWindows.cmd" (
 )
 
 timeout /t 2 /nobreak > NUL
-goto :MainMenu
+goto :Discord
 
 rem ========================================================================================================================================
 
@@ -1539,7 +1404,7 @@ echo - Join Our Discord Community
 
 start "" "https://discord.gg/fVYtpuYuZ6"
 timeout /t 7 /nobreak > NUL
-goto :MainMenu
+goto :end
 
 
 :relaunch
@@ -1547,9 +1412,7 @@ cls
 mode con cols=76 lines=33
 echo.
 echo.
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo.
 echo.
 echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
@@ -1664,9 +1527,7 @@ mode con: cols=75 lines=28
 echo:
 echo:
 echo:
-echo                    %ESC%[1;38;5;159m╭────────────────────────────────────╮
-echo                    %ESC%[1;38;5;159m│             %ESC%[1;97mA U R O R A%ESC%[1;38;5;159m            │
-echo                    %ESC%[1;38;5;159m╰────────────────────────────────────╯%ESC%[0m
+
 echo:
 echo:
 echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
