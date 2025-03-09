@@ -48,7 +48,7 @@ $Global:Config = @{
         ConfigFile = if ($ConfigFile) { $ConfigFile } else { (Join-Path $env:LOCALAPPDATA "Aurora\settings.json") }
     }
     URLs = @{
-        Aurora = 'https://github.com/IBRHUB/Aurora/releases/download/Aurora/Aurora.cmd'
+        Aurora = 'https://github.com/IBRHUB/Aurora/releases/download/Aurora/AuroraOneClick.cmd'
         Winfetch = 'https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/winfetch.psm1'
         ScriptUpdate = 'https://raw.githubusercontent.com/IBRHUB/Aurora/main/version.json'
     }
