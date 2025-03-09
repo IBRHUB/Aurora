@@ -20,16 +20,20 @@ set "right=%ESC%[<x>C"
 set "bullet= %ESC%[34m-%ESC%[0m"
 chcp 65001 >NUL
 
+:menu
 cls
 :: Get user choice for AMD registry modifications
 echo.
 echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[97m             AMD GPU REGISTRY OPTIMIZER              %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m╠══════════════════════════════════════════════════════╣%ESC%[0m
 echo %ESC%[38;5;33m║%ESC%[92m  ► 1. %ESC%[97mApply AMD GPU optimizations                    %ESC%[38;5;33m║%ESC%[0m
 echo %ESC%[38;5;33m║%ESC%[91m  ► 2. %ESC%[97mRevert AMD GPU optimizations                   %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[96m  ► 3. %ESC%[97mExit                                           %ESC%[38;5;33m║%ESC%[0m
 echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
 
-set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+set /p choice=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
 
 if "%choice%"=="1" (
     echo.
@@ -37,17 +41,18 @@ if "%choice%"=="1" (
     echo %ESC%[38;5;33m║%ESC%[92m  ✓ Applying AMD GPU optimizations...                  %ESC%[38;5;33m║%ESC%[0m
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
+    goto apply_optimizations
 ) else if "%choice%"=="2" (
     echo.
     echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
     echo %ESC%[38;5;33m║%ESC%[91m  ✗ Reverting AMD GPU optimizations...                %ESC%[38;5;33m║%ESC%[0m
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
-    exit /b
+    goto revert_optimizations
 ) else if "%choice%"=="3" (
     echo.
     echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo %ESC%[38;5;33m║%ESC%[91m  Exit...                                             %ESC%[38;5;33m║%ESC%[0m
+    echo %ESC%[38;5;33m║%ESC%[96m  Exiting...                                          %ESC%[38;5;33m║%ESC%[0m
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
     timeout /t 1 /nobreak > NUL
     exit /b
@@ -56,11 +61,11 @@ if "%choice%"=="1" (
     echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
     echo %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1, 2, or 3         %ESC%[38;5;33m║%ESC%[0m
     echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-    timeout /t 1 /nobreak > NUL
-    exit /b
+    timeout /t 2 /nobreak > NUL
+    goto menu
 )
 
-
+:apply_optimizations
 :: Registry modifications
 :: AMD Control Panel settings
 Reg.exe add "HKCU\Software\AMD\CN" /v "AutoUpdateTriggered" /t REG_DWORD /d "0" /f >nul 2>&1
@@ -135,11 +140,14 @@ Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendr" /v "Start" /t REG_
 Reg.exe add "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 Reg.exe add "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /t REG_DWORD /d "4" /f >nul 2>&1
 
+echo.
+echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[92m  ✓ AMD GPU optimizations applied successfully!        %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+timeout /t 3 /nobreak > NUL
+exit /b
 
-endlocal
-exit /b 0
-
-
+:revert_optimizations
 :: AMD GPU Registry Default Settings Restore Script
 
 :: AMD Control Panel settings
@@ -164,7 +172,7 @@ Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-
 Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD" /f >nul 2>&1
 
 :: DXVA settings
-Reg.exe delete "HKLM\System \CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA" /f >nul 2>&1
+Reg.exe delete "HKLM\System\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA" /f >nul 2>&1
 
 :: Additional performance settings
 Reg.exe delete "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000" /v "DisableDMACopy" /f >nul 2>&1
@@ -179,3 +187,10 @@ Reg.exe delete "HKLM\System\CurrentControlSet\Services\AMD External Events Utili
 Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdfendr" /v "Start" /f >nul 2>&1
 Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdfendrmgr" /v "Start" /f >nul 2>&1
 Reg.exe delete "HKLM\System\CurrentControlSet\Services\amdlog" /v "Start" /f >nul 2>&1
+
+echo.
+echo %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
+echo %ESC%[38;5;33m║%ESC%[91m  ✓ AMD GPU optimizations reverted successfully!      %ESC%[38;5;33m║%ESC%[0m
+echo %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
+timeout /t 3 /nobreak > NUL
+exit /b

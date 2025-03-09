@@ -1245,7 +1245,7 @@ rem ============================================================================
 
 :AMDTweaks
 timeout /t 3 /nobreak > NUL
-call %currentDir%\AuroraAMD.bat
+start /wait cmd /c %currentDir%\AuroraAMD.bat
 
 echo.
 echo AMD GPU optimizations have been successfully applied!
