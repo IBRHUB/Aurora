@@ -4,6 +4,22 @@ TITLE [ Aurora Ultimate Cleanup ]
 
 mode con: cols=100 lines=30
 
+cd /d "%~dp0"
+for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
+set "right=%ESC%[<x>C"
+set "bullet= %ESC%[34m-%ESC%[0m"
+chcp 65001 >NUL 2>&1
+if errorlevel 1 (
+    chcp 65001 >NUL 2>&1
+    if errorlevel 1 (
+        chcp 65001 >NUL 2>&1
+        if errorlevel 1 (
+            powershell -Command "Start-Process -FilePath '%~f0' -Verb RunAs" >NUL 2>&1
+            exit /b
+        )
+    )
+)
+
 :: Define ANSI escape character for colored output
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
   set "ESC=%%b"

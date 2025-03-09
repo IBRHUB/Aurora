@@ -53,21 +53,32 @@ if not exist "%currentDir%" mkdir "%currentDir%" >nul 2>&1
 del /Q "%targetDir%\*" >nul 2>&1
 
 :: Download required files
-echo Downloading Aurora modules...
-curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
-curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
-curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
 
+:: First check if files exist in target directory
+set "fileRestorePoint=%targetDir%\RestorePoint.ps1"
+set "fileLockConsoleSize=%targetDir%\LockConsoleSize.ps1"
+set "fileSetConsoleOpacity=%targetDir%\SetConsoleOpacity.ps1"
+
+:: Also check if files exist in current directory
+set "currentRestorePoint=%currentDir%\RestorePoint.ps1"
+set "currentLockConsoleSize=%currentDir%\LockConsoleSize.ps1"
+set "currentSetConsoleOpacity=%currentDir%\SetConsoleOpacity.ps1"
+
+:: Download only if files don't exist in either location
+if not exist "%fileRestorePoint%" if not exist "%currentRestorePoint%" curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
+if not exist "%fileLockConsoleSize%" if not exist "%currentLockConsoleSize%" curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
+if not exist "%fileSetConsoleOpacity%" if not exist "%currentSetConsoleOpacity%" curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
 
 :: Verify all files were downloaded successfully
 set "allFilesExist=true"
-if not exist "%targetDir%\RestorePoint.ps1" set "allFilesExist=false"
-if not exist "%targetDir%\LockConsoleSize.ps1" set "allFilesExist=false"
-if not exist "%targetDir%\SetConsoleOpacity.ps1" set "allFilesExist=false"
+if not exist "%fileRestorePoint%" if not exist "%currentRestorePoint%" set "allFilesExist=false"
+if not exist "%fileLockConsoleSize%" if not exist "%currentLockConsoleSize%" set "allFilesExist=false"
+if not exist "%fileSetConsoleOpacity%" if not exist "%currentSetConsoleOpacity%" set "allFilesExist=false"
 
 if "%allFilesExist%"=="false" (
-    echo Some files failed to download. Please restart the script.
-    exit /b
+    echo Some files failed to download. Please check your internet connection and try again.
+
+    exit /b 1
 )
 
 :: Move files to current directory and set window title
@@ -213,7 +224,7 @@ if /I "%choice%"=="1" (
 ) else if /I "%choice%"=="2" (
     echo.
     echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Agreement declined. Exiting program...           %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Agreement declined. Exiting program...            %ESC%[38;5;33m│%ESC%[0m
     echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     timeout /t 1 /nobreak > NUL
     goto :endAurora
@@ -263,6 +274,12 @@ set "requiredFiles[15]=AuroraTimerResolution.cs"
 set "requiredFiles[16]=AuroraTimerResolution.ps1"
 set "requiredFiles[17]=AuroraManualServices.cmd"
 set "requiredFiles[18]=AuroraSudo.exe"
+set "requiredFiles[19]=UltimateCleanup.bat"
+set "requiredFiles[20]=ONED.bat"
+set "requiredFiles[21]=winfetch.psm1"
+set "requiredFiles[22]=TempCleaner.bat"
+set "requiredFiles[23]=CacheCleaner.bat"
+
 
 :: Check each file
 for /L %%i in (0,1,18) do (
@@ -344,11 +361,26 @@ curl -g -k -L -# -o "%targetDir%\Privacy.bat" "https://raw.githubusercontent.com
 call :UpdateProgress 93.5 "RepairWindows.cmd"
 curl -g -k -L -# -o "%targetDir%\RepairWindows.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RepairWindows.cmd" >nul 2>&1
 
-call :UpdateProgress 99.5 "AuroraAvatar.ico"
+call :UpdateProgress 95.5 "AuroraAvatar.ico"
 curl -g -k -L -# -o "%targetDir%\AuroraAvatar.ico" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/Docs/Assets/AuroraAvatar.ico" >nul 2>&1
 
-call :UpdateProgress 100.0 "AuroraManualServices.cmd"
+call :UpdateProgress 96.0 "AuroraManualServices.cmd"
 curl -g -k -L -# -o "%targetDir%\AuroraManualServices.cmd" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/AuroraManualServices.cmd" >nul 2>&1
+
+call :UpdateProgress 97.0 "UltimateCleanup.bat"
+curl -g -k -L -# -o "%targetDir%\UltimateCleanup.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/UltimateCleanup.bat" >nul 2>&1
+
+call :UpdateProgress 98.0 "ONED.bat"
+curl -g -k -L -# -o "%targetDir%\ONED.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/ONED.bat" >nul 2>&1
+
+call :UpdateProgress 98.5 "winfetch.psm1"
+curl -g -k -L -# -o "%targetDir%\winfetch.psm1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/winfetch.psm1" >nul 2>&1
+
+call :UpdateProgress 99.0 "TempCleaner.bat"
+curl -g -k -L -# -o "%targetDir%\TempCleaner.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/TempCleaner.bat" >nul 2>&1
+
+call :UpdateProgress 100.0 "CacheCleaner.bat"
+curl -g -k -L -# -o "%targetDir%\CacheCleaner.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/CacheCleaner.bat" >nul 2>&1
 
 echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
 echo    %ESC%[38;5;33m│%ESC%[92m ✓  All modules downloaded successfully!        %ESC%[93m(100%%)%ESC%[38;5;33m │
@@ -955,7 +987,7 @@ if exist "%currentDir%\RemoveEdge.ps1" (
     timeout /t 2 /nobreak > NUL
 )
 
-goto :OneDrive
+goto :DeblootWindows
 cls
 
 
@@ -1146,9 +1178,9 @@ echo                      %ESC%[38;5;153m╭────────────
 echo                      %ESC%[38;5;153m│ %ESC%[97m ► 2. NVIDIA Settings (Default)%ESC%[38;5;153m │
 echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
 echo.
-echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mBack to Main Menu%ESC%[38;5;153m         │
-echo                      %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
+echo                      %ESC%[38;5;153m╭───────────────────────────────────╮
+echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mContinue to Next Step    %ESC%[38;5;153m                 │
+echo                      %ESC%[38;5;153m╰───────────────────────────────────╯%ESC%[0m
 echo.
 echo.
 set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
@@ -1268,7 +1300,7 @@ echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 1. %ESC%[97mApply Netw
 echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
 echo.
 echo                     %ESC%[38;5;33m╭───────────────────────────────────╮%ESC%[0m
-echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 2. %ESC%[97mReturn to Main Menu        %ESC%[38;5;33m│%ESC%[0m
+echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 2. %ESC%[97mContinue to Next Step      %ESC%[38;5;33m│%ESC%[0m
 echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
 echo.
 echo.
@@ -1321,7 +1353,11 @@ mode con cols=76 lines=33
 cls
 echo.
 echo.
-
+echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m│  %ESC%[97m  Manual Services Configuration%ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m│                                     │
+echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
 echo            %ESC%[1;38;5;196m╔══════════════════════════════════════════════════════╗

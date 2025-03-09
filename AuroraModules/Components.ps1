@@ -7,8 +7,8 @@ if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
-# (Optional) Define $SILENT if you want to run in silent mode.
-if (-not $SILENT) { $SILENT = $false }
+# Set to silent mode
+$SILENT = $true
 
 $Host.UI.RawUI.BackgroundColor = "Black"
 
@@ -45,23 +45,45 @@ public class ConsoleOpacity {
 try {
     # Set opacity (0-255, where 255 is fully opaque and 0 is fully transparent)
     [ConsoleOpacity]::SetOpacity(230)
-    Write-Host "Console opacity set successfully." -ForegroundColor Green
 } catch {
     Write-Host "An error occurred: $_" -ForegroundColor Red
 }
 
-# The following call was causing an error because Set-ConsoleBackground is undefined.
-# It has been removed (or you could define it if needed).
-# Set-ConsoleBackground
-
 Clear-Host
 
-function Disable-SystemSounds {
-    if ($SILENT) {
-        Write-Progress -Activity "Disabling System Sounds" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
+# Progress bar function
+function Show-ProgressBar {
+    param (
+        [double]$PercentComplete,
+        [string]$Activity
+    )
+    
+    $consoleWidth = 70
+    $barWidth = 50
+    $blocks = [math]::Floor($PercentComplete * $barWidth / 100)
+    
+    $progressBar = ""
+    $progressBar += [char]0x1b + "[96m"
+    for ($i = 0; $i -lt $blocks; $i++) {
+        $progressBar += "─"
     }
+    $progressBar += [char]0x1b + "[90m"
+    for ($i = $blocks; $i -lt $barWidth; $i++) {
+        $progressBar += "─"
+    }
+    $progressBar += [char]0x1b + "[0m"
+    
+    Clear-Host
+    Write-Host ""
+    Write-Host "    $([char]0x1b)[38;5;33m╭─────────────────────────────────────────────────────────╮$([char]0x1b)[0m"
+    Write-Host "    $([char]0x1b)[38;5;33m│$([char]0x1b)[97m Processing:$([char]0x1b)[96m $Activity $([char]0x1b)[0m"
+    Write-Host "    $([char]0x1b)[38;5;33m│$([char]0x1b)[0m [$progressBar] $([char]0x1b)[93m$($PercentComplete)%$([char]0x1b)[0m"
+    Write-Host "    $([char]0x1b)[38;5;33m╰─────────────────────────────────────────────────────────╯$([char]0x1b)[0m"
+}
 
+function Disable-SystemSounds {
+    Show-ProgressBar -PercentComplete 0 -Activity "Disabling System Sounds"
+    
     # Launch mmsys.cpl and set sound scheme to "No Sounds"
     $process = Start-Process -FilePath "rundll32.exe" -ArgumentList "shell32.dll,Control_RunDLL mmsys.cpl,,2" -PassThru
     Start-Sleep -Seconds 2
@@ -85,16 +107,12 @@ function Disable-SystemSounds {
     # Close mmsys.cpl
     Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
 
-    if ($SILENT) {
-        Write-Progress -Activity "Disabling System Sounds" -Status "Complete" -PercentComplete 100
-    }
+    Show-ProgressBar -PercentComplete 100 -Activity "Disabling System Sounds"
+    Start-Sleep -Seconds 1
 }
 
 function Enable-EdgeUninstallation {
-    if ($SILENT) {
-        Write-Progress -Activity "Enabling Edge Uninstallation" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
+    Show-ProgressBar -PercentComplete 0 -Activity "Enabling Edge Uninstallation"
     $ErrorActionPreference = 'Stop'
     
     $jsonPath = 'C:\Windows\System32\IntegratedServicesRegionPolicySet.json'
@@ -115,9 +133,7 @@ function Enable-EdgeUninstallation {
         $acl.SetAccessRule($fileSystemAccessRule)
         Set-Acl $jsonPath $acl
         
-        if ($SILENT) {
-            Write-Progress -Activity "Enabling Edge Uninstallation" -Status "Modifying JSON..." -PercentComplete 50
-        }
+        Show-ProgressBar -PercentComplete 50 -Activity "Enabling Edge Uninstallation"
 
         # Read and modify JSON
         $params = @{
@@ -145,9 +161,8 @@ function Enable-EdgeUninstallation {
         # Save changes
         $jsonContent | ConvertTo-Json -Depth 9 | Out-File @params
 
-        if ($SILENT) {
-            Write-Progress -Activity "Enabling Edge Uninstallation" -Status "Complete" -PercentComplete 100
-        }
+        Show-ProgressBar -PercentComplete 100 -Activity "Enabling Edge Uninstallation"
+        Start-Sleep -Seconds 1
 
     } catch {
         Write-Warning "Failed to modify $jsonPath. Error: $_"
@@ -155,10 +170,7 @@ function Enable-EdgeUninstallation {
 }
 
 function Remove-UnwantedApps {
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Unwanted Apps" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
+    Show-ProgressBar -PercentComplete 0 -Activity "Removing Unwanted Apps"
 
     $packagesToRemove = @(
         'Microsoft.Microsoft3DViewer'
@@ -200,40 +212,29 @@ function Remove-UnwantedApps {
 
     foreach ($package in $packagesToRemove) {
         $current++
-        if ($SILENT) {
-            $percent = ($current / $total) * 100
-            Write-Progress -Activity "Removing Unwanted Apps" -Status "Removing $package" -PercentComplete $percent
-        }
+        $percent = ($current / $total) * 100
+        Show-ProgressBar -PercentComplete $percent -Activity "Removing: $package"
 
         try {
             Get-AppxPackage -AllUsers *$package* | Remove-AppxPackage -ErrorAction Stop
-            if (-not $SILENT) {
-                Write-Host "Removed AppxPackage: $package" -ForegroundColor Green
-            }
         } catch {
-            if (-not $SILENT) {
-                Write-Host "Failed to remove AppxPackage: $package. Continuing..." -ForegroundColor Yellow
-            }
+            # Continue silently
         }
     }
 
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Unwanted Apps" -Status "Complete" -PercentComplete 100
-    }
+    Show-ProgressBar -PercentComplete 100 -Activity "Removing Unwanted Apps"
+    Start-Sleep -Seconds 1
 }
 
 function Remove-WindowsFeatures {
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Windows Features" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
+    Show-ProgressBar -PercentComplete 0 -Activity "Removing Windows Features"
+    
     $selectors = @(
         'MediaPlayback'
         'Microsoft-RemoteDesktopConnection'
         'Recall'
     )
 
-    # Note: If you experience issues with the -NotIn syntax, you can use a script block instead.
     $installed = Get-WindowsOptionalFeature -Online | Where-Object { $_.State -notin @('Disabled','DisabledWithPayloadRemoved') }
     
     $total = $selectors.Count
@@ -241,33 +242,27 @@ function Remove-WindowsFeatures {
 
     foreach ($selector in $selectors) {
         $current++
-        if ($SILENT) {
-            $percent = ($current / $total) * 100
-            Write-Progress -Activity "Removing Windows Features" -Status "Removing $selector" -PercentComplete $percent
-        }
+        $percent = ($current / $total) * 100
+        Show-ProgressBar -PercentComplete $percent -Activity "Removing Feature: $selector"
 
         $found = $installed | Where-Object { $_.FeatureName -eq $selector }
         if ($found) {
             try {
                 $found | Disable-WindowsOptionalFeature -Online -Remove -NoRestart -ErrorAction 'Continue'
-                if (-not $SILENT) { Write-Host "Removed feature $selector" }
             }
             catch {
-                if (-not $SILENT) { Write-Warning "Failed to remove feature $selector" }
+                # Continue silently
             }
         }
     }
 
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Windows Features" -Status "Complete" -PercentComplete 100
-    }
+    Show-ProgressBar -PercentComplete 100 -Activity "Removing Windows Features"
+    Start-Sleep -Seconds 1
 }
 
 function Remove-WindowsCapabilities {
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Windows Capabilities" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
+    Show-ProgressBar -PercentComplete 0 -Activity "Removing Windows Capabilities"
+    
     $selectors = @(
         'Print.Fax.Scan'
         'Language.Handwriting'
@@ -292,26 +287,22 @@ function Remove-WindowsCapabilities {
 
     foreach ($selector in $selectors) {
         $current++
-        if ($SILENT) {
-            $percent = ($current / $total) * 100
-            Write-Progress -Activity "Removing Windows Capabilities" -Status "Removing $selector" -PercentComplete $percent
-        }
+        $percent = ($current / $total) * 100
+        Show-ProgressBar -PercentComplete $percent -Activity "Removing Capability: $selector"
 
         $found = $installed | Where-Object { ($_.Name -split '~')[0] -eq $selector }
         if ($found) {
             try {
                 $found | Remove-WindowsCapability -Online -ErrorAction 'Continue'
-                if (-not $SILENT) { Write-Host "Removed capability $selector" }
             }
             catch {
-                if (-not $SILENT) { Write-Warning "Failed to remove capability $selector" }
+                # Continue silently
             }
         }
     }
 
-    if ($SILENT) {
-        Write-Progress -Activity "Removing Windows Capabilities" -Status "Complete" -PercentComplete 100
-    }
+    Show-ProgressBar -PercentComplete 100 -Activity "Removing Windows Capabilities"
+    Start-Sleep -Seconds 1
 }
 
 Add-Type -TypeDefinition '
@@ -350,102 +341,56 @@ function Set-WallpaperColor {
         [string] $HtmlColor
     )
 
-    if ($SILENT) {
-        Write-Progress -Activity "Setting Wallpaper Color" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
+    Show-ProgressBar -PercentComplete 0 -Activity "Setting Wallpaper Color"
+    
     $color = [System.Drawing.ColorTranslator]::FromHtml($HtmlColor);
     [WallpaperSetter]::SetDesktopBackground($color);
 
-    # Removed the invalid -Type parameter from Set-ItemProperty calls.
     Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Value 1 -Force;
     Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Value '' -Force;
     Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Colors' -Name 'Background' -Value "$($color.R) $($color.G) $($color.B)" -Force;
     
-    if ($SILENT) {
-        Write-Progress -Activity "Setting Wallpaper Color" -Status "Complete" -PercentComplete 100
-    }
+    Show-ProgressBar -PercentComplete 100 -Activity "Setting Wallpaper Color"
+    Start-Sleep -Seconds 1
 }
 
-function Set-WallpaperImage {
-    param(
-        [string] $LiteralPath
-    )
+# Run all functions in sequence
+Show-ProgressBar -PercentComplete 0 -Activity "Starting Aurora Configuration"
+Start-Sleep -Seconds 1
 
-    if ($SILENT) {
-        Write-Progress -Activity "Setting Wallpaper Image" -Status "In Progress..." -PercentComplete 0
-        $ProgressPreference = 'SilentlyContinue'
-    }
-    [WallpaperSetter]::SetDesktopImage($LiteralPath);
-    Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Value 0 -Force;
-    Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Value $LiteralPath -Force;
-    
-    if ($SILENT) {
-        Write-Progress -Activity "Setting Wallpaper Image" -Status "Complete" -PercentComplete 100
-    }
-}
+# Run all functions in sequence with progress tracking
+$totalSteps = 6
+$currentStep = 0
 
-# Main menu function
-function Show-Menu {
-    if (-not $SILENT) {
-        Clear-Host
-        Write-Host "`n`n`n"
-        Write-Host "    ╔════════════════ Aurora Configuration Menu ═════════════════╗" -ForegroundColor Cyan
-        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
-        Write-Host "    ║  1: Disable System Sounds                                  ║" -ForegroundColor White
-        Write-Host "    ║  2: Enable Edge Uninstallation                             ║" -ForegroundColor White
-        Write-Host "    ║  3: Remove Unwanted Apps                                   ║" -ForegroundColor White
-        Write-Host "    ║  4: Remove Windows Features                                ║" -ForegroundColor White
-        Write-Host "    ║  5: Remove Windows Capabilities                            ║" -ForegroundColor White
-        Write-Host "    ║  6: Set Black Wallpaper                                    ║" -ForegroundColor White
-        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
-        Write-Host "    ║  0: Exit                                                   ║" -ForegroundColor RED
-        Write-Host "    ║                                                            ║" -ForegroundColor Cyan
-        Write-Host "    ╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
-        Write-Host "`n"
-    }
-}
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Disabling System Sounds"
+Disable-SystemSounds
 
-# Main program loop
-do {
-    Show-Menu
-    if (-not $SILENT) {
-        $userInput = Read-Host "    Please make a selection (0-6)"
-    }
-    
-    switch ($userInput) {
-        '1' {
-            if (-not $SILENT) { Write-Host "Disabling system sounds..." }
-            Disable-SystemSounds
-            if (-not $SILENT) { pause }
-        }
-        '2' {
-            if (-not $SILENT) { Write-Host "Enabling Edge uninstallation..." }
-            Enable-EdgeUninstallation
-            if (-not $SILENT) { pause }
-        }
-        '3' {
-            if (-not $SILENT) { Write-Host "Removing unwanted apps..." }
-            Remove-UnwantedApps
-            if (-not $SILENT) { pause }
-        }
-        '4' {
-            if (-not $SILENT) { Write-Host "Removing Windows features..." }
-            Remove-WindowsFeatures
-            if (-not $SILENT) { pause }
-        }
-        '5' {
-            if (-not $SILENT) { Write-Host "Removing Windows capabilities..." }
-            Remove-WindowsCapabilities
-            if (-not $SILENT) { pause }
-        }
-        '6' {
-            if (-not $SILENT) { Write-Host "Setting black wallpaper..." }
-            Set-WallpaperColor -HtmlColor "#000000"
-            if (-not $SILENT) { pause }
-        }
-        '0' {
-            return
-        }
-    }
-} until ($userInput -eq '0')
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Enabling Edge Uninstallation"
+Enable-EdgeUninstallation
+
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Removing Unwanted Apps"
+Remove-UnwantedApps
+
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Removing Windows Features"
+Remove-WindowsFeatures
+
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Removing Windows Capabilities"
+Remove-WindowsCapabilities
+
+$currentStep++
+$overallProgress = ($currentStep / $totalSteps) * 100
+Show-ProgressBar -PercentComplete $overallProgress -Activity "Step $($currentStep)/$($totalSteps): Setting Black Wallpaper"
+Set-WallpaperColor -HtmlColor "#000000"
+
+Show-ProgressBar -PercentComplete 100 -Activity "Aurora Configuration Complete"
+Start-Sleep -Seconds 2

@@ -125,7 +125,7 @@ Set-ServiceStart -ServiceName "SSDPSRV"
 function Set-SvcHostSplitDisable {
     Update-Progress -Percentage 95 -TaskName "Setting SvcHostSplitDisable"
     Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services" |
-        Where-Object { $_.Name -notmatch 'Xbl|Xbox' } |
+        Where-Object { $_.Name -notmatch 'Xbl|Xbox|Winmgmt|RpcSs|DcomLaunch|ProfSvc|LanmanServer|Power' } |
         ForEach-Object {
             $regPath = "Registry::$_"
             $itemProps = Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue
