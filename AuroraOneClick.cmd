@@ -278,7 +278,6 @@ set "requiredFiles[19]=UltimateCleanup.bat"
 set "requiredFiles[20]=ONED.bat"
 set "requiredFiles[21]=winfetch.psm1"
 set "requiredFiles[22]=TempCleaner.bat"
-set "requiredFiles[23]=CacheCleaner.bat"
 
 
 :: Check each file
@@ -376,11 +375,8 @@ curl -g -k -L -# -o "%targetDir%\ONED.bat" "https://raw.githubusercontent.com/IB
 call :UpdateProgress 98.5 "winfetch.psm1"
 curl -g -k -L -# -o "%targetDir%\winfetch.psm1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/winfetch.psm1" >nul 2>&1
 
-call :UpdateProgress 99.0 "TempCleaner.bat"
+call :UpdateProgress 100.0 "TempCleaner.bat"
 curl -g -k -L -# -o "%targetDir%\TempCleaner.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/TempCleaner.bat" >nul 2>&1
-
-call :UpdateProgress 100.0 "CacheCleaner.bat"
-curl -g -k -L -# -o "%targetDir%\CacheCleaner.bat" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/CacheCleaner.bat" >nul 2>&1
 
 echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
 echo    %ESC%[38;5;33m│%ESC%[92m ✓  All modules downloaded successfully!        %ESC%[93m(100%%)%ESC%[38;5;33m │
@@ -1133,12 +1129,15 @@ echo                    %ESC%[38;5;153m╭────────────�
 echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. NVIDIA%ESC%[38;5;153m   │  │   %ESC%[91m► 2. AMD%ESC%[38;5;153m      │
 echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
+echo                    %ESC%[38;5;153m╭─────────────────────────────────╮
+echo                    %ESC%[38;5;153m│      %ESC%[33m► 3. SKIP TO NEXT %ESC%[38;5;153m         │
+echo                    %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
 echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
+if /I "%input%"=="3" goto :Power-Plan
 
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
@@ -1179,7 +1178,7 @@ echo                      %ESC%[38;5;153m│ %ESC%[97m ► 2. NVIDIA Settings (D
 echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
 echo.
 echo                      %ESC%[38;5;153m╭───────────────────────────────────╮
-echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mContinue to Next Step    %ESC%[38;5;153m                 │
+echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mContinue to Next Step    %ESC%[38;5;153m│
 echo                      %ESC%[38;5;153m╰───────────────────────────────────╯%ESC%[0m
 echo.
 echo.
@@ -1214,7 +1213,7 @@ if errorlevel 1 (
 
 echo.
 echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA settings restored to default successfully    %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA settings restored to default successfully   %ESC%[38;5;33m│%ESC%[0m
 echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
@@ -1260,22 +1259,40 @@ cls
 rem ========================================================================================================================================
 
 :Power-Plan
+mode con cols=76 lines=28
 cls
+echo.
+echo.
+
+echo.
+echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│         %ESC%[97mPower Plan Settings%ESC%[38;5;147m        │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mOptimizing system power settings   %ESC%[38;5;147m│
+echo                    %ESC%[38;5;147m│  %ESC%[97mfor better performance...%ESC%[38;5;147m         │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
+echo.
+echo.
+
 if exist "%currentDir%\Power.ps1" (
     start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\Power.ps1" -Silent
     if %ERRORLEVEL% NEQ 0 (
-        echo - Error: Failed to apply power plan optimizations.
-        timeout /t 2 /nobreak > NUL
+        echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+        echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply power plan optimizations            %ESC%[38;5;33m│%ESC%[0m
+        echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     ) else (
-        echo - Power plan optimizations applied successfully.
-        timeout /t 2 /nobreak > NUL
+        echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+        echo    %ESC%[38;5;33m│%ESC%[92m  ✓ Power plan optimizations applied successfully       %ESC%[38;5;33m│%ESC%[0m
+        echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
     )
 ) else (
-    echo - Error: Power.ps1 script not found in AuroraModules folder.
-    timeout /t 2 /nobreak > NUL
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Power.ps1 script not found in AuroraModules folder   %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 )
 
-cls
+timeout /t 3 /nobreak > NUL
 goto :NetworkTweaks
 
 
@@ -1291,7 +1308,7 @@ echo.
 echo.
 echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
 echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m  Network Optimization Settings%ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m│  %ESC%[97m  Network Optimization Settings %ESC%[38;5;147m   │
 echo                    %ESC%[38;5;147m│                                     │
 echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
@@ -1355,7 +1372,7 @@ echo.
 echo.
 echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
 echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m  Manual Services Configuration%ESC%[38;5;147m   │
+echo                    %ESC%[38;5;147m│  %ESC%[97m  Manual Services Configuration %ESC%[38;5;147m   │
 echo                    %ESC%[38;5;147m│                                     │
 echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
@@ -1368,13 +1385,20 @@ echo            %ESC%[1;38;5;196m║%ESC%[91m  Only proceed if you understand th
 echo            %ESC%[1;38;5;196m╚══════════════════════════════════════════════════════╝%ESC%[0m
 echo.
 echo.
-echo                         %ESC%[93m[1]%ESC%[0m Continue    %ESC%[93m[2]%ESC%[0m Main Menu    
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
-set /p "input=%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [0-2]:%ESC%[0m "
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+
 if /I "%input%"=="1" goto :StartServiceChanges
 if /I "%input%"=="2" goto :DarkMode
+echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
+echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
+echo.
 timeout /t 2 /nobreak > NUL
+goto :ManualServices
 
 :StartServiceChanges
 start /wait cmd.exe /c "%~dp0AuroraModules\AuroraManualServices.cmd"
@@ -1405,7 +1429,7 @@ echo %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
 
 C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe >nul 2>&1
  
-timeout /t 3 /nobreak > NUL
+timeout /t 1 /nobreak > NUL
 
 start %windir%\explorer.exe >nul 2>&1
 
@@ -1484,148 +1508,51 @@ if /I "%input%"=="2" (
 )
 
 
-
-:Seticon
-:: Set custom icon for the current CMD window and handle OneDrive
-if exist "%currentDir%\AuroraAvatar.ico" (
-    :: Check if PowerShell is available 
-    where powershell >nul 2>&1
-    if %ERRORLEVEL% NEQ 0 (
-        goto :StartupAuroraMain
-    )
-
-    :: Check if OneDrive is installed
-    if exist "%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe" (
-        :: Create OneDrive backup folder
-        if not exist "%USERPROFILE%\OneDrive\Aurora_Backup" (
-            mkdir "%USERPROFILE%\OneDrive\Aurora_Backup" >nul 2>&1
-        )
-        
-        :: Copy icon to OneDrive backup
-        copy /y "%currentDir%\AuroraAvatar.ico" "%USERPROFILE%\OneDrive\Aurora_Backup\" >nul 2>&1
-    )
-
-    :: Create temporary VBS script to change console icon silently
-    (
-        echo Set objShell = CreateObject^("Shell.Application"^)
-        echo Set objWin = objShell.Windows^(^)
-        echo On Error Resume Next
-        echo For Each win In objWin
-        echo     If InStr^(win.LocationName, "cmd.exe"^) Then
-        echo         win.Document.DefaultIcon = "%currentDir%\AuroraAvatar.ico"
-        echo     End If
-        echo Next
-    ) > "%TEMP%\seticon.vbs"
-
-    :: Run the VBS script silently
-    cscript //nologo "%TEMP%\seticon.vbs" >nul 2>&1
-    
-    :: Clean up silently
-    del "%TEMP%\seticon.vbs" >nul 2>&1
-
-    :: Create shortcuts with custom icon
-    (
-        echo Set WshShell = CreateObject^("WScript.Shell"^)
-        echo On Error Resume Next
-        echo Set shortcut = WshShell.CreateShortcut^("%USERPROFILE%\Desktop\Aurora.lnk"^)
-        echo shortcut.TargetPath = "%~dp0Aurora.cmd"
-        echo shortcut.IconLocation = "%currentDir%\AuroraAvatar.ico"
-        echo shortcut.Save
-        
-        echo If FSO.FolderExists^("%USERPROFILE%\OneDrive"^) Then
-        echo     Set oneDriveShortcut = WshShell.CreateShortcut^("%USERPROFILE%\OneDrive\Aurora.lnk"^)
-        echo     oneDriveShortcut.TargetPath = "%~dp0Aurora.cmd"
-        echo     oneDriveShortcut.IconLocation = "%currentDir%\AuroraAvatar.ico"
-        echo     oneDriveShortcut.Save
-        echo End If
-    ) > "%TEMP%\createshortcut.vbs"
-
-    :: Run the shortcut creation script
-    cscript //nologo "%TEMP%\createshortcut.vbs" >nul 2>&1
-    
-    :: Clean up
-    del "%TEMP%\createshortcut.vbs" >nul 2>&1
-
-    :: Verify at least one shortcut creation
-    if not exist "%USERPROFILE%\Desktop\Aurora.lnk" (
-        if not exist "%USERPROFILE%\OneDrive\Aurora.lnk" (
-            goto :StartupAuroraMain
-        )
-    )
-) else (
-    goto :StartupAuroraMain
-)
-
 :AuroraExit
-goto :end
 cls
-mode con: cols=75 lines=28
-echo:
-echo:
-echo:
+mode con cols=76 lines=28
+echo.
+echo.
 
-echo:
-echo:
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║     %ESC%[97m[1] Temp and Prefetch%ESC%[38;5;147m         ║
-echo                    %ESC%[38;5;147m║     %ESC%[97m[2] Event Viewer%ESC%[38;5;147m              ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║     %ESC%[97m[0] Exit%ESC%[38;5;147m                      ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
-echo:
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+echo.
+echo.
+echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
+echo                    %ESC%[38;5;147m│         %ESC%[97mSystem Maintenance%ESC%[38;5;147m         │
+echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
+echo                    %ESC%[38;5;147m│  %ESC%[97mSelect a cleanup option:%ESC%[38;5;147m          │
+echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
+echo.
+echo.
+echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Cleanup%ESC%[38;5;153m  │  │ %ESC%[92m► 2. Advanced%ESC%[38;5;153m  │
+echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
+echo.
+echo                    %ESC%[38;5;153m╭─────────────────────────────────╮
+echo                    %ESC%[38;5;153m│      %ESC%[91m► 3. Exit%ESC%[38;5;153m                 │
+echo                    %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
+echo.
+set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [0-2]: %ESC%[0m
 
 
-if "%choice%"=="1" (
-    goto TempPrefetch
-) else if "%choice%"=="2" (
-    goto EventViewer
-) else if "%choice%"=="0" (
-    goto end
+if /I "%input%"=="1" (
+    goto :cleanupAll
+) else if /I "%input%"=="2" (
+    goto :end
 ) else (
-    echo                     Invalid choice. Please enter 1, 2, or 0.
-    pause
-    cls
-    goto Auto-Cleaner
+    echo    %ESC%[91m Invalid selection. Please choose a valid option [1-2] %ESC%[0m
+    timeout /t 2 /nobreak > NUL
+    goto :AuroraExit
 )
 
 
-:TempPrefetch
+:cleanupAll
 echo.
-echo - Clean up temp folders
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m  Running system cleanup utilities...                  %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 
-rd /s /q !TEMP! >nul 2>&1
-rd /s /q !windir!\temp >nul 2>&1
-md !TEMP! >nul 2>&1
-md !windir!\temp >nul 2>&1
-
-echo  %ESC%[92mTemp folders have been cleaned
-echo.
-echo.
-echo - Clean up the Prefetch folder
-rd /s /q !windir!\Prefetch >nul 2>&1
-
-echo  %ESC%[92mPrefetch folder has been cleaned
-echo.
-
-
-goto EventViewer
-
-:EventViewer
-echo.
-echo - Clear all Event Viewer logs
-echo.
-echo.
-for /f "tokens=*" %%a in ('wevtutil el') do (
-    wevtutil cl "%%a"
-) >nul 2>&1
-
-echo - Event Viewer logs has been cleaned
-echo.
-
-goto :end
+start /wait cmd.exe /c "%~dp0AuroraModules\TempCleaner.bat"
+start /wait cmd.exe /c "%~dp0AuroraModules\UltimateCleanup.bat"
 
 :end
 C:\Windows\System32\TASKKILL.exe /f /im powershell.exe > nul 2> nul

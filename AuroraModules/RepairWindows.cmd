@@ -99,4 +99,3 @@ echo %ESC%[90m══════════════════════
 if "%~1" == "/silent" exit /b
 pause
 endlocal
-exit /b
