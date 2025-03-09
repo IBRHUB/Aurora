@@ -15,65 +15,66 @@ fltmc >nul 2>&1 || (
     exit /b
 )
 
-:: Set ANSI escape characters
-for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"
-set "right=%ESC%[<x>C"
-set "bullet=%ESC%[34m-%ESC%[0m"
+:: Define ANSI escape character for colored output
+for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+  set "ESC=%%b"
+)
 
 mode con: cols=100 lines=30
-chcp 65001 >nul
+chcp 65001 >nul 2>&1
 
-echo]
-echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
-echo %ESC%[97m                            Windows Components and System Files Repair%ESC%[0m
-echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
-echo]
-echo   %ESC%[36mThis utility will perform a comprehensive scan and repair of Windows system components%ESC%[0m
-echo   %ESC%[36mto ensure optimal system performance and stability.%ESC%[0m
-echo]
-echo   %ESC%[33mOperations to be performed:%ESC%[0m
-echo   %ESC%[97m⚡ Analyze Windows component store for corruption%ESC%[0m
-echo   %ESC%[97m⚡ Restore and repair damaged system components%ESC%[0m 
-echo   %ESC%[97m⚡ Deep scan of system files for integrity%ESC%[0m
-echo   %ESC%[97m⚡ Validate repairs through CBS log analysis%ESC%[0m
-echo]
-echo   %ESC%[90mPress any key to initiate the repair process...%ESC%[0m
+cls
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m                      Windows Components and System Files Repair                  %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
+echo.
+echo    %ESC%[36mThis utility will perform a comprehensive scan and repair of Windows system components%ESC%[0m
+echo    %ESC%[36mto ensure optimal system performance and stability.%ESC%[0m
+echo.
+echo    %ESC%[33mOperations to be performed:%ESC%[0m
+echo    %ESC%[97m⚡ Analyze Windows component store for corruption%ESC%[0m
+echo    %ESC%[97m⚡ Restore and repair damaged system components%ESC%[0m 
+echo    %ESC%[97m⚡ Deep scan of system files for integrity%ESC%[0m
+echo    %ESC%[97m⚡ Validate repairs through CBS log analysis%ESC%[0m
+echo.
+echo    %ESC%[90mPress any key to initiate the repair process...%ESC%[0m
 pause >nul
 cls
 
 :main
 set start_time=%time%
 
-echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
-echo %ESC%[33m[!*!] Please wait while the system is being analyzed and repaired...%ESC%[0m
-
-echo]
-echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
-echo ║                      Analyzing Windows Component Store                       ║
-echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[33m                 Please wait while the system is being analyzed and repaired...    %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m                         Analyzing Windows Component Store                        %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
 :: dism.exe /online /cleanup-image /scanhealth
 :: dism.exe /online /cleanup-image /restorehealth
 
-echo]
-echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
-echo ║                      System File Integrity Verification                      ║
-echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m                         System File Integrity Verification                       %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
 :: sfc.exe /scannow
 
-echo]
-echo %ESC%[36m╔══════════════════════════════════════════════════════════════════════════════╗
-echo ║                         CBS Log Analysis Results                             ║
-echo ╚══════════════════════════════════════════════════════════════════════════════╝%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[97m                            CBS Log Analysis Results                              %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
 findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log >nul 2>&1
 if %errorlevel% equ 0 (
-   echo %ESC%[32m[✓] System integrity verification completed - No violations detected%ESC%[0m
+   echo    %ESC%[32m[✓] System integrity verification completed - No violations detected%ESC%[0m
 ) else (
-   echo %ESC%[33m[!] System repairs completed - Some issues were detected and resolved%ESC%[0m
+   echo    %ESC%[33m[!] System repairs completed - Some issues were detected and resolved%ESC%[0m
    findstr /c:"[SR]" %windir%\Logs\CBS\CBS.log | findstr /c:"Verify complete" >nul 2>&1
    if %errorlevel% equ 0 (
-      echo %ESC%[32m[✓] All repairs were successful%ESC%[0m
+      echo    %ESC%[32m[✓] All repairs were successful%ESC%[0m
    ) else (
-      echo %ESC%[31m[X] Some repairs may have failed - Check CBS.log for details%ESC%[0m
+      echo    %ESC%[31m[X] Some repairs may have failed - Check CBS.log for details%ESC%[0m
    )
 )
 
@@ -89,13 +90,26 @@ if %hours% lss 0 set /a hours = 24%hours%
 if %mins% lss 0 set /a hours = %hours% - 1 & set /a mins = 60%mins%
 if %secs% lss 0 set /a mins = %mins% - 1 & set /a secs = 60%secs%
 
-echo]
-echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
-echo %ESC%[32m[✓] System repair and optimization completed successfully!%ESC%[0m
-echo %ESC%[36mTotal processing time: %hours% hours %mins% minutes %secs% seconds%ESC%[0m
-echo %ESC%[33m[*] A system restart is required to complete the optimization process%ESC%[0m
-echo %ESC%[90m══════════════════════════════════════════════════════════════════════════════════════════════%ESC%[0m
+echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[32m                   System repair and optimization completed successfully!          %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[36m                Total processing time: %hours% hours %mins% minutes %secs% seconds                %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[33m               A system restart is required to complete the optimization process  %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────────────────────────────────╯%ESC%[0m
 
 if "%~1" == "/silent" exit /b
 pause
 endlocal
+:CleanupAndExit
+:: Get current PID and terminate process silently
+for /f "tokens=2" %%p in ('tasklist /fi "IMAGENAME eq cmd.exe" /fo list ^| findstr "PID:"') do (
+    if "%%p" == "%~1" (
+        taskkill /F /PID %%p >nul 2>&1
+    )
+)
+
+:: Alternative method using PowerShell to terminate the current process silently
+powershell -Command "$currentPid = [System.Diagnostics.Process]::GetCurrentProcess().Id; Stop-Process -Id $currentPid -Force" > nul 2> nul
+
+exit /b
+
