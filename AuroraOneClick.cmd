@@ -58,22 +58,26 @@ del /Q "%targetDir%\*" >nul 2>&1
 set "fileRestorePoint=%targetDir%\RestorePoint.ps1"
 set "fileLockConsoleSize=%targetDir%\LockConsoleSize.ps1"
 set "fileSetConsoleOpacity=%targetDir%\SetConsoleOpacity.ps1"
+set "fileBackupRegistry=%targetDir%\Backup-Registry.ps1"
 
 :: Also check if files exist in current directory
 set "currentRestorePoint=%currentDir%\RestorePoint.ps1"
 set "currentLockConsoleSize=%currentDir%\LockConsoleSize.ps1"
 set "currentSetConsoleOpacity=%currentDir%\SetConsoleOpacity.ps1"
+set "currentBackupRegistry=%currentDir%\Backup-Registry.ps1"
 
 :: Download only if files don't exist in either location
 if not exist "%fileRestorePoint%" if not exist "%currentRestorePoint%" curl -g -k -L -# -o "%targetDir%\RestorePoint.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/RestorePoint.ps1" >nul 2>&1
 if not exist "%fileLockConsoleSize%" if not exist "%currentLockConsoleSize%" curl -g -k -L -# -o "%targetDir%\LockConsoleSize.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/LockConsoleSize.ps1" >nul 2>&1
 if not exist "%fileSetConsoleOpacity%" if not exist "%currentSetConsoleOpacity%" curl -g -k -L -# -o "%targetDir%\SetConsoleOpacity.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/SetConsoleOpacity.ps1" >nul 2>&1
+if not exist "%fileBackupRegistry%" if not exist "%currentBackupRegistry%" curl -g -k -L -# -o "%targetDir%\Backup-Registry.ps1" "https://raw.githubusercontent.com/IBRHUB/Aurora/main/AuroraModules/Backup-Registry.ps1" >nul 2>&1
 
 :: Verify all files were downloaded successfully
 set "allFilesExist=true"
 if not exist "%fileRestorePoint%" if not exist "%currentRestorePoint%" set "allFilesExist=false"
 if not exist "%fileLockConsoleSize%" if not exist "%currentLockConsoleSize%" set "allFilesExist=false"
 if not exist "%fileSetConsoleOpacity%" if not exist "%currentSetConsoleOpacity%" set "allFilesExist=false"
+if not exist "%fileBackupRegistry%" if not exist "%currentBackupRegistry%" set "allFilesExist=false"
 
 if "%allFilesExist%"=="false" (
     echo Some files failed to download. Please check your internet connection and try again.
@@ -85,6 +89,12 @@ if "%allFilesExist%"=="false" (
 move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'" >nul 2>&1
 
+
+start /b /wait powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Retrying Backup-Registry.ps1...
+    start /b /wait powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1
+)
 
 :: Execute PowerShell scripts
 :: powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\RestorePoint.ps1" >nul 2>&1
