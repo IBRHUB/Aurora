@@ -1,6 +1,14 @@
 @echo off
 Title Aurora NVIDIA Profile Inspector
 :: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
+
+:: ============================================================
 :: NVIDIA Profile Inspector Configuration Script
 :: ============================================================
 ::

@@ -8,6 +8,12 @@
 ::   to enhance privacy and reduce network usage.
 ::
 :: ============================================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRHUB
+::	 https://docs.ibrhub.net/
 
 
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /v "ScoobeSystemSettingEnabled" /t REG_DWORD /d 0 /f > NUL 2>&1

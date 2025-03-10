@@ -18,6 +18,10 @@
   Requirements: Must be run with Administrator privileges
   Disclaimer: Use at your own risk. May affect your network/system settings.
   Support: Visit https://docs.ibrhub.net/ for documentation and updates
+
+.LINK
+  https://github.com/IBRAHUB
+  https://docs.ibrhub.net/
 #>
 
 # -----------------------------------------------------------

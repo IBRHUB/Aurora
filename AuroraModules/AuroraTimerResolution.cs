@@ -12,7 +12,15 @@
  * - Event logging for diagnostics
  * 
  * Copyright © Aurora Project
- * By: IBRHUB
+ * 
+ * ============================================================
+ *                            Aurora
+ * ============================================================
+ * AUTHOR:
+ *   IBRHUB - IBRAHIM
+ *   https://github.com/IBRHUB
+ *   https://docs.ibrhub.net/
+ *   https://ibrpride.com
  */
 
 using System;

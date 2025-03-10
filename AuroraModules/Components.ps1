@@ -1,4 +1,10 @@
-﻿# Check if the script is running with Administrator privileges
+﻿<#
+.LINK
+    https://github.com/IBRHUB
+    https://docs.ibrhub.net/
+    https://ibrpride.com
+#>
+# Check if the script is running with Administrator privileges
 if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "Please run this script as Administrator." -ForegroundColor Yellow

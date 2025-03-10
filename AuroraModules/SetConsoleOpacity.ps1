@@ -17,15 +17,16 @@
 
 .NOTES
     Version: 1.0
-    Author: IBRHUB
+    Author: IBRHUB - IBRAHIM
     Requirements: PowerShell 5.0+
     Warning: Uses Windows API calls that may change in future OS versions
 
 .EXAMPLE
     .\SetConsoleOpacity.ps1
-    Sets the PowerShell console window to 90% opacity
+.LINK
+    https://github.com/IBRAHUB
+    https://docs.ibrhub.net/
 #>
-
 # Define the ConsoleOpacity class using Add-Type
 Add-Type -TypeDefinition @"
 using System;

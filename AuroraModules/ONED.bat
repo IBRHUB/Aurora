@@ -1,4 +1,12 @@
 @echo off
+:: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
+
 
 for /f "usebackq tokens=2 delims=\" %%e in (`reg query "HKEY_USERS" ^| findstr /r /x /c:"HKEY_USERS\\S-.*" /c:"HKEY_USERS\\ibrhub_UserHive_[^_]*"`) do (
 	REM If the "Volatile Environment" key exists, that means it is a proper user. Built in accounts/SIDs do not have this key.

@@ -30,7 +30,7 @@
 
 .NOTES
     Version: 1.0
-    Author: @he3als, Modified by IBRHUB
+    Author: @he3als, Modified by IBRHUB - IBRAHIM
     Requirements: Windows OS, Administrator privileges
     Warning: Modifies system browser configuration
 

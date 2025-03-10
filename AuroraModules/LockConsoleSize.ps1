@@ -12,6 +12,11 @@ It provides two methods to lock the window size - using Windows API calls and mo
 - Modifies window styles by removing WS_SIZEBOX and WS_MAXIMIZEBOX flags
 - Changes are active for the current console session only
 - Method 2 modifies Windows Terminal settings file directly
+
+.LINK
+    https://github.com/IBRHUB
+    https://docs.ibrhub.net/
+    https://ibrpride.com
 #>
 
 # Method 1: Using Windows API

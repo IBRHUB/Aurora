@@ -3,7 +3,7 @@
 ::                            Aurora
 :: ============================================================
 :: AUTHOR:
-::   IBRHUB
+::   IBRHUB - IBRAHIM
 ::   https://github.com/IBRAHUB
 ::	 https://docs.ibrhub.net/
 ::

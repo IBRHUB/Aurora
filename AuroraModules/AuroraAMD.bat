@@ -1,5 +1,12 @@
 @echo off
-
+:: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRHUB
+::	 https://docs.ibrhub.net/
+::   https://ibrpride.com
 :: ============================================================================
 :: AMD GPU Registry Optimization Script
 :: ============================================================================
@@ -13,6 +20,8 @@
 ::   - Graphics quality and rendering options
 ::   - Driver update and auto-configuration features
 :: ============================================================================
+
+
 :: set ANSI escape characters
 cd /d "%~dp0"
 for /f %%a in ('forfiles /m "%~nx0" /c "cmd /c echo 0x1B"') do set "ESC=%%a"

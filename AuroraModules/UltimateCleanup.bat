@@ -1,5 +1,12 @@
 @Echo off
 
+:: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
 TITLE [ Aurora Ultimate Cleanup ]
 
 mode con: cols=100 lines=30

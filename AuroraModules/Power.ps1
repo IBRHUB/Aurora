@@ -21,7 +21,7 @@
     
 .NOTES
     Version: 1.0
-    Author: IBRHUB
+    Author: IBRHUB - IBRAHIM
     Requirements: Must be run with Administrator privileges
     Warning: Will increase power usage and heat output. Use adequate cooling.
 
@@ -32,6 +32,10 @@
 .EXAMPLE
     .\Power.ps1 -Silent
     Runs the script without prompts or warnings
+
+.LINK
+    https://github.com/IBRAHUB
+    https://docs.ibrhub.net/
 #>
 
 param (

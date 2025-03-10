@@ -1,5 +1,14 @@
 ﻿<# : batch portion
 @echo off
+:: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRHUB
+::	 https://docs.ibrhub.net/
+::   https://ibrpride.com
+
 powershell -nop Get-Content """%~f0""" -Raw ^| iex & exit
 : end batch / begin PowerShell #>
 

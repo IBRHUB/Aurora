@@ -16,9 +16,14 @@
     
 .NOTES
     Version: 1.0
-    Author: IBRHUB
+    Author: IBRHUB - IBRAHIM    
     Requirements: Must be run with Administrator privileges
     Warning: This script modifies system settings. Use at your own risk.
+
+.LINK
+    https://github.com/IBRAHUB
+    https://docs.ibrhub.net/
+
 
 .EXAMPLE
     .\OneDrive.ps1

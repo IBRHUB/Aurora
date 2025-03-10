@@ -1,4 +1,11 @@
 @Echo off
+:: ============================================================
+::                            Aurora
+:: ============================================================
+:: AUTHOR:
+::   IBRHUB - IBRAHIM
+::   https://github.com/IBRAHUB
+::	 https://docs.ibrhub.net/
 
 TITLE [ Aurora Temp Cleaner ]
 

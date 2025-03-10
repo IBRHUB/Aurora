@@ -3,12 +3,12 @@
 ::                            Aurora
 :: ============================================================
 :: AUTHOR:
-::   IBRHUB
+::   IBRHUB - IBRAHIM
 ::   https://github.com/IBRAHUB
 ::	 https://docs.ibrhub.net/
 ::
 :: VERSION:
-::   1.0.0 beta
+::   1.0 beta
 ::
 :: LICENSE:
 ::   MIT License
@@ -758,7 +758,7 @@ wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >n
 
 echo.
 echo    %ESC%[92m✓%ESC%[0m %ESC%[97mSystem optimizations have been successfully applied!%ESC%[0m
-
+:TimerResolution
 mode con cols=76 lines=28
 CLS
 echo.
@@ -785,7 +785,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :TimerR
 if /I "%input%"=="2" goto :CloudSync
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :TimerResolution
 
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
@@ -827,7 +827,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :DisableCloudSync
 if /I "%input%"=="2" goto :Telemetry
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :CloudSync
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -880,7 +880,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :DisableTelemetry
 if /I "%input%"=="2" goto :Privacy
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :Telemetry
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -921,7 +921,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :DisablePrivacy
 if /I "%input%"=="2" goto :RemoveEdge
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :Privacy
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -963,7 +963,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :runRemoveEdge
 if /I "%input%"=="2" goto :OneDrive
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :RemoveEdge
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -1017,7 +1017,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :DisableOneDrive
 if /I "%input%"=="2" goto :DeblootWindows
-if /I "%input%"=="3" goto :MainMenu
+if /I "%input%"=="3" goto :OneDrive
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -1086,6 +1086,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 
 if /I "%input%"=="1" goto :RunDebloot
 if /I "%input%"=="2" goto :GPUTweaks
+if /I "%input%"=="3" goto :DeblootWindows
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
 echo.    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
@@ -1130,14 +1131,14 @@ echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. NVIDIA%ESC%[38;5;15
 echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
 echo.
 echo                    %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                    %ESC%[38;5;153m│      %ESC%[33m► 3. SKIP TO NEXT %ESC%[38;5;153m         │
+echo                    %ESC%[38;5;153m│      %ESC%[33m► 3. SKIP TO NEXT   %ESC%[38;5;153m         │
 echo                    %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
 echo.
 set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
 
 if /I "%input%"=="1" goto :NVIDIATweaks
 if /I "%input%"=="2" goto :AMDTweaks
-if /I "%input%"=="3" goto :Power-Plan
+if /I "%input%"=="3" goto :GPUTweaks
 
 echo.
 echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
@@ -1188,6 +1189,7 @@ set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m S
 if /I "%input%"=="1" goto :AuroraON
 if /I "%input%"=="2" goto :AuroraOFF
 if /I "%input%"=="3" goto :Power-Plan
+if /I "%input%"=="4" goto :NVIDIATweaks1
 echo.
 if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
     echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
@@ -1247,13 +1249,21 @@ rem ============================================================================
 timeout /t 3 /nobreak > NUL
 start /wait cmd /c %currentDir%\AuroraAMD.bat
 
+if errorlevel 1 (
+    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply AMD optimized settings              %ESC%[38;5;33m│%ESC%[0m
+    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
+    pause
+    goto :Power-Plan
+)
+
 echo.
-echo AMD GPU optimizations have been successfully applied!
-echo A system restart is recommended for all changes to take effect.
-echo.
+echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
+echo    %ESC%[38;5;33m│%ESC%[92m  ✓ AMD GPU optimizations applied successfully          %ESC%[38;5;33m│%ESC%[0m
+echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
 timeout /t 3 /nobreak > NUL
 
-goto :MainMenu
+goto :Power-Plan
 cls
 
 rem ========================================================================================================================================
@@ -1266,12 +1276,12 @@ echo.
 
 echo.
 echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│         %ESC%[97mPower Plan Settings%ESC%[38;5;147m        │
+echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
+echo                    %ESC%[38;5;147m│         %ESC%[97mPower Plan Settings %ESC%[38;5;147m        │
 echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
 echo                    %ESC%[38;5;147m│  %ESC%[97mOptimizing system power settings   %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mfor better performance...%ESC%[38;5;147m         │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
+echo                    %ESC%[38;5;147m│  %ESC%[97mfor better performance... %ESC%[38;5;147m         │
+echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
 echo.
 echo.
 
@@ -1444,8 +1454,8 @@ echo - Repairing Windows components...
 echo.
 
 if exist "%currentDir%\RepairWindows.cmd" (
-    start "" /wait "%currentDir%\RepairWindows.cmd"
     echo    %ESC%[93m⌛%ESC%[0m %ESC%[97mProcessing... Please wait%ESC%[0m
+    start /wait cmd.exe /c "%currentDir%\RepairWindows.cmd"
 ) else (
     echo    %ESC%[91m✗%ESC%[0m %ESC%[97mFailed to execute operation!%ESC%[0m
 )
@@ -1464,7 +1474,7 @@ echo - Join Our Discord Community
 
 start "" "https://discord.gg/fVYtpuYuZ6"
 timeout /t 7 /nobreak > NUL
-goto :end
+goto :AuroraExit
 
 
 :relaunch
@@ -1499,7 +1509,7 @@ if /I "%input%"=="2" (
     echo.
     echo - Restarting Aurora...
     timeout /t 2 /nobreak > NUL
-    goto :MainMenu
+    goto :skipDownload
 ) else (
     echo.
     echo - Invalid input. Please enter [1] or [2].
@@ -1524,12 +1534,8 @@ echo                    %ESC%[38;5;147m└────────────�
 echo.
 echo.
 echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Cleanup%ESC%[38;5;153m  │  │ %ESC%[92m► 2. Advanced%ESC%[38;5;153m  │
+echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Cleanup%ESC%[38;5;153m  │  │ %ESC%[91m► 2. Exit%ESC%[38;5;153m    │
 echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                    %ESC%[38;5;153m│      %ESC%[91m► 3. Exit%ESC%[38;5;153m                 │
-echo                    %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
 echo.
 set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [0-2]: %ESC%[0m
 

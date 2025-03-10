@@ -1,3 +1,9 @@
+<#
+.LINK
+    https://github.com/IBRHUB
+    https://docs.ibrhub.net/
+    https://ibrpride.com
+#>
 # Check if running as Administrator, restart if not
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
     Start-Process PowerShell.exe -ArgumentList ("-NoProfile -ExecutionPolicy Bypass -File `"{0}`"" -f $PSCommandPath) -Verb RunAs

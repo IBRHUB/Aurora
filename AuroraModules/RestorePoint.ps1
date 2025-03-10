@@ -17,9 +17,13 @@
 
 .NOTES
     Version: 1.0
-    Author: Ibrahim
+    Author: IBRHUB - IBRAHIM
     Requirements: Must be run with Administrator privileges
     Warning: Modifies system restore settings
+
+.LINK
+    https://github.com/IBRAHUB
+    https://docs.ibrhub.net/
 #>
 
 # Define constants
