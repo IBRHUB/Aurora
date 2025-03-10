@@ -1,4 +1,21 @@
+# ============================================================
+#                            Aurora
+# ============================================================
 # Silent Registry Backup Script
+#
+# AUTHOR:
+#   IBRHUB - IBRAHIM
+#   https://github.com/IBRHUB
+#   https://docs.ibrhub.net/
+#   https://ibrpride.com
+#
+# DESCRIPTION:
+#   This script performs a silent backup of Windows registry settings.
+#   It creates backup files in a dedicated directory and supports both
+#   first-time and subsequent backups. The script handles various registry
+#   categories including system settings, privacy, security, and custom
+#   configurations.
+#
 # This script backs up registry settings and runs in silent mode
 
 # Define comprehensive BaseKeys structure based on the provided registry values
