@@ -90,10 +90,10 @@ move "%targetDir%\*" "%currentDir%\" >nul 2>&1
 powershell.exe -Command "$host.ui.RawUI.WindowTitle = 'Aurora | @by IBRHUB'" >nul 2>&1
 
 
-start /b /wait powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1
+start cmd /c "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1"
 if %errorlevel% neq 0 (
     echo Retrying Backup-Registry.ps1...
-    start /b /wait powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1
+    start cmd /c "powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass "%currentDir%\Backup-Registry.ps1" >nul 2>&1"
 )
 
 :: Execute PowerShell scripts
@@ -436,7 +436,7 @@ rem ============================================================================
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
   set "ESC=%%b"
 )
-
+set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
 :: Enable ANSI Support (Windows 10+)
 REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1 >nul 2>&1
 REG ADD HKCU\CONSOLE /f /v InsertMode /t REG_DWORD /d 1 >nul 2>&1
@@ -447,17 +447,6 @@ color 0f
 
 :WinTweaks
 mode con cols=76 lines=28
-
-cls
-echo.
-
-echo.
-echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m🔧 System Optimization Settings%ESC%[38;5;147m    │
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
-
 
 :: - Setting UAC - never notify
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v PromptOnSecureDesktop /t REG_DWORD /d 0 /f > NUL 2>&1
@@ -545,7 +534,7 @@ reg add "HKCU\SOFTWARE\Microsoft\GameBar" /v AutoGameModeEnabled /t REG_DWORD /d
 :: Set system to prioritize programs over background services
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f > NUL 2>&1
 
-echo.%ESC%[38;5;33m - Optimizing System Services...%ESC%[0m
+echo.%ESC%[38;5;33m - Optimizing Explorer ...%ESC%[0m
 :: Set menu show delay to 0
 reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_SZ /d "0" /f > NUL 2>&1
 
@@ -766,86 +755,11 @@ wevtutil set-log "Microsoft-Windows-SleepStudy/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-Kernel-Processor-Power/Diagnostic" /e:False >nul 2>&1
 wevtutil set-log "Microsoft-Windows-UserModePowerService/Diagnostic" /e:False >nul 2>&1
 
-echo.
-echo    %ESC%[92m✓%ESC%[0m %ESC%[97mSystem optimizations have been successfully applied!%ESC%[0m
-:TimerResolution
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│     %ESC%[97mTimer Resolution Settings%ESC%[38;5;147m       │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to enable enhanced  %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mtimer resolution for better system %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mperformance?%ESC%[38;5;147m                       │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
 
 
-if /I "%input%"=="1" goto :TimerR
-if /I "%input%"=="2" goto :CloudSync
-if /I "%input%"=="3" goto :TimerResolution
-
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-
-timeout /t 2 /nobreak > NUL
-
-:TimerR
 start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%currentDir%\AuroraTimerResolution.ps1"
-
-
-goto :CloudSync
-rem ========================================================================================================================================
-
-:CloudSync
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│      %ESC%[97mCloud Sync Settings%ESC%[38;5;147m            │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to disable cloud    %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97msync features for improved system  %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mprivacy and performance?%ESC%[38;5;147m           │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-
-if /I "%input%"=="1" goto :DisableCloudSync
-if /I "%input%"=="2" goto :Telemetry
-if /I "%input%"=="3" goto :CloudSync
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :CloudSync
-
-:DisableCloudSync
+timeout /t 4 /nobreak > NUL
+taskkill /f /im taskmgr.exe >nul 2>&1
 rem - Disable Cloud Sync via Registry
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t REG_DWORD /d "1" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d "1" /f > NUL 2>&1
@@ -855,199 +769,75 @@ reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection"
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d "1" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d "1" /f > NUL 2>&1
+cls
 
-rem - Run additional Cloud sync disabling script
 CALL "%currentDir%\Cloud.BAT"
-goto :Telemetry
 
-
-rem ========================================================================================================================================
-
-:Telemetry
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│           %ESC%[97mTelemetry%ESC%[38;5;147m                 │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to disable telemetry%ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mfeatures to improve system privacy %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mand performance?%ESC%[38;5;147m                   │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-
-if /I "%input%"=="1" goto :DisableTelemetry
-if /I "%input%"=="2" goto :Privacy
-if /I "%input%"=="3" goto :Telemetry
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :Telemetry
-
-:DisableTelemetry
 CALL "%currentDir%\Telemetry.bat"
-goto :Privacy
 
-
-rem ========================================================================================================================================
-
-:Privacy
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│           %ESC%[97mPrivacy Settings%ESC%[38;5;147m          │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│ %ESC%[97mWould you like to enable privacy    %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│ %ESC%[97msettings to improve system security?%ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-if /I "%input%"=="1" goto :DisablePrivacy
-if /I "%input%"=="2" goto :RemoveEdge
-if /I "%input%"=="3" goto :Privacy
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :Privacy
-
-:DisablePrivacy
 CALL "%currentDir%\Privacy.bat
-
-goto :RemoveEdge
 cls
+start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%currentDir%\RemoveEdge.ps1" -UninstallEdge -NonInteractive
 
-rem ========================================================================================================================================
-
-:RemoveEdge
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│      %ESC%[97mEdge Browser         %ESC%[38;5;147m          │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove Microsoft %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mEdge browser from your system?%ESC%[38;5;147m     │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-if /I "%input%"=="1" goto :runRemoveEdge
-if /I "%input%"=="2" goto :OneDrive
-if /I "%input%"=="3" goto :RemoveEdge
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :RemoveEdge
-
-:runRemoveEdge
-if exist "%currentDir%\RemoveEdge.ps1" (
-    start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%currentDir%\RemoveEdge.ps1" -UninstallEdge -NonInteractive
-    if %ERRORLEVEL% NEQ 0 (
-        echo Error: Failed to execute Edge removal script.
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo Error: RemoveEdge.ps1 not found in AuroraModules.
-    timeout /t 2 /nobreak > NUL
-)
-
-goto :DeblootWindows
-cls
+start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\Components.ps1" 
 
 
+:: Check GPU type using PowerShell as alternative to wmic
+start cmd /c "powershell -NoProfile -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "NVIDIA" >nul && goto :NVIDIATweaks"
 
-rem ========================================================================================================================================
-
-:OneDrive
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│               %ESC%[97mOneDrive          %ESC%[38;5;147m    │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove OneDrive  %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mfrom your system?%ESC%[38;5;147m                  │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
+start cmd /c "powershell -NoProfile -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "AMD" >nul && goto :AMDTweaks"
 
 
-if /I "%input%"=="1" goto :DisableOneDrive
-if /I "%input%"=="2" goto :DeblootWindows
-if /I "%input%"=="3" goto :OneDrive
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :OneDrive
+:NVIDIATweaks
+start /wait cmd /c "%currentDir%\NvidiaProfileInspector.cmd"
 
-:DisableOneDrive
-echo.
-echo Please wait while OneDrive is being removed...
-echo This may take a few minutes...
-echo.
+timeout /t 1 /nobreak > NUL
+%AuroraAsAdmin% --NoLogo -S -P --WorkDir="%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
 
-taskkill /F /IM "OneDrive.exe" > NUL 2>&1
-taskkill /f /im "OneDriveStandaloneUpdater.exe" > NUL 2>&1
-taskkill /f /im "Microsoft.SharePoint.exe" > NUL 2>&1
-taskkill /f /im "OneDriveSetup.exe" > NUL 2>&1
-taskkill /f /im "FileCoAuth.exe"> NUL 2>&1
+goto :Power-Plan
+
+
+:AMDTweaks
+timeout /t 3 /nobreak > NUL
+start /wait cmd /c "%currentDir%\AuroraAMD.bat"
+
+goto :Power-Plan
+
+:Power-Plan
+start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\Power.ps1" -Silent
+
+:NetworkTweaks
+start /wait powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\NetworkBufferBloatFixer.ps1"
+
+
+start /wait cmd.exe /c "%~dp0AuroraModules\AuroraManualServices.cmd"
+
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+
+:: Enable dark mode for current user
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1 
+reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
+
+C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe >nul 2>&1
+timeout /t 1 /nobreak > NUL
+start %windir%\explorer.exe >nul 2>&1
+
+
+start /wait cmd.exe /c "%currentDir%\RepairWindows.cmd"
+
+
+start /wait cmd.exe /c "%currentDir%\TempCleaner.bat"
+start /wait cmd.exe /c "%currentDir%\UltimateCleanup.bat"
+
+:end
+C:\Windows\System32\TASKKILL.exe /f /im powershell.exe > nul 2> nul
+C:\Windows\System32\TASKKILL.exe /f /im cmd.exe > nul 2> nul
+exit /b
+
+
+
 call ONED.bat
-rem -  Disabling OneDrive
 reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" > NUL 2>&1
 reg add "HKCR\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder" /f /v "Attributes" /t REG_DWORD /d "0" >NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /t REG_DWORD /d "1" /f > NUL 2>&1
@@ -1055,523 +845,4 @@ reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncN
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableMeteredNetworkFileSync" /t REG_DWORD /d "0" /f > NUL 2>&1
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableLibrariesDefaultSaveToOneDrive" /t REG_DWORD /d "0" /f > NUL 2>&1
 
-timeout /t 1 /nobreak > NUL
-if exist "%currentDir%\OneDrive.ps1" (
-    :: The OneDrive removal operation is commented out to prevent potential data loss.
-    start /wait powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\OneDrive.ps1"
-    if %ERRORLEVEL% NEQ 0 (
-        echo - Error: Failed to execute OneDrive removal script.
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo - Error: OneDrive.ps1 script not found in AuroraModules folder.
-    timeout /t 2 /nobreak > NUL
-)
-
-goto :DeblootWindows
-
-:DeblootWindows
-mode con cols=76 lines=28
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│          %ESC%[97mWindows Debloat         %ESC%[38;5;147m   │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mWould you like to remove bloatware %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mand optimize Windows performance? %ESC%[38;5;147m │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-
-if /I "%input%"=="1" goto :RunDebloot
-if /I "%input%"=="2" goto :GPUTweaks
-if /I "%input%"=="3" goto :DeblootWindows
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo.    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :DeblootWindows
-
-:RunDebloot
-if exist "%currentDir%\Components.ps1" (
-    start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0AuroraModules\Components.ps1" 
-    if %ERRORLEVEL% NEQ 0 (
-        echo - Error: Failed to execute Windows debloating script.
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo - Error: Components.ps1 script not found in AuroraModules folder.
-    timeout /t 2 /nobreak > NUL
-)
-
-goto :GPUTweaks
-
-rem ========================================================================================================================================
-
-:GPUTweaks
-mode con cols=76 lines=27
-CLS
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│         %ESC%[97mGPU Settings%ESC%[38;5;147m                │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mPlease select your graphics card   %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mmanufacturer to continue:%ESC%[38;5;147m          │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. NVIDIA%ESC%[38;5;153m   │  │   %ESC%[91m► 2. AMD%ESC%[38;5;153m      │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                    %ESC%[38;5;153m│      %ESC%[33m► 3. SKIP TO NEXT   %ESC%[38;5;153m         │
-echo                    %ESC%[38;5;153m╰─────────────────────────────────╯%ESC%[0m
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
-
-if /I "%input%"=="1" goto :NVIDIATweaks
-if /I "%input%"=="2" goto :AMDTweaks
-if /I "%input%"=="3" goto :GPUTweaks
-
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :GPUTweaks
-
-
-
-rem ========================================================================================================================================
-
-:NVIDIATweaks
-CLS
-mode con cols=76 lines=33
-start /wait cmd /c "%currentDir%\NvidiaProfileInspector.cmd"
-timeout /t 1 /nobreak > NUL
-:NVIDIATweaks1
-cls
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│         %ESC%[97mNVIDIA Settings%ESC%[38;5;147m             │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mPlease select your preferred      %ESC%[38;5;147m │
-echo                    %ESC%[38;5;147m│  %ESC%[92mNVIDIA%ESC%[97m control panel settings:%ESC%[38;5;147m     │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│ %ESC%[92m ► 1. %ESC%[97mNVIDIA Settings %ESC%[93mAurora%ESC%%ESC%[38;5;153m    │
-echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
-echo.
-echo                      %ESC%[38;5;153m╭─────────────────────────────────╮
-echo                      %ESC%[38;5;153m│ %ESC%[97m ► 2. NVIDIA Settings (Default)%ESC%[38;5;153m │
-echo                      %ESC%[38;5;153m╰─────────────────────────────────╯
-echo.
-echo                      %ESC%[38;5;153m╭───────────────────────────────────╮
-echo                      %ESC%[38;5;153m│ %ESC%[31m ► 3. %ESC%[97mContinue to Next Step    %ESC%[38;5;153m│
-echo                      %ESC%[38;5;153m╰───────────────────────────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-3]: %ESC%[0m
-
-
-if /I "%input%"=="1" goto :AuroraON
-if /I "%input%"=="2" goto :AuroraOFF
-if /I "%input%"=="3" goto :Power-Plan
-if /I "%input%"=="4" goto :NVIDIATweaks1
-echo.
-if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
-    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo        %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
-    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-    timeout /t 3 /nobreak > NUL
-    goto :NVIDIATweaks1
-)
-
-
-:AuroraOFF
-timeout /t 3 /nobreak > NUL
-set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
-%AuroraAsAdmin% --NoLogo -S -P --WorkDir="%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraOFF.nip"
-
-if errorlevel 1 (
-    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply NVIDIA default settings           %ESC%[38;5;33m│%ESC%[0m
-    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-    pause
-    goto :relaunch
-)
-
-echo.
-echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA settings restored to default successfully   %ESC%[38;5;33m│%ESC%[0m
-echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-timeout /t 3 /nobreak > NUL
-
-goto :Power-Plan
-
-:AuroraON
-timeout /t 3 /nobreak > NUL
-set AuroraAsAdmin=%currentDir%\AuroraSudo.exe
-%AuroraAsAdmin% --NoLogo -S -P --WorkDir="%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\nvidiaProfileInspector.exe" "%~dp0AuroraModules\AuroraNvidia\NvidiaProfileInspector\AuroraON.nip"
-if errorlevel 1 (
-    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply NVIDIA optimized settings          %ESC%[38;5;33m│%ESC%[0m
-    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-    pause
-    goto :relaunch
-)
-
-echo.
-echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[92m  ✓ NVIDIA optimizations applied successfully          %ESC%[38;5;33m│%ESC%[0m
-echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-timeout /t 3 /nobreak > NUL
-
-goto :Power-Plan
-cls
-
-
-rem ======================================================================================================================================== 
-
-:AMDTweaks
-timeout /t 3 /nobreak > NUL
-start /wait cmd /c %currentDir%\AuroraAMD.bat
-
-if errorlevel 1 (
-    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply AMD optimized settings              %ESC%[38;5;33m│%ESC%[0m
-    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-    pause
-    goto :Power-Plan
-)
-
-echo.
-echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[92m  ✓ AMD GPU optimizations applied successfully          %ESC%[38;5;33m│%ESC%[0m
-echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-timeout /t 3 /nobreak > NUL
-
-goto :Power-Plan
-cls
-
-rem ========================================================================================================================================
-
-:Power-Plan
-mode con cols=76 lines=28
-cls
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
-echo                    %ESC%[38;5;147m│         %ESC%[97mPower Plan Settings %ESC%[38;5;147m        │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mOptimizing system power settings   %ESC%[38;5;147m│
-echo                    %ESC%[38;5;147m│  %ESC%[97mfor better performance... %ESC%[38;5;147m         │
-echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
-echo.
-echo.
-
-if exist "%currentDir%\Power.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\Power.ps1" -Silent
-    if %ERRORLEVEL% NEQ 0 (
-        echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-        echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Failed to apply power plan optimizations            %ESC%[38;5;33m│%ESC%[0m
-        echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-    ) else (
-        echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-        echo    %ESC%[38;5;33m│%ESC%[92m  ✓ Power plan optimizations applied successfully       %ESC%[38;5;33m│%ESC%[0m
-        echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-    )
-) else (
-    echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-    echo    %ESC%[38;5;33m│%ESC%[91m  ✗ Power.ps1 script not found in AuroraModules folder   %ESC%[38;5;33m│%ESC%[0m
-    echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-)
-
-timeout /t 3 /nobreak > NUL
-goto :NetworkTweaks
-
-
-rem ========================================================================================================================================
-
-
-:NetworkTweaks
-mode con cols=76 lines=29
-cls
-echo.
-echo.
-
-echo.
-echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m  Network Optimization Settings %ESC%[38;5;147m   │
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
-echo.
-echo                     %ESC%[38;5;33m╭───────────────────────────────────╮%ESC%[0m
-echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 1. %ESC%[97mApply Network Optimization %ESC%[38;5;33m│%ESC%[0m
-echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
-echo.
-echo                     %ESC%[38;5;33m╭───────────────────────────────────╮%ESC%[0m
-echo                     %ESC%[38;5;33m│ %ESC%[92m  ► 2. %ESC%[97mContinue to Next Step      %ESC%[38;5;33m│%ESC%[0m
-echo                     %ESC%[38;5;33m╰───────────────────────────────────╯%ESC%[0m
-echo.
-echo.
-set /p "input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[0m%ESC%[38;5;33m %ESC%[3;38;5;195mEnter choice [1-2]:%ESC%[0m "
-
-if /I "%input%"=="1" goto  :NetworkTweaks1
-if /I "%input%"=="2" goto  :ManualServices
-
-:NetworkTweaks1
-if not defined input goto :NetworkTweaks
-if "%input%"=="" goto :NetworkTweaks
-set "input=%input:"=%"
-echo.
-if /I "%input%" NEQ "1" if /I "%input%" NEQ "2" (
-    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo        %ESC%[38;5;33m║%ESC%[91m  Invalid selection! Please choose 1 or 2              %ESC%[38;5;33m║%ESC%[0m
-    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-    timeout /t 3 /nobreak > NUL
-    goto :NetworkTweaks
-)
-
-timeout /t 3 /nobreak > NUL
-if exist "%currentDir%\NetworkBufferBloatFixer.ps1" (
-    start /wait powershell.exe -ExecutionPolicy Bypass -File "%currentDir%\NetworkBufferBloatFixer.ps1"
-    if %ERRORLEVEL% NEQ 0 (
-        echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-        echo        %ESC%[38;5;33m║%ESC%[91m  Error: Failed to apply network optimizations.      %ESC%[38;5;33m║%ESC%[0m
-        echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-        timeout /t 2 /nobreak > NUL
-    ) else (
-        echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-        echo        %ESC%[38;5;33m║%ESC%[92m  Network optimizations applied successfully.         %ESC%[38;5;33m║%ESC%[0m
-        echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-        timeout /t 2 /nobreak > NUL
-    )
-) else (
-    echo        %ESC%[38;5;33m╔══════════════════════════════════════════════════════╗%ESC%[0m
-    echo        %ESC%[38;5;33m║%ESC%[91m  Error: NetworkBufferBloatFixer.ps1 script not found  %ESC%[38;5;33m║%ESC%[0m
-    echo        %ESC%[38;5;33m╚══════════════════════════════════════════════════════╝%ESC%[0m
-    timeout /t 2 /nobreak > NUL
-)
-goto :ManualServices
-
-
-
-
-rem ========================================================================================================================================
-:ManualServices
-mode con cols=76 lines=33
-cls
-echo.
-echo.
-echo                    %ESC%[38;5;147m╭─────────────────────────────────────╮
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m│  %ESC%[97m  Manual Services Configuration %ESC%[38;5;147m   │
-echo                    %ESC%[38;5;147m│                                     │
-echo                    %ESC%[38;5;147m╰─────────────────────────────────────╯%ESC%[0m
-echo.
-echo.
-echo            %ESC%[1;38;5;196m╔══════════════════════════════════════════════════════╗
-echo            %ESC%[1;38;5;196m║%ESC%[93m                    W A R N I N G !                    %ESC%[1;38;5;196m║
-echo            %ESC%[1;38;5;196m║                                                      ║%ESC%[0m 
-echo            %ESC%[1;38;5;196m║%ESC%[91m  These changes may cause system instability          %ESC%[1;38;5;196m║
-echo            %ESC%[1;38;5;196m║%ESC%[91m  Only proceed if you understand the consequences     %ESC%[1;38;5;196m║
-echo            %ESC%[1;38;5;196m╚══════════════════════════════════════════════════════╝%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Enable%ESC%[38;5;153m   │  │   %ESC%[91m► 2. Skip%ESC%[38;5;153m     │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-if /I "%input%"=="1" goto :StartServiceChanges
-if /I "%input%"=="2" goto :DarkMode
-echo.
-echo    %ESC%[91m Invalid selection. Please choose [1] Enable or [2] Skip %ESC%[0m
-echo    %ESC%[38;5;241m───────────────────────────────────────────────────────────────%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :ManualServices
-
-:StartServiceChanges
-start /wait cmd.exe /c "%~dp0AuroraModules\AuroraManualServices.cmd"
-echo.
-echo    %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
-echo.
-timeout /t 2 /nobreak > NUL
-goto :DarkMode
-
-
-rem ========================================================================================================================================
-:DarkMode
-mode con cols=76 lines=33
-cls
-
-:: Enable dark mode for system
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
-
-:: Enable dark mode for current user
-reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1 
-reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d "0" /f >nul 2>&1
-echo.
-echo.
-echo.
-echo.
-echo %ESC%[92m✓%ESC%[0m %ESC%[97mOperation completed successfully!%ESC%[0m
-
-C:\windows\system32\cmd.exe /c taskkill /f /im explorer.exe >nul 2>&1
- 
-timeout /t 1 /nobreak > NUL
-
-start %windir%\explorer.exe >nul 2>&1
-
-goto :RepairWindows
-
-rem ========================================================================================================================================
-
-:RepairWindows
-mode con cols=76 lines=33
-cls
-echo - Repairing Windows components...
-echo.
-
-if exist "%currentDir%\RepairWindows.cmd" (
-    echo    %ESC%[93m⌛%ESC%[0m %ESC%[97mProcessing... Please wait%ESC%[0m
-    start /wait cmd.exe /c "%currentDir%\RepairWindows.cmd"
-) else (
-    echo    %ESC%[91m✗%ESC%[0m %ESC%[97mFailed to execute operation!%ESC%[0m
-)
-
-timeout /t 2 /nobreak > NUL
-goto :Discord
-
-rem ========================================================================================================================================
-
-:Discord
-cls
-echo.
-echo.
-echo.
-echo - Join Our Discord Community
-
-start "" "https://discord.gg/fVYtpuYuZ6"
-timeout /t 7 /nobreak > NUL
-goto :AuroraExit
-
-
-:relaunch
-cls
-mode con cols=76 lines=33
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m╔══════════════════════════════════════╗
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m║  %ESC%[97mDo you want to restart Aurora or exit?%ESC%[38;5;147m ║
-echo                    %ESC%[38;5;147m║                                      ║
-echo                    %ESC%[38;5;147m╚══════════════════════════════════════╝%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────╮    ╭────────────╮
-echo                    %ESC%[38;5;153m│%ESC%[97m 1. Restart%ESC%[38;5;153m │    │ %ESC%[97m2. Exit%ESC%[38;5;153m  │
-echo                    %ESC%[38;5;153m╰─────────────╯    ╰────────────╯%ESC%[0m
-echo.
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [1-2]: %ESC%[0m
-
-
-if /I "%input%"=="2" (
-    echo.
-    echo - Exiting Aurora...
-    timeout /t 2 /nobreak > NUL
-    exit /b
-) else if /I "%input%"=="1" (
-    echo.
-    echo - Restarting Aurora...
-    timeout /t 2 /nobreak > NUL
-    goto :skipDownload
-) else (
-    echo.
-    echo - Invalid input. Please enter [1] or [2].
-    timeout /t 2 /nobreak > NUL
-    goto :relaunch
-)
-
-
-:AuroraExit
-cls
-mode con cols=76 lines=28
-echo.
-echo.
-
-echo.
-echo.
-echo                    %ESC%[38;5;147m┌─────────────────────────────────────┐
-echo                    %ESC%[38;5;147m│         %ESC%[97mSystem Maintenance%ESC%[38;5;147m         │
-echo                    %ESC%[38;5;147m├─────────────────────────────────────┤
-echo                    %ESC%[38;5;147m│  %ESC%[97mSelect a cleanup option:%ESC%[38;5;147m          │
-echo                    %ESC%[38;5;147m└─────────────────────────────────────┘%ESC%[0m
-echo.
-echo.
-echo                    %ESC%[38;5;153m╭─────────────────╮  ╭─────────────────╮
-echo                    %ESC%[38;5;153m│   %ESC%[92m► 1. Cleanup%ESC%[38;5;153m  │  │ %ESC%[91m► 2. Exit%ESC%[38;5;153m    │
-echo                    %ESC%[38;5;153m╰─────────────────╯  ╰─────────────────╯%ESC%[0m
-echo.
-set /p input=%ESC%[1;38;5;214m[%ESC%[93mAurora%ESC%[1;38;5;214m]%ESC%[38;5;87m Select option [0-2]: %ESC%[0m
-
-
-if /I "%input%"=="1" (
-    goto :cleanupAll
-) else if /I "%input%"=="2" (
-    goto :end
-) else (
-    echo    %ESC%[91m Invalid selection. Please choose a valid option [1-2] %ESC%[0m
-    timeout /t 2 /nobreak > NUL
-    goto :AuroraExit
-)
-
-
-:cleanupAll
-echo.
-echo    %ESC%[38;5;33m╭──────────────────────────────────────────────────────╮%ESC%[0m
-echo    %ESC%[38;5;33m│%ESC%[97m  Running system cleanup utilities...                  %ESC%[38;5;33m│%ESC%[0m
-echo    %ESC%[38;5;33m╰──────────────────────────────────────────────────────╯%ESC%[0m
-
-start /wait cmd.exe /c "%~dp0AuroraModules\TempCleaner.bat"
-start /wait cmd.exe /c "%~dp0AuroraModules\UltimateCleanup.bat"
-
-:end
-C:\Windows\System32\TASKKILL.exe /f /im powershell.exe > nul 2> nul
-C:\Windows\System32\TASKKILL.exe /f /im cmd.exe > nul 2> nul
-exit /b
-
+start /wait powershell -ExecutionPolicy Bypass -WindowStyle Hidden -File "%currentDir%\OneDrive.ps1"
