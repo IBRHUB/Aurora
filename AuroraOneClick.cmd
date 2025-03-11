@@ -783,9 +783,15 @@ start /wait powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~d
 
 
 :: Check GPU type using PowerShell as alternative to wmic
-start cmd /c "powershell -NoProfile -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "NVIDIA" >nul && goto :NVIDIATweaks"
+powershell -NoProfile -WindowStyle Hidden -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "NVIDIA" >nul 2>&1
+if %errorlevel% equ 0 (
+    goto :NVIDIATweaks
+) >nul 2>&1
 
-start cmd /c "powershell -NoProfile -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "AMD" >nul && goto :AMDTweaks"
+powershell -NoProfile -WindowStyle Hidden -Command "Get-WmiObject Win32_VideoController | Select-Object -ExpandProperty Name" | findstr /i "AMD" >nul 2>&1
+if %errorlevel% equ 0 (
+    goto :AMDTweaks
+) >nul 2>&1
 
 
 :NVIDIATweaks
@@ -825,10 +831,21 @@ start %windir%\explorer.exe >nul 2>&1
 
 
 start /wait cmd.exe /c "%currentDir%\RepairWindows.cmd"
+pause
 
+:: Run TempCleaner with error handling
+start /wait cmd.exe /c "%currentDir%\TempCleaner.bat" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Error running TempCleaner.bat
+    timeout /t 2 /nobreak >nul
+)
 
-start /wait cmd.exe /c "%currentDir%\TempCleaner.bat"
-start /wait cmd.exe /c "%currentDir%\UltimateCleanup.bat"
+:: Run UltimateCleanup with error handling 
+start /wait cmd.exe /c "%currentDir%\UltimateCleanup.bat" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Error running UltimateCleanup.bat
+    timeout /t 2 /nobreak >nul
+)
 
 :end
 C:\Windows\System32\TASKKILL.exe /f /im powershell.exe > nul 2> nul
